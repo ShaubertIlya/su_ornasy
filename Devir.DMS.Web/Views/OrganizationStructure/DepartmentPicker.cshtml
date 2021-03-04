@@ -1,0 +1,127 @@
+﻿@{
+    Layout = null;
+}
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        var departmentId = "";
+
+        var tableName = "Организационная структура";
+        var list = "#dpDepartments";
+        var getData = '/OrganizationStructure/GetDataForDepartments';
+        var expandColumn = "Name";
+        var headertitles = false;
+        var width = 300;
+        var id = 'ID';
+        var cn = ['ИД', 'Подразделение'];
+        var cm = [
+            { name: 'ID', index: 'ID', hidden: true, key: true },
+            { name: 'Name', index: 'Name', width: 90 }
+        ];
+        //jqGridTreeTable(tableName,
+        //                 list,
+        //                 expandColumn,
+        //                 pager,
+        //                 getData,
+        //                 deleteData,
+        //                 updateData,
+        //                 addData,
+        //                 cn,
+        //                 cm,
+        //                 headertitles,
+        //                 width,
+        //                 id);
+
+        $(list).jqGrid({
+            url: getData,
+            height: '400px',
+            width: '400px',
+            autowidth: 1,
+            id: id,
+            mtype: 'POST',
+            datatype: "json",
+            ajaxGridOptions: {
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                complete: function (xmldata, stat) {
+                    if (stat == "success") {
+                        var thegrid = jQuery(list)[0];
+                        var data = eval("(" + xmldata.responseText + ")");
+                        thegrid.addJSONData(data.d);
+                        $("#load_" + list).hide();
+                    }
+                }
+            },
+            colNames: cn,
+            colModel: cm,
+            treeGrid: true,
+            treeGridModel: "adjacency",
+            ExpandColumn: expandColumn,
+            altRows: true,
+            viewrecords: true,
+            scroll: true,
+            loadonce: false,
+            gridview: true,
+            hidegrid: false,
+            sortname: 'Id',
+            sortable: true,
+            rowNum: 10000,
+            //rowNum: 10000,
+            jsonReader: {
+                root: "rows",
+                page: "page",
+                total: "total",
+                records: "records",
+                repeatitems: false,
+                cell: "cell",
+                id: "ID",
+                userdata: "userdata"
+                //rows: function (obj) { return obj.d.rows; }
+            },
+            gridComplete: function () {
+                //SetGridHeight("#dpBody");
+                SetGridWidth("#dpBody");
+            },
+            ondblClickRow: function () {
+                LoadDepartment();
+            }
+        });
+        $(list).parents("div.ui-jqgrid-view").children("div.ui-jqgrid-hdiv").hide();
+    });
+
+
+
+    function LoadDepartment() {
+        var myGrid = $('#dpDepartments'),
+         selRowId = myGrid.jqGrid('getGridParam', 'selrow');
+        if (selRowId) {
+            var name = myGrid.getRowData(selRowId).Name;
+            $("#" + dpDepartmentName).val(name);
+            $("#" + dpDepartmentId).val(selRowId);
+        }
+        else {
+            $("#" + dpDepartmentName).val("Нет");
+            $("#" + dpDepartmentId).val(null);
+        }
+        CloseCurrentModal();
+    }
+</script>
+<style>
+    #addModal_dpDialog {
+        width: 400px!important;
+    }
+</style>
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="addModalLabel">Выбрать подразделение</h3>
+</div>
+<div id="addModalBody" style="height: 400px; width: 400px;">
+    <div class="decoration" id="dpBody" style="height: 100%; width: 400px">
+        <table id="dpDepartments" class="table table-condensed table-hover table-bordered"></table>
+    </div>
+    
+</div>
+<div class="panel">
+        <button type="button" id="butSave" class="btn" onclick="LoadDepartment()" >Выбрать</button>
+        <button type="button" id="butCancel" class="btn" onclick="CloseCurrentModal();" >Отмена</button>
+</div>

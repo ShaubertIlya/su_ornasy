@@ -1,0 +1,59 @@
+﻿@{
+    ViewBag.Title = "Справочники";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section sidebar {
+    <nav id="sidebar-menu">
+
+        <ul id="leftNav" class="documentsMenu">
+            @*<li class="active"><a href="#home">Home</a></li>
+            <li><a href="#gridArea" id="FieldTypes">Типы полей</a></li>
+            
+            <li><a href="#gridArea" id="RouteType">Тип маршрута</a></li>
+            <li><a href="#gridArea" id="RouteActions">Действие маршрута</a></li>
+            
+            <li><a href="#gridArea" id="/File/Icons">Иконки</a></li>*@
+            <li><a href="#gridArea" id="DocumentType">Тип документа</a></li>
+
+            <li style="font-weight: bold; ">Администрирование</li>
+            <li class="sub"><a href="#gridArea" id="/OrganizationStructure/Department">Департаменты</a></li>
+            <li class="sub"><a href="#gridArea" id="/Users/Roles">Роли</a></li>
+
+            <li><a href="#gridArea" id="DynamicReference">Динамический справочник</a></li>
+            @foreach (var item in (List<Devir.DMS.DL.Models.References.DynamicReferences.DynamicReference>)ViewBag.DynamicReferences)
+            {
+                <li class="sub dynamicReference"><a href="#gridArea" id="ShowDynamicReference?Id=@item.Id">@item.Name</a></li>
+            }
+
+        </ul>
+
+    </nav>
+}
+@*<div id="content">*@
+
+
+<div class="tab-content" style="margin-left: 175px;">
+    <div class="tab-pane active" id="home">
+    </div>
+    <div class="tab-pane" id="gridArea" style="width: 100%; height: 100%">
+    </div>
+    <!-- Add modal -->
+    <div id="addModal" class="modal hide fade in" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    </div>
+
+</div>
+
+<script>
+    $('#leftNav a').click(function (e) {
+        e.preventDefault();
+        $(this).tab('show');
+        $(this).val();
+        var id = this.id;
+        //$('#DocumentDetails').empty();
+        $('#gridArea').empty();
+        $("#gridArea").load(id);
+    });
+</script>
+
+@*</div>*@
+

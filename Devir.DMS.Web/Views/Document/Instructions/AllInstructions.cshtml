@@ -1,0 +1,71 @@
+﻿@{
+    Layout = null;
+}
+<script>
+   
+    $(document).ready(function () {
+        var docsList = "#intstrList";
+        var getData = 'GetInstructions';
+        var mtype = 'POST';
+        var cn = ['Состояние', 'Тип документа', 'Заголовок', 'Исполнитель', 'Дата создания', 'ИД', 'Классы', 'Документ'];
+        var cm = [
+            { name: 'Status', index: 'Status' },
+            { name: 'DocumentType', index: 'DocumentType' },
+            { name: 'Header', index: 'Header' },
+            { name: 'UserFor', index: 'UserFor' },
+            { name: 'CreateDate', index: 'CreateDate' },
+            { name: 'Id', index: 'Id', hidden: true, key: true },
+            { name: 'Classes', index: 'Classes', hidden: true },
+            { name: 'RootDocumentId', index: 'RootDocumentId', hidden: true }
+        ];
+        /* var serializeGridData = function (postdata) {
+             postdata.owner = $("#navOwner li.active").attr('id');
+             return postdata;
+         }*/
+        var serializeGridData = function (postdata) {
+            postdata.type = $("#instTypeFilter li.active").attr("id");
+            return postdata;
+        };
+
+        var gridComplete = function (data) {
+            var userdata = $(docsList).getGridParam("userData");
+            RefreshInstructionsCount(userdata);
+        };
+
+        jqGridTableSerialize(docsList,
+                    getData,
+                    '',
+                    '',
+                    '',
+                    cn,
+                    cm,
+                    serializeGridData,
+                    gridComplete);
+        //HideColumnNames(docsList);
+
+        $(docsList).jqGrid('setGridParam', {
+            gridComplete: function () {
+                SetGridWidth("#container");
+
+            },
+            loadComplete: function (data) {
+                //alert(data.userdata.instCountAll);
+            },
+            onCellSelect: function (rowid, iRow, iCol, e) {
+                
+                window.location = "GetDocument?DocumentId=" + $(docsList).jqGrid('getRowData', rowid).RootDocumentId + '&Tab=3';
+            }
+        });
+
+        $(docsList).trigger("reloadGrid");
+    });
+   
+</script>
+
+
+<div>
+   
+    <div id="container">
+        <table id="intstrList" class="table table-bordered table-condensed table-hover reloadableGrid" />
+    </div>
+</div>

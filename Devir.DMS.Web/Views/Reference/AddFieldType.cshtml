@@ -1,0 +1,71 @@
+﻿@model Devir.DMS.DL.Models.References.FieldType
+
+@{
+    ViewBag.Title = "AddFieldType";
+    Layout = null;
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+ 
+
+@using (Ajax.BeginForm((bool)ViewBag.isForUpdate == false ? "AddFieldType" : "UpdateFieldType", new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "addModal" }))
+{
+   <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="addModalLabel">Добавить</h3>
+            </div>
+            <div class="modal-body" id="addModalBody"> 
+    @Html.ValidationSummary(true)
+<div id="FieldTypeAddForm">
+    <fieldset>
+        <legend>Тип поля</legend>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Name)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Name)
+            @Html.ValidationMessageFor(model => model.Name)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.Comment)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.Comment)
+            @Html.ValidationMessageFor(model => model.Comment)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.SystemName)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.SystemName)
+            @Html.ValidationMessageFor(model => model.SystemName)
+        </div>
+        @Html.HiddenFor(model => model.Id)
+       
+            @Html.HiddenFor(model => model.BaseId)
+       
+            @Html.HiddenFor(model => model.isDeleted)           
+
+            @Html.HiddenFor(model => model.CreatorGuid)
+
+            @Html.HiddenFor(model => model.CreateDate)
+       
+            @Html.HiddenFor(model => model.DeletedByUserGuid)
+       
+            @Html.HiddenFor(model => model.DeleteDate)
+       
+    </fieldset>
+
+    </div>
+    
+     </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+                <input type="submit" id="btnSave" class="btn btn-primary" value="Сохранить" />
+            </div>
+}

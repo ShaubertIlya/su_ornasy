@@ -1,0 +1,93 @@
+﻿@model Devir.DMS.Web.Models.Reference.DocumentTypeRolesViewModel
+@{
+    ViewBag.Title = "FieldTemplate";
+    Layout = null;
+}
+
+ 
+
+@using (Ajax.BeginForm(new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "edit-modal" }))
+{
+    
+    @Html.HiddenFor(m => m.DocumentTypeId);
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="addModalLabel">Добавить</h3>
+    </div>
+    <div class="modal-body" id="addModalBody">
+        <div class="controls controls-row">
+            <label class="span2">Наименование</label><label class="span2"></label>
+        </div>
+         <div id="fields" >
+
+             @foreach(var item in Model.RoleIds)
+             {
+            <div class="controls controls-row content role">
+                 <div class="span2">
+                     @Html.DropDownListFor(m=>m.RoleIds[Model.RoleIds.IndexOf(item)], Model.AllRoles.Select(m => new SelectListItem() { Text = m.Name, Value = m.Id.ToString() }), new { @class = "span2" })
+                 </div>
+                <a class="btn" href="#" id="remScnt"><i class="icon-trash"></i></a>
+                </div>
+             }
+        </div>
+    
+    </div>
+    <div><button id="addScnt" class="btn"><i class="icon-plus"></i>Добавить поле</button></div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+        <input type="submit" id="btnSave" class="btn btn-primary" value="Сохранить" />
+    </div>
+    <div id="dropdown" hidden="hidden">
+        @Html.DropDownList("newRoleList", Model.AllRoles.Select(m => new SelectListItem() { Text=m.Name, Value=m.Id.ToString()}), new { @class = "span2" })
+    </div>
+<script>
+    $(function () {
+        var scntDiv = $('#fields');
+        var i = $('#fields div').size();
+        $(document).on('click', '#addScnt', function () {
+            $('<div class="controls controls-row content role">' +
+                '<div class="span2">' + dropdown(i) + '</div>' +                
+                '<a class="btn" href="#" id="remScnt"><i class="icon-trash"></i></a>' +
+                '</div>').appendTo(scntDiv);
+            i++;
+            recalculateAll();
+            return false;
+            
+        });
+        
+        function dropdown(i) {
+            var clone = $('#dropdown').clone().removeAttr('hidden', 'hidden');
+            clone.children().attr('name', 'RoleIds[' + i + ']');
+            clone.children().attr('id', 'RoleIds[' + i + ']');
+            return clone.html();
+        }
+
+        $(document).on('click', '#remScnt', function () {
+            if (i >= 1) {
+                $(this).parent('.controls').remove();
+                i--;
+            }
+            recalculateAll()
+            return false;
+        });
+
+        function recalculateAll() {
+            $("#fields .role").each(function (i) {
+                $(this).find("select").attr('name', 'RoleIds[' + i + ']');
+                $(this).find("select").attr('id', 'RoleIds[' + i + ']');
+            });
+        }
+        
+        
+        $(document).on('click','#btnSave', function () {
+            //replaceAll();
+
+
+
+        });
+
+        $('.text-box.single-line').addClass('span2');
+
+            });
+</script>
+}

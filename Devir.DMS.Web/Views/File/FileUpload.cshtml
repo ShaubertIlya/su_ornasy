@@ -1,0 +1,77 @@
+﻿@model Devir.DMS.DL.Models.FileStorage.FileStorage
+
+@{
+    ViewBag.Title = "FileUpload";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Интерфейс добавления файлов</h2>
+
+<script type="text/javascript">
+    function showModalFileUpload() {
+
+        $("#dlgFileUpload").modal('show');
+
+        $("#dlgFileUpload").on('shown', function () {
+            $("#dlgFileUploadBody").load("UploadFileModal");
+
+            //привязываем сабмит формы к клику
+            $("#modal-form-submit").click(function (e) {
+                e.preventDefault();
+
+                $("#uploadForm").submit();
+                $("#dlgFileUploadBody").html(""); //чистим буфера (*)(*)
+                
+            });
+        });
+    }
+
+</script>
+
+
+
+<div class="well">
+    <h5>Загрузить файл:</h5>
+    <br />
+    <button onclick="showModalFileUpload()" class="btn">Загрузить</button>
+    
+</div>
+
+
+
+<div id="dlgFileUpload" class="modal hide fade">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>Загрузить файл</h3>
+    </div>
+    <div class="modal-body">
+        <div id="dlgFileUploadBody"></div>
+    </div>
+    <div class="modal-footer">
+        <a id="modal-form-submit" class='btn btn-primary' href="#">&nbsp;&nbsp;  Ок &nbsp;&nbsp; </a>
+    </div>
+</div>
+
+
+<h4>Файлы:</h4>
+<div id="attachments" style="height: auto">
+
+    <div id="result" class="row-fluid">
+        <div class="span6" style="border-bottom: 1px solid #EEEEEE;">
+            <div class="span2" style="font-weight: bold">Иконка</div>
+            <div class="span2" style="font-weight: bold">Описание</div>
+        </div>
+    </div>
+    @* сюда добавляется row-fluid при добавлении файла *@
+</div>
+
+
+
+
+
+
+
+
+
+
+

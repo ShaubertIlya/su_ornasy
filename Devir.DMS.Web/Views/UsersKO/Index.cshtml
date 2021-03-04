@@ -1,0 +1,67 @@
+﻿@using PerpetuumSoft.Knockout
+@using Devir.DMS.Web.Models
+@model Devir.DMS.Web.Models.UsersKO.UsersKOEditorModel
+@{
+    Layout = null;
+
+    var fieldName = "UserToAttach" + Model.FieldName;
+
+    var koUser = Html.CreateKnockoutContext();
+}
+
+<div data-model="UserToAttach@(Model.FieldName)">
+
+<div style="padding-bottom:10px;">
+
+     @using (koUser.If(m => m.UsersKO.Count>0)){ 
+    <div style="background-color:#f0f0f0; width:900px; border: 1px dotted black; margin-bottom:10px; padding:10px;">
+    @using (var userk = koUser.Foreach(m => m.UsersKO))
+    { 
+        
+        <table>
+                     
+            <tr>
+                <td>
+                   <div class="editor-field pdPicker">
+                                @userk.Html.TextBox(m => m.UserName, new { @class = "required", type = "text", @readonly="readonly", style="cursor:default", data_val_required = "Необходимо заполнить поле" }).Attr("Id", m => "UserToAttach"+m.FieldName +"__ValueUsersKo_"+ m.Order + "__UserName").Attr("Name", m => m.FieldPath+".ValueUsersKo[" + m.Order + "].UserName").Value(M => M.UserName).Custom("peoplePicker", "")
+                     
+                         @*.Attr("Id", m => "NegotiatorsStage_" + stage.Model.order + "__UsersForNegotiationStage_" + m.order + "__userName").Attr("Name", m => "NegotiatorsStage[" + stage.Model.order + "].UsersForNegotiationStage[" + m.order + "].userName")*@
+                                                           
+                                @userk.Html.Hidden().Attr("Id", m => "UserToAttach"+ m.FieldName +"__ValueUsersKo_"+ m.Order + "__UserGuid").Attr("Name", m => m.FieldPath+".ValueUsersKo[" + m.Order + "].UserGuid").Value(M => M.UserGuid).ValueUpdate(KnockoutValueUpdateKind.Change)
+                   </div>
+
+                      @userk.Html.Span("", new { @class = "field-validation-valid", data_valmsg_replace = "true" }).Attr("data_valmsg_for", m => m.FieldPath+".ValueUsersKo[" + m.Order + "].UserName")
+            </td>
+                <td style="vertical-align:top;">
+                    <div>
+                     @* @userk.Html.HyperlinkButton("", "DeleteUser", "UsersKO", new { UserIndex = userk.GetIndex() }, new { @class = "btn" }).SetInnerHtml("<i class='icon-trash'></i>")*@
+                        <a class="btn" href="#" data-bind="click : function() {executeOnServer(viewModelUsersKO@(Model.FieldName), '/UsersKO/DeleteUser?UserIndex='+$index()+'');}"><i class="icon-trash"></i></a>
+                        </div>
+                </td>            
+              </tr>
+     
+            </table>
+    }
+  </div>
+     }
+      
+
+     <div style="padding:3px;">
+ @*@koUser.Html.HyperlinkButton("Добавить пользователя", "AddUser", "UsersKO", null, new { @class="btn", style="width:200px;"})*@
+         <a href="#" data-bind="click : function() {executeOnServer(viewModelUsersKO@(Model.FieldName), '/UsersKO/AddUser');}" class="btn" style="width:200px;">Добавить пользователя</a>
+
+        </div>
+            
+            
+</div>
+            
+       
+
+@*@koUser.Apply(Model)*@
+
+<script type="text/javascript"> 
+    var viewModelUsersKOJs = @Html.Raw(Model.ToJson());
+var viewModelUsersKO@(Model.FieldName) = ko.mapping.fromJS(viewModelUsersKOJs);
+    ko.attach("UserToAttach@(Model.FieldName)", viewModelUsersKO@(Model.FieldName));
+</script>
+ </div>    

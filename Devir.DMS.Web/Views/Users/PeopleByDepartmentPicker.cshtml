@@ -1,0 +1,400 @@
+﻿@{
+    ViewBag.Title = "Сотрудники";
+    Layout = null;
+}
+
+<script type="text/javascript" defer>
+    //$(document).ready(function () {
+    var departmentId = "";
+
+    //OpenModalLoaded = pdpLoaded;
+
+    $(document).ready(function () {
+
+
+
+        $("#pdpHeader").parent().addClass("pdpDialog");
+
+        var pdpTableName = "Организационная структура";
+        var pdpList = "#pdpOrgU";
+        var pdpGetData = '/OrganizationStructure/GetDataForDepartments';
+        var pdpExpandColumn = "Name";
+        var pdpHeadertitles = false;
+        var pdpWidth = 300;
+        var pdpId = 'ID';
+        var pdpCN = ['ИД', 'Подразделение'];
+        var pdpCM = [
+            { name: 'ID', index: 'ID', hidden: true, key: true },
+            { name: 'Name', index: 'Name', width: 170 }
+        ];
+        //jqGridTreeTable(tableName,
+        //                 list,
+        //                 expandColumn,
+        //                 pager,
+        //                 getData,
+        //                 deleteData,
+        //                 updateData,
+        //                 addData,
+        //                 cn,
+        //                 cm,
+        //                 headertitles,
+        //                 width,
+        //                 id);
+
+
+        var pdp_list2 = "#pdpUsers";
+
+        $(pdpList).jqGrid({
+            url: pdpGetData,
+            height: '450px',// $("#pdp-left-component").innerHeight(),
+            width: '300px',
+            autowidth: 1,
+            id: pdpId,
+            mtype: 'POST',
+            datatype: "json",
+            ajaxGridOptions: {
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                complete: function (xmldata, stat) {
+                    if (stat == "success") {
+                        var thegrid = jQuery(pdpList)[0];
+                        var data = eval("(" + xmldata.responseText + ")");
+                        thegrid.addJSONData(data.d);
+                        $("#load_" + pdpList).hide();
+                    }
+                }
+            },
+            colNames: pdpCN,
+            colModel: pdpCM,
+            treeGrid: true,
+            treeGridModel: "adjacency",
+            ExpandColumn: pdpExpandColumn,
+            altRows: true,
+            viewrecords: true,
+            scroll: true,
+            loadonce: false,
+            gridview: true,
+            hidegrid: false,
+            sortname: 'Id',
+            sortable: true,
+            rowNum: 10000,
+            jsonReader: {
+                root: "rows",
+                page: "page",
+                total: "total",
+                records: "records",
+                repeatitems: false,
+                cell: "cell",
+                id: "ID",
+                userdata: "userdata"
+                //rows: function (obj) { return obj.d.rows; }
+            },
+            onSelectRow: function (rowid, status, e) {
+                departmentId = rowid;
+                $(pdp_list2).trigger('reloadGrid');
+
+            },
+            gridComplete: function () {
+                //SetGridWidthAndHeight("#pdp-left-component");
+                SetGridWidth("#pdpLeftContainer");
+                InitUsersGrid();
+                //SetGridHeight("#pdp-right-component");
+                //SetGridWidth("#pdp-right-component");
+            }
+        });
+
+
+       
+
+
+        $("#pdpSearchUserDepartsmentsList").keyup(function () {            
+            $(pdp_list2).trigger("reloadGrid");
+        });
+
+
+        //HideColumnNames(list);
+        //});
+
+
+        //function ReturnResult() {
+        //    var myGrid = $('#pdpUsers'),
+        //    selRowId = myGrid.jqGrid('getGridParam', 'selrow');
+        //    $("#addModal").modal("hide");
+        //    return selRowId;
+        //}
+
+    });
+
+
+    function InitUsersGrid() {
+
+
+
+        var pdp_tableName2 = "Сотрудники";
+        var pdp_list2 = "#pdpUsers";
+        var pdp_getData2 = '/OrganizationStructure/GetUsersToDepartment';
+        var pdp_mtype2 = 'POST';
+        var pdp_cn2 = ['ИД', 'Должность', 'Имя', 'Фамилия'@*, 'E-mail', 'Телефон'*@];
+        var pdp_cm2 = [
+            { name: 'Id', index: 'Id', hidden: true, key: true },
+            { name: 'Post', index: 'Post' },
+            { name: 'FirstName', index: 'FirstName' },
+            { name: 'LastName', index: 'LastName' },
+            //{ name: 'Email', index: 'Email' },
+            //{ name: 'Phone', index: 'Phone' }
+        ];
+
+        $(pdp_list2).jqGrid({
+            width: '100%',
+            height: '450px',
+            autowidth: true,
+            shrinkToFit: true,
+            singleSelect: true,
+            viewrecords: true,
+            datatype: "json",
+            url: pdp_getData2,
+            jsonReader: {
+                root: "rows",
+                page: "page",
+                total: "total",
+                records: "records",
+                repeatitems: false,
+                cell: "cell",
+                id: "Id",
+                userdata: "userdata"
+            },
+            multiselect: false,
+            colNames: pdp_cn2,
+            colModel: pdp_cm2,
+            rowNum: 20,
+            scroll: 1,
+            loadonce: false,
+            rownumbers: true,
+            gridview: true,
+            hidegrid: false,
+            sortname: 'Id',
+            sortable: true,
+            mtype: "Post",
+            ajaxGridOptions: {
+                type: 'POST',
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                //complete: function (xmldata, stat) {
+                //    alert(stat);
+                //    if (stat == "success") {
+                //        var thegrid = jQuery(pdpList)[0];
+                //        var data = eval("(" + xmldata.responseText + ")");
+                //        thegrid.addJSONData(data.d);
+                //        $("#load_" + pdpList2).hide();
+                //    }
+                //}
+            },
+            serializeGridData: function (postdata) {
+                postdata.search = $("#pdpSearchUserDepartsmentsList").val();
+                postdata.departmentId = departmentId;
+                return JSON.stringify(postdata);
+            },
+            serializeRowData: function (data) {
+                return JSON.stringify(data);
+            },
+            gridComplete: function () {
+                SetGridWidth("#pdpRightContainer");
+                //SetGridWidthAndHeight("#pdp-right-component");
+                //$('div#pdpBody').splitPane();
+            },
+            ondblClickRow: function () {
+                LoadUser();
+            },
+            loadComplete: function () {
+                if (this.p.records === 0) {
+                    setTimeout(function () {
+                        $("#load_" + pdp_list2.substring(1)).show().text("В данном подразделении отсутствуют пользователи.");
+                    }, 1000);
+                }
+            },
+            onSelectRow: function (rowid, status, e) {
+                var myGrid = $(pdp_list2);
+                var firstName = myGrid.jqGrid('getCell', rowid, 'FirstName'),
+                lastName = myGrid.jqGrid('getCell', rowid, 'LastName');
+
+                if ($("#pdpSelectedUsers span[data-id=" + rowid + "]").length == 0) {
+                    if (!isMultiple) {
+                        $("#pdpSelectedUsers").html("");
+                    }
+                    $("#pdpSelectedUsers").append("<span data-id='" + rowid + "' class='label label-info' style='margin: 5px'>" + lastName + "&nbsp;" + firstName + "&nbsp;<button onclick='UnselectUser(this)' data-id='" + rowid + "' class='close' style='float: none!important' type='button'>×</button></label>");
+                }
+            }
+        });
+
+
+
+    }
+
+    function LoadUser() {
+        try {
+            //var myGrid = $('#pdpUsers'),
+            // selRowId = myGrid.jqGrid('getGridParam', 'selrow'),
+            // firstName = myGrid.jqGrid('getCell', selRowId, 'FirstName'),
+            // lastName = myGrid.jqGrid('getCell', selRowId, 'LastName');
+
+            //if (!firstName) {
+            //    firstName = "";
+            //}
+            //if (!lastName) {
+            //    lastName = "";
+            //}
+
+            //$("#" + pdpUserName).val(firstName + " " + lastName).change();
+            //$("#" + pdpUserId).val(selRowId).change();
+            var hasCallback = false;
+            var callback = null;
+            if (typeof pdpCallbackArray[pdpCurId] === 'function') {
+                hasCallback = true;
+                callback = pdpCallbackArray[pdpCurId];
+            }
+            if (!hasCallback) {
+                $("#pdpSelectedUsers span").each(
+                    function () {
+                        var id = $(this).data("id");
+                        var text = $(this).text().split("×")[0];
+                        $("#" + pdpUserName).val(text).change();
+                        $("#" + pdpUserId).val(id).change();
+                    }
+                    );
+            } else {
+                var data = new Array();
+                $("#pdpSelectedUsers span").each(
+                    function () {
+                        var item = {};
+                        item.id = $(this).data("id");
+                        item.text = $(this).text().split("×")[0];
+                        data.push(item);
+                    });
+                callback(data);
+            }
+            pdpUserId = "";
+            pdpUserName = "";
+            pdpCurId = "";
+            isMultiple = false;
+            CloseCurrentModal();
+
+        }
+        catch (error) {
+            alert(error);
+        }
+    }
+
+    function UnselectUser(sender) {
+        var id = $(sender).parent().remove();
+    }
+
+</script>
+
+<style>
+    .pdpDialog {
+        width: 90%!important;
+        /*height: 80%;*/
+        left: 5%;
+        top: 5% !important;
+        margin-left: 0;
+        padding-bottom: 0;
+    }
+
+        .pdpDialog #pdpHeader {
+            /*position: relative;*/
+            min-height: 10%;
+        }
+
+        .pdpDialog #pdpBody {
+            height: 450px;            
+        }
+
+    #pdp-left-component {
+        height: 500px;
+    }
+
+    .pdpDialog table#pdpTable {
+        height: 450px;
+        width: 100%;
+        background-color: #fff !important;
+
+    }
+
+        .pdpDialog table#pdpTable td {
+            vertical-align: top;
+        }
+
+    .pdpDialog #pdpLeftContainer {
+        width: 300px;
+        height: 415px;
+
+    }
+
+    .pdpDialog #pdpRightContainer {
+        padding-left: 10px;
+      }
+
+    .pdpDialog #pdpFooter {
+        position: relative;
+        min-height: 7%;
+        margin-bottom: 0;
+        overflow: auto;
+        max-height: 100px;
+    }
+</style>
+<div id="pdpHeader" class="panel">
+    <div style="float: right">
+        <i class="icon-search"></i>
+        <input type="text" class="search-query" id="pdpSearchUserDepartsmentsList" />
+    </div>
+    <label>Выбрать сотрудника</label>
+    
+    <br/>
+</div>
+
+<div id="pdpBody">
+    <table id="pdpTable" cellspacing="5">
+        <tr>
+            <td id="pdpLeftContainer">
+                <table id="pdpOrgU" class="table table-hover table-condensed"></table>
+            </td>
+            <td id="pdpRightContainer">
+                <table id="pdpUsers" class="table table-hover table-condensed" style="border-bottom: 1px solid #DDDDDD !important"></table>
+            </td>
+        </tr>
+    </table>
+</div>
+<div id="pdpFooter" class="panel">
+    <div class="pull-right">
+        <button type="submit" class="btn" onclick="LoadUser();">Выбрать</button>
+        <button class="btn" onclick="CloseCurrentModal();">Отмена</button>
+    </div>
+    <div id="pdpSelectedUsers" style="display: inline">
+
+    </div>
+</div>
+
+@*<div class="split-pane fixed-left" id="pdpBody">
+        <div class="split-pane-component" id="pdp-left-component">
+            <div class="decoration">
+
+                <table id="pdpOrgU" class="table table-hover table-condensed"></table>
+            </div>
+        </div>
+        <div class="split-pane-divider" id="pdp-my-divider-left"></div>
+        <div class="split-pane-component" id="pdp-right-component">
+            <div class="decoration">
+                <table id="pdpUsers" class="table table-hover table-condensed"></table>
+            </div>
+
+        </div>
+    </div>
+    <div id="pdpFooter" class="panel">
+        <div class="pull-right">
+            <button type="submit" class="btn" onclick="LoadUser();">Выбрать</button>
+            <button class="btn" onclick="CloseCurrentModal();">Отмена</button>
+        </div>
+        <div id="pdpSelectedUsers" style="display: inline">
+
+        </div>
+    </div>*@

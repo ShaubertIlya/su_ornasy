@@ -1,0 +1,66 @@
+﻿@{
+    ViewBag.Title = "Задания";
+}
+<script>
+
+    $(document).ready(function () {
+        var docsList = "#tasksList";
+        var getData = 'GetTasks';
+        var mtype = 'POST';
+        var cn = ['Задание', 'Заголовок', 'Документ', 'Отправитель', 'Дата исполнения',  'Поле группировки', 'ИД', 'Классы', 'КонструкторИД', 'ссыль'];
+        var cm = [
+            { name: 'Name', index: 'Name' },
+            { name: 'Header', index: 'Header', },
+            { name: 'Number', index: 'Number', align: 'center' },
+            { name: 'Author', index: 'Author', align: 'center' },
+            { name: 'FinishDate', index: 'FinishDate', sortable: false, align: 'center' },
+            { name: 'Group', index: 'Group', formatter: tasksGroupFormatter },
+            { name: 'Id', index: 'Id', hidden: true, key: true },
+            { name: 'Classes', index: 'Classes', hidden: true },
+            { name: 'CalculatedId', index: 'CalculatedId', hidden: true },
+            {name: 'hrefAddress', index:'hrefAddress', hidden:true}
+        ];
+
+        jqGridGroupTable(docsList,
+                    getData,
+                    '',
+                    '',
+                    '',
+                    cn,
+                    cm,
+                    "Group",
+                    true,
+                    "FinishDate",
+                    "asc",
+                    1000,
+                    0);
+        //HideColumnNames(docsList);
+
+        $(docsList).jqGrid('setGridParam', {
+            gridComplete: function () {
+                SetGridWidth(".tasksContent");
+                SetGridHeight(".tasksContent");
+            },
+            onCellSelect: function (rowid, iRow, iCol, e) {
+                //var calculatedId = $(tasksList).getCell(rowid, "CalculatedId");
+                //if (calculatedId.indexOf(":") != -1) {
+                //    var arr = calculatedId.split(":");
+                //    var docId = arr[0];
+                //    ruId = arr[1];
+                //    window.location = "ViewSignResult?DocId=" + docId + "&routeuserId=" + ruId;
+                //}
+                //else {
+                //    window.location = "GetDocument?DocumentId=" + rowid;
+                //}
+
+                window.location = $(tasksList).getCell(rowid, "hrefAddress");
+            },
+   
+        });
+    });
+</script>
+<div class="documentsBody">
+    <div class="tasksContent">
+        <table id="tasksList" class="table table-bordered table-condensed table-hover" />
+    </div>
+</div>

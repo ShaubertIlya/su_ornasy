@@ -1,0 +1,15 @@
+﻿@model Int32
+@{
+    Layout = null;
+}
+
+<div class="controls controls-row content">
+                <div><input type="hidden" name="FieldTemplates[' + @Model + '].Id"></div>
+                <div class="span2"><input class="span2" type="text" name="FieldTemplates[' + i + '].Header"></div>' +
+                 <div class="span2">@Html.DropDownList("newFieldTypesList", Model.FieldTypes.Select(m => new SelectListItem() { Text=m.Name, Value=m.Id.ToString()})).ToHtmlString()</div>'+
+               
+
+                '<div><input type="hidden" type="text" name="FieldTemplates[' + i + '].FieldOrder"></div>' +
+                '<div class="btn-group"><a class="btn" href="#"><i class="icon-arrow-up"></i></a><a class="btn" href="#"><i class="icon-arrow-down"></i></a></div>' +
+                '<a class="btn" href="#" id="remScnt"><i class="icon-trash"></i></a>' +
+                '</div>

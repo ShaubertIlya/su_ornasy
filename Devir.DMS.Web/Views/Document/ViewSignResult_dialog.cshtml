@@ -1,0 +1,212 @@
+﻿@*@{
+    ViewBag.Title = "GetDocument";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}*@
+
+@model Tuple<Devir.DMS.DL.Models.Document.Document, Devir.DMS.DL.Models.Document.Route.RouteStageUser, Devir.DMS.DL.Models.Document.Route.RouteStageUser>
+
+@{
+    ViewBag.Title = "Карточка исполнения для документа " + Model.Item1.DocumentType.Name + " Номер документа";
+    Layout = null;
+    var isForInstruction= (bool)ViewBag.isForInstruction;
+}
+
+@*@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+}*@
+
+<div class="modal-header">
+    <div class="gridDetailHeader">Карточка исполнения для @Model.Item1.DocumentType.Name  @Model.Item1.DocumentNumber </div>
+</div>
+
+    
+    <div class="modal-body" id="scrolledDocumentAddRes" style="width:650px;">
+        <div class="controls controls-row content">
+            <div class="span2">
+                Результат исполнения
+            </div>
+            <div style="width:80%">
+               <b> @Html.Raw(Model.Item3.SignResult != null ? Model.Item3.SignResult.Comment : "")</b>
+            </div>
+        </div>
+
+        <div class="controls controls-row content">
+            <div class="span2">
+                Дата выполнения
+            </div>
+            <div style="width:80%">
+                <b>@Html.Raw(Model.Item3.SignResult != null ? Model.Item3.SignResult.Date.ToString("dd.MM.yyyy") : "")</b>
+            </div>
+        </div>
+
+        <tr>
+            <td colspan="3">
+                <label style="font-weight: bold">Вложения:</label>
+                <div id="attachmentsViewSignResult" style="max-height: 300px; overflow: auto;">
+                    @if(Model.Item3.SignResult.attachment != null){
+                    foreach (var fileId in Model.Item3.SignResult.attachment)
+                    {
+                        <div style="border-bottom: 1px solid #EEEEEE;" class="row-fluid uploadedFile">
+                            @{
+                        Html.RenderAction("ShowUploadedFile", "File", new { guid = fileId, isAdd = false });
+                            }
+
+
+                        </div>
+                    }
+                    }
+                </div>
+            </td>
+        </tr>
+
+
+
+        <div class="controls controls-row content">
+            <div class="span2">
+                <br />
+                <b>История исполнения</b>
+            </div>
+            <div>
+                <hr style="width:100%;" />
+                <table style="min-width: 100%">
+                    <tr>
+                        <td style="width:200px;">
+                            @(Model.Item2.SignResult != null ? Model.Item2.SignResult.Date.ToString("dd.MM.yyyy") : "")
+                        </td>
+                        <td style="width:250px;">
+                            - <b>@(Model.Item2.SignUser != null ? Model.Item2.SignUser.GetFIO() : "")</b>
+                        </td>
+                        <td>
+                            @(Model.Item2.SignResult != null ? Model.Item2.SignResult.Action.Name : "")
+                        </td>
+                    </tr>
+
+                   
+
+
+                    @*Результат контроля для первой попытки*@
+                    @if (@Model.Item1.DocumentSignStages.Exists(m => m.ControlPerformForRouteStageUserId != null && m.ControlPerformForRouteStageUserId == Model.Item2.Id))
+                    {
+                        var itemSubstage = Model.Item1.DocumentSignStages.SingleOrDefault(m => m.ControlPerformForRouteStageUserId != null && m.ControlPerformForRouteStageUserId == Model.Item2.Id);
+                        if (itemSubstage != null)
+                        {
+
+                            foreach (var item in itemSubstage.RouteUsers)
+                            {
+
+                                <tr>
+                                    <td>
+                                        @(item.SignResult != null ? item.SignResult.Date.ToString() : "-")
+                                    </td>
+                                    <td>
+                                        - <b>@item.SignUser.GetFIO()</b>
+                                    </td>
+                                    <td>
+                                        @(item.SignResult != null ? item.SignResult.Action.Name : "Ожидает решения")
+                                    </td>
+                                </tr>
+                            }
+                        }
+
+
+                    }
+
+                    @if (Model.Item1.DocumentSignStages.Exists(m => m.RouteUsers.Exists(x => x.SecondChanceForId == Model.Item2.Id)))
+                    {
+                        foreach (var item in Model.Item1.DocumentSignStages.SingleOrDefault(m => m.RouteUsers.Exists(x => x.SecondChanceForId == Model.Item2.Id)).RouteUsers.Where(m => m.SecondChanceForId == Model.Item2.Id))
+                        {
+                            <tr>
+                                <td>
+                                    @(item.SignResult != null ? item.SignResult.Date.ToString() : "-")
+                                </td>
+                                <td>
+                                    - <b>@item.SignUser.GetFIO()</b>
+                                </td>
+                                <td>
+                                    @(item.SignResult != null ? item.SignResult.Action.Name : "Ожидает решения")
+                                </td>
+                            </tr>
+                            //Результат выполнения для данной стадии
+                            if (@Model.Item1.DocumentSignStages.Exists(m => m.ControlPerformForRouteStageUserId != null && m.ControlPerformForRouteStageUserId == item.Id))
+                            {
+                                var itemSubstage = Model.Item1.DocumentSignStages.SingleOrDefault(m => m.ControlPerformForRouteStageUserId != null && m.ControlPerformForRouteStageUserId == item.Id);
+                                if (itemSubstage != null)
+                                {
+
+                                    foreach (var item2 in itemSubstage.RouteUsers)
+                                    {
+
+                                        <tr>
+                                            <td>
+                                                @(item2.SignResult != null ? @item2.SignResult.Date.ToString() : "-")
+                                            </td>
+                                            <td>
+                                                - <b>@item2.SignUser.GetFIO()</b>
+                                            </td>
+                                            <td>
+                                                @(item2.SignResult != null ? item2.SignResult.Action.Name : "Ожидает решения")
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+
+
+                            }
+
+                        }
+                    }
+
+
+
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+<div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+
+                @if (Model.Item1.DocumentSignStages.Exists(m => m.ControlPerformForRouteStageUserId == Model.Item3.Id && m.RouteUsers.Exists(x => x.IsCurent == true && x.SignUser.UserId == Devir.DMS.DL.Repositories.RepositoryFactory.GetCurrentUser())))
+{
+    <button onclick="$(this).hide(); ShowSignResultWindowForPerformation('@Model.Item1.Id','@Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.OkControlPerformStage', '@Model.Item3.Id')" class="btn btn-success"><i class="icon-ok-circle"></i> Подтвердить исполнение</button>
+    <button onclick="$(this).hide(); ShowSignResultWindowForPerformation('@Model.Item1.Id','@Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.NotOkControlPerformStage', '@Model.Item3.Id')" class="btn btn-danger"><i class="icon-ok-circle"></i> Отправить на доработку</button>
+}
+
+
+              @*@Model.Item3.Id*@
+
+
+            </div>
+      
+
+    <div id="ModalSignResult" class="modal hide fade in">
+
+    </div>
+
+    <script>
+        //$(document).ready(function () {
+        //    $('textarea').ckeditor();
+        //});
+             
+
+        @*function ShowSignResultWindow(actionId) {
+
+            $.get("/Document/AddSignResult", { isForInstruction: @(isForInstruction?"true":"false"), DocumentId: "@Model.Item1.Id", ActionId: actionId, isForPerformControl:true, UserForRouteId:"" }, function (data) {
+                $("#ModalSignResult").empty();
+                $("#ModalSignResult").html(data);
+                $("#ModalSignResult").modal("show");
+            });
+
+
+        }*@
+
+
+    </script>
+
+
+

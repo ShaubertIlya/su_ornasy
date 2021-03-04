@@ -1,0 +1,200 @@
+﻿@{
+    ViewBag.Title = "Мои поручения";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/Content/DevirGrid/DevirGrid.css" rel="stylesheet" />
+
+<style>
+    .tasksContainer {
+        padding: 5px;
+        border-radius: 5px 5px 5px 5px;
+        background-color: #fff;
+        height: 100%;
+        /*width: 100%;*/
+        /*overflow: auto;*/
+    }
+</style>
+
+
+<div class="tasksContainer">
+
+
+    <div id="instructionsNavBar" class="navbar" style="border-radius: 5px 5px 0 0">
+        <div class="navbar-inner">
+            <div class="container">
+                <div class="nav-collapse collapse">
+                    <ul class="nav">
+                        <li>
+                            <ul id="instTypeFilter" class="nav">
+                                <li class="active" id="all"><a href="#">Все <span id="instCountAll" class="badge"></span></a></li>
+                                <li id="outOfDate"><a href="#">Просроченные <span id="instCountOutOfDate" class="badge"></span></a></li>
+                                <li id="inComplete"><a href="#">На исполнении <span id="instCountInComplete" class="badge"></span></a></li>
+                                <li id="control"><a href="#">Контроль исполнений <span id="instCountControl" class="badge"></span></a></li>
+                                <li id="completed"><a href="#">Выполненые <span id="instCountCompleted" class="badge"></span></a></li>
+
+                            </ul>
+                        </li>
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div id="gridHeader">
+        <table class="table borderless table-condensed">
+            <tr>
+                <td style="width: 40px; margin:0px; padding:0px;"></td>
+                <td style="width: 180px; ">
+                    <span class="GridHeaderActive" onclick="sortAndGroup(this, 'DocumentType', 'DocumentType')">ДОКУМЕНТ <i></i></span>
+                </td>
+                <td>
+                    <span class="GridHeaderActive" onclick="sortAndGroup(this, 'UserFor', 'UserFor')">ИСПОЛНИТЕЛЬ <i></i></span>
+                </td>
+                <td style="width: 180px; ">
+                    <span class="GridHeaderActive" onclick="sortAndGroup(this, 'Status', 'Status')">СОСТОЯНИЕ <i></i></span>
+                </td>
+                <td style="width: 160px; ">
+                    <span class="GridHeaderActive" onclick="sortAndGroup(this, 'FinishDate', 'FinishDate')">СРОК ИСПОЛНЕНИЯ <i></i></span>
+                </td>
+                <td style="vertical-align: middle; width: 220px; ">
+                    <span class="GridHeaderActive" onclick="sortAndGroup(this, 'CompletedDate', 'CompletedDate')">ДАТА ЗАВЕРШЕНИЯ <i></i></span>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+
+    <div id="GridContainer" style="width:100%;  overflow:auto;">
+        <div id="AllDocumentsGrid" style="height: 100%;">
+            <ul>
+                <!-- ko foreach: RawData -->
+                <!-- ko ifnot: Group()==''-->
+                <li data-bind="click: $parent.showHideGroup">
+                    <div class="gridGroup">
+
+                        <!-- ko if: Visible -->
+                        <i class="icon-play-circle rotated90"></i>
+                        <!-- /ko-->
+                        <!-- ko if: !Visible() -->
+                        <i class="icon-play-circle"></i>
+                        <!-- /ko-->
+                        &nbsp;&nbsp;<span data-bind="text: Group"></span>
+
+                    </div>
+                </li>
+                <!-- /ko -->
+                <!-- ko if: Visible -->
+                <!-- ko foreach: Values-->
+                <li class="gridRow" data-bind="click: $root.clickRow">
+
+                    <table class="table borderless table-condensed">
+                        <tr>
+                            <td rowspan="2" style="width: 40px; vertical-align: middle; padding:0px; margin:0px;">
+                                <!--ko if: isNew-->
+                                <div id="gridBadInstructionsCount" class="label" style="background-color: #66CC66;">Новое</div>
+                                <!--/ko-->
+                                <!--ko if: isUrgent-->
+                                <div id="gridBadInstructionsCount" class="label" style="background-color: #ff6a00;">Срочно</div>
+                                <!--/ko-->
+                            </td>
+                            <td rowspan="2" style="width: 180px; vertical-align: middle; font-size: small; padding-left:10px;">
+                                <span data-bind="text: DocumentType"></span>
+                            </td>
+                            <td>
+                                <span data-bind="text: UserFor"></span>
+                            </td>
+                            <td style="width: 180px; text-align: left;">
+                                <span data-bind="text: Status"></span>
+                            </td>
+                            <td rowspan="2" style="width: 160px; text-align: left;">
+                                <b>
+                                    <span data-bind="text: FinishDate"></span></b>
+                                    <!--ko if: isExpired-->
+                                    <br />
+                                    <span class="label" style="background-color: #DA4F49; font-size: xx-small;  width: auto;">
+                                        Просрочено
+                                        <span style="font-weight:bold;" data-bind="text: ExpiredTimeSpan.Days"></span>
+                                        <span style=" font-weight:normal; font-size: xx-small; width: 32px;">дн.</span>
+                                    </span>
+                                    <!--/ko-->
+</td>
+                            <td rowspan="2" style="vertical-align:middle; width:220px;">
+                                <!--ko if: CompletedDate() != "В работе" -->
+                                <span style="font-size:smaller; width:100px;">Дата исполнения: </span>
+                                <!--/ko-->
+                                <b><span data-bind="text: CompletedDate "></span></b>
+                                <!--ko if: ApproveDate()!=""-->
+                                <br />
+                                <span style="font-size: smaller; width: 100px; color: #66CC66;">Контроль исполнения: </span>
+                                <b>
+                                    <span style="color: #66CC66;" data-bind ="text: ApproveDate"></span>
+                                </b>
+                                <!--/ko-->
+                                <!--ko if: ApproveDate()=="" && CompletedDate() != "В работе"-->
+                                <br />
+                                <span class="label" style="background-color: #FAA732; font-size: xx-small; width: auto;">
+                                    Требуется контроль исполнения                                  
+                                </span>
+                                <!--/ko-->
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td colspan="3" style="color: #a8a8a8; font: small; font-size: 0.95em; text-decoration: none; text-shadow: 0 1px 0 #FFFFFF;">
+                                <span data-bind="text: Header"></span>
+                            </td>
+                        </tr>
+                    </table>
+
+                </li>
+                <!-- /ko-->
+                <!-- /ko-->
+                <!-- /ko -->
+            </ul>
+
+            <div id="GridLoader" data-bind="visible: working">
+                <img src="~/Content/DevirGrid/preloader.gif" />
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+<script type="text/javascript">
+
+    var docType = "all";
+
+    $('#instTypeFilter li').click(function (e) {
+        if (!$(this).hasClass("active")) {
+
+            e.preventDefault();
+            $(this).tab('show');
+
+            docType = this.id;
+
+            $('#instTypeFilter li.active').removeClass("active");
+            $(this).addClass("active");
+
+            setFiltrationForGrid();
+
+        }
+    });
+</script>
+
+
+
+<script src="~/Scripts/GridSystem/Instructions/InstructionsVM.js"></script>
+
+
+
+
+
+
+
+

@@ -1,0 +1,283 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<useCaseModelRoot xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm4="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm5="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/ModelStore" xmlns:dm9="http://schemas.microsoft.com/dsltools/SimpleShapesModel" dslVersion="1.0.0.0" Id="45d7c2db-2dcb-4fbb-bd10-cc83c06a7cf8" name="DocumentRoutes" linkedPackageId="019475fe-2c1e-4da3-9d72-610b8db12b2e" xmlns="http://schemas.microsoft.com/dsltools/UseCaseModel">
+  <profileInstances>
+    <packageHasProfileInstances Id="1b8b63e9-76ee-4e29-a4de-8f1767944a05">
+      <profileInstance Id="461377bb-6025-4956-9b1b-17520875249c" name="StandardProfileL2">
+        <elementDefinition Id="e34d544e-0fea-4ed6-ac5e-1b74119ac791" />
+      </profileInstance>
+      <elementDefinition Id="0caec977-1f8c-4ba3-a7db-8cc9ad9cc73b" />
+    </packageHasProfileInstances>
+    <packageHasProfileInstances Id="234475f5-6965-4c72-aa1e-d373f42ab785">
+      <profileInstance Id="7ca754b0-77d9-4b23-9cba-739523373313" name="StandardProfileL3">
+        <elementDefinition Id="532ea607-fb19-44b8-8502-3351b05452be" />
+      </profileInstance>
+      <elementDefinition Id="29349502-908c-4fda-9054-c48619c59ed0" />
+    </packageHasProfileInstances>
+  </profileInstances>
+  <packagedElements>
+    <useCaseModelRootHasTypes>
+      <actor Id="60663328-8946-48f9-b242-0683c9fd1741" name="Создатель" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="8e06e83f-7c7d-427c-923a-8754474f3198" />
+      </actor>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="9694da9d-e698-4236-8f20-30f6070ccd91" name="Создание документа" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="c14c9709-4c4f-47d6-bede-4880fa4e8065" />
+        <suppliersInternal>
+          <dependency Id="7af0fe56-0179-46cb-a6b3-5eeb2e6618fb">
+            <actorMoniker Id="bb7e3777-8149-4c26-a82e-4db51112d70e" LastKnownName="Согласующий 2" />
+            <elementDefinition Id="aff4df63-76a4-4088-83e7-e8014ec9b7af" />
+          </dependency>
+          <dependency Id="7c8c70e5-0c52-4b25-bccf-7fbde093c33b">
+            <actorMoniker Id="a2ebfc8d-f30c-4291-9c49-9a81dab5b805" LastKnownName="Согласующий 3" />
+            <elementDefinition Id="56436c49-316a-4fb7-91d9-3a3c938c11da" />
+          </dependency>
+          <dependency Id="59764a8e-a980-4d89-a67d-eed14002a9d9">
+            <actorMoniker Id="bde96b04-ff40-4688-9fb9-fe6b1d4b4a90" LastKnownName="Согласующий 1" />
+            <elementDefinition Id="7c5a394d-5dbd-46d6-8674-e13885d7430a" />
+          </dependency>
+        </suppliersInternal>
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <actor Id="bde96b04-ff40-4688-9fb9-fe6b1d4b4a90" name="Согласующий 1" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="646eb65c-6ba0-4868-abce-4c602ea56143" />
+      </actor>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <actor Id="bb7e3777-8149-4c26-a82e-4db51112d70e" name="Согласующий 2" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="f4f00194-8dea-4f65-a1b7-535754f184c3" />
+      </actor>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <actor Id="a2ebfc8d-f30c-4291-9c49-9a81dab5b805" name="Согласующий 3" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="948883a0-a2ad-46f6-9d8e-1c3b3e13e717" />
+      </actor>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="f7878de8-521b-4e74-80ce-ecadf110a06e" name="Согласовано" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="16b216cf-54a0-430b-9639-4d4f204ff591" />
+        <suppliersInternal>
+          <dependency Id="5df8beac-2eab-4171-b37e-2921181782c8">
+            <actorMoniker Id="eff4f51e-8d85-4004-a628-5fee0ba414f6" LastKnownName="Подписант" />
+            <elementDefinition Id="90a8fdfd-b948-4c64-8b9c-bad0fdf497d8" />
+          </dependency>
+        </suppliersInternal>
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="c82273b0-211c-41f6-b41a-67ccc6e3c1ad" name="Согласовано" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="6ac25f02-437b-48f0-a23a-550df68f3258" />
+        <suppliersInternal>
+          <dependency Id="9f7fdad5-39fe-4722-be28-9b363fcfabff">
+            <actorMoniker Id="eff4f51e-8d85-4004-a628-5fee0ba414f6" LastKnownName="Подписант" />
+            <elementDefinition Id="99b03551-b953-42f5-b613-fa3ffd314892" />
+          </dependency>
+        </suppliersInternal>
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="74a149c1-a70c-4e5d-8ac4-45a7c52bdeac" name="Делегировано" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="206966f2-2281-4375-aa72-a480f624ca3e" />
+        <suppliersInternal>
+          <dependency Id="085bac41-8c01-41e6-b577-d031006da9d2">
+            <actorMoniker Id="66b4acb2-5ba4-4161-9082-46cf2738af63" LastKnownName="Зам. согласующего" />
+            <elementDefinition Id="169b1085-f488-4314-a925-2e59660acd19" />
+          </dependency>
+        </suppliersInternal>
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <actor Id="66b4acb2-5ba4-4161-9082-46cf2738af63" name="Зам. согласующего" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="f8239cab-d5aa-49c4-b6cd-0bd5897548b1" />
+      </actor>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="bb61966d-9ded-447e-a354-e458c722d8ce" name="Распределение задач" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="be4dbcd0-1af5-4996-9a32-8bcf86aa357f" />
+        <suppliersInternal>
+          <dependency Id="d5a7c14d-456b-4f9b-8671-b06f3ad27c49">
+            <actorMoniker Id="f6cb5102-3091-4d0b-b21d-554e00c55d34" LastKnownName="Специалист" />
+            <elementDefinition Id="02218a9b-4044-463f-8c55-fdd560d2dd1c" />
+          </dependency>
+          <dependency Id="68ae4b81-9dcc-4641-a9b3-b129e7815200">
+            <actorMoniker Id="bc8c38f8-3f26-48e9-abba-d3a68da43f8c" LastKnownName="Специалист" />
+            <elementDefinition Id="ff22f2cf-29a2-4150-a6e3-46a5e0a0fa23" />
+          </dependency>
+        </suppliersInternal>
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <actor Id="bc8c38f8-3f26-48e9-abba-d3a68da43f8c" name="Специалист" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="4f44f156-16b0-43e7-83d1-b751e8164605" />
+      </actor>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="d5ab3153-cea9-4a1b-9aaa-de615009689f" name="Принято" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="3ef8a6a8-6efc-4e75-befb-753d71d21329" />
+        <suppliersInternal>
+          <dependency Id="60435028-e64a-44f1-ad02-5081e21b9988">
+            <actorMoniker Id="4a933f48-05dc-41ed-b46f-286042133a7d" LastKnownName="Зам. согласующего1" />
+            <elementDefinition Id="51dc77e2-01e2-4cc2-8537-0861bde16662" />
+          </dependency>
+        </suppliersInternal>
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <actor Id="f6cb5102-3091-4d0b-b21d-554e00c55d34" name="Специалист" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="92167217-7efe-4a59-9897-3f9e7c699e3e" />
+      </actor>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="92d62d49-d5e1-4134-813b-a6faea5bddd5" name="Принято" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="3e5271da-a513-4e1d-bbba-bbd96528bcff" />
+        <suppliersInternal>
+          <dependency Id="2b972f0e-7a21-4007-b64d-d5eff6803311">
+            <actorMoniker Id="4a933f48-05dc-41ed-b46f-286042133a7d" LastKnownName="Зам. согласующего1" />
+            <elementDefinition Id="835be9e2-7be2-4634-8c80-3605d6ad76ed" />
+          </dependency>
+        </suppliersInternal>
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <actor Id="4a933f48-05dc-41ed-b46f-286042133a7d" name="Зам. согласующего1" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="969fc119-9ef9-4039-b028-97187fa13ee6" />
+      </actor>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="ef931110-17e1-462c-a5d6-2105fc228b86" name="Контроль" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="3892fbbb-e55a-456c-8faf-bc7ac1dcd5fc" />
+        <suppliersInternal>
+          <dependency Id="c9cede62-de9f-47c1-afd2-21dd04037f0b">
+            <actorMoniker Id="0f7b9afa-f14b-42b4-9559-aa313d6f697b" LastKnownName="Согласующий 1" />
+            <elementDefinition Id="4a1ca196-6091-4459-9353-cb78310a2ef5" />
+          </dependency>
+        </suppliersInternal>
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <actor Id="0f7b9afa-f14b-42b4-9559-aa313d6f697b" name="Согласующий 1" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="4c3969b5-f666-4d46-9630-eacaea453e79" />
+      </actor>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="d744bb18-a919-4fc2-9564-6bbbf0f3c7de" name="Согласование на основе принятых решений" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="9f24f551-8477-4262-85b7-4f6007fec8da" />
+        <suppliersInternal>
+          <dependency Id="6ca1a859-11d9-4991-8882-a58ba61b85da">
+            <actorMoniker Id="eff4f51e-8d85-4004-a628-5fee0ba414f6" LastKnownName="Подписант" />
+            <elementDefinition Id="8f71bba8-8285-4f9f-8925-b3083f1fe0b4" />
+          </dependency>
+        </suppliersInternal>
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <actor Id="eff4f51e-8d85-4004-a628-5fee0ba414f6" name="Подписант" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="8af01311-c7f6-4eec-b62e-6e6896bf00da" />
+      </actor>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="a7684e0c-29ac-4e8a-ad17-d2114ab26ebd" name="Подписание на сонове согласований" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="436e7956-d81e-4011-8a5b-ca57cfee9e57" />
+        <suppliersInternal>
+          <dependency Id="028bfed4-a64b-4629-9751-f5220fdb0fcb">
+            <actorMoniker Id="aae42838-bc35-4b1c-abcc-c653f4b2151f" LastKnownName="Исполнитель" />
+            <elementDefinition Id="c4dde86a-b9eb-4e35-9185-ad9ccef61906" />
+          </dependency>
+        </suppliersInternal>
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <actor Id="aae42838-bc35-4b1c-abcc-c653f4b2151f" name="Исполнитель" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="6e48b4a9-f4f5-42a5-9172-3766211e689a" />
+      </actor>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="d68a4c8f-2c3a-44aa-a7b7-d8c2ab48c885" name="Делегирование" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="54e18fe1-3163-44c0-a5ac-9ee662733e70" />
+        <suppliersInternal>
+          <dependency Id="e8cd4b35-737e-400f-b0fa-9e1605b70501">
+            <actorMoniker Id="c60db871-3a30-4832-ac22-92bda5fdf517" LastKnownName="Исполнитель 1" />
+            <elementDefinition Id="8c64d8d7-c834-4e79-8c99-662cb83b1c69" />
+          </dependency>
+          <dependency Id="31be4054-a59f-46e7-bee2-17e3753b1ff9">
+            <actorMoniker Id="3d4e69c0-79b1-4bc1-8b63-48000bec1fcf" LastKnownName="Исполнитель 2" />
+            <elementDefinition Id="a1baec26-a1c8-44fb-b1b7-2118a39409e9" />
+          </dependency>
+        </suppliersInternal>
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <actor Id="c60db871-3a30-4832-ac22-92bda5fdf517" name="Исполнитель 1" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="b26899fb-5643-4355-8166-ce2489c2f7f1" />
+      </actor>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <actor Id="3d4e69c0-79b1-4bc1-8b63-48000bec1fcf" name="Исполнитель 2" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="99494a2f-e007-4e98-9977-3031a3a2ac81" />
+      </actor>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="375e7371-c17d-4047-b35c-f7f52863d811" name="Исполнение" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="bc890fd5-c8dc-4fa8-997a-c765b5fd03a4" />
+        <suppliersInternal>
+          <dependency Id="2b922a20-5182-4917-9e0f-b64ebd9d77c7">
+            <actorMoniker Id="36d27579-9deb-4413-873b-f7e7cbdc34ed" LastKnownName="Исполнитель" />
+            <elementDefinition Id="5cc8dd10-f5a1-4c62-8df6-fb59523cb8c5" />
+          </dependency>
+        </suppliersInternal>
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="5e091148-2ada-46c0-9117-582a5034efb5" name="Исполнение" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="20c35d01-a78b-4ee8-a37f-9edc482dd64c" />
+        <suppliersInternal>
+          <dependency Id="0711ec17-a6c8-4960-9fe9-fa1f8b158f97">
+            <actorMoniker Id="36d27579-9deb-4413-873b-f7e7cbdc34ed" LastKnownName="Исполнитель" />
+            <elementDefinition Id="8aa90e98-ae0b-45f5-becd-bdb9814e56e9" />
+          </dependency>
+        </suppliersInternal>
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <actor Id="36d27579-9deb-4413-873b-f7e7cbdc34ed" name="Исполнитель" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="b6c5730c-30b7-4adf-b2ba-1235d2306127" />
+      </actor>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="4a0b8170-11d3-4e04-8bfd-45450aa1c59f" name="Контроль исполнения, пометка о выплнении" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="ae5a07b7-5e0a-4e43-80a9-64a453649038" />
+        <suppliersInternal>
+          <dependency Id="9082ef62-fae5-4a26-b5a4-ec7b4729a03a">
+            <actorMoniker Id="f0a1c018-a451-443f-bd58-41ae147a0f83" LastKnownName="Контроллер" />
+            <elementDefinition Id="f7245b61-920e-45a7-b63f-aaba3b2f93e7" />
+          </dependency>
+        </suppliersInternal>
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <actor Id="f0a1c018-a451-443f-bd58-41ae147a0f83" name="Контроллер" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="d25e5adf-f3e3-4f08-8631-9a743d9fe89f" />
+      </actor>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="f176a553-a6a7-4755-a71a-b930d31a1fa4" name="Контроль исполнения" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="67925e8a-a5e6-4b58-ae6b-68280a234f57" />
+        <suppliersInternal>
+          <dependency Id="7811907b-55fc-4f89-835f-970e5dc4f4ee">
+            <useCaseMoniker Id="bb6a1f07-9566-4a05-a17a-55b782e94811" LastKnownName="Завершение маршрута" />
+            <elementDefinition Id="d4e1ce28-c22a-4c5d-a0f8-b2d61de65ca9" />
+          </dependency>
+        </suppliersInternal>
+      </useCase>
+    </useCaseModelRootHasTypes>
+    <useCaseModelRootHasTypes>
+      <useCase Id="bb6a1f07-9566-4a05-a17a-55b782e94811" name="Завершение маршрута" isAbstract="false" isLeaf="false">
+        <elementDefinition Id="46a6c808-c625-4838-af19-8501f2c22991" />
+      </useCase>
+    </useCaseModelRootHasTypes>
+  </packagedElements>
+  <package Id="019475fe-2c1e-4da3-9d72-610b8db12b2e" name="ModelsOfData">
+    <elementDefinition Id="c4a81dd8-d351-42ca-8dd3-303cab6292f0" />
+  </package>
+</useCaseModelRoot>

@@ -1,0 +1,241 @@
+﻿@{
+    ViewBag.Title = "Подразделения";
+    Layout = null;
+}
+
+
+
+    
+
+    <script type="text/javascript">
+            var tableName = "Организационная структура";
+            var list = "#orgU";
+            var pager = "#pagerOrgU";
+            var getData = '/OrganizationStructure/GetDataForDepartments';
+            var deleteData = '/OrganizationStructure/DeleteDepartment';
+            var updateData = '/OrganizationStructure/EditDepartment';
+            var addData = '/OrganizationStructure/AddDepartment';
+            var expandColumn = "Name";
+            var headertitles = false;
+            var width = 300;
+            var id = 'ID';
+            var cn = ['ИД', 'Подразделения'];
+            var cm = [
+                { name: 'ID', index: 'ID', hidden: true, key: true },
+                { name: 'Name', index: 'Name', width: 90 }
+            ];
+            
+            $(list).jqGrid({
+                url: getData,
+                height: 'auto',
+                width: width,
+                id: id,
+                mtype: 'POST',
+                datatype: "json",
+                ajaxGridOptions: {
+                    type: 'POST',
+                    contentType: 'application/json; charset=utf-8',
+                    complete: function (xmldata, stat) {
+                        if (stat == "success") {
+                            var thegrid = jQuery(list)[0];
+                            var data = eval("(" + xmldata.responseText + ")");
+                            thegrid.addJSONData(data.d);
+                            $("#load_" + list).hide();
+                        }
+                    }
+                },
+                colNames: cn,
+                colModel: cm,
+                treeGrid: true,
+                treeGridModel: "adjacency",
+                ExpandColumn: expandColumn,
+                altRows: true,
+                pager: pager,
+                viewrecords: true,
+                scroll: true,
+                loadonce: false,
+                gridview: true,
+                hidegrid: false,
+                sortname: 'Id',
+                sortable: true,
+                rowNum: 10000,
+                jsonReader: {
+                    root: "rows",
+                    page: "page",
+                    total: "total",
+                    records: "records",
+                    repeatitems: false,
+                    cell: "cell",
+                    id: "ID",
+                    userdata: "userdata"
+                    //rows: function (obj) { return obj.d.rows; }
+                }
+            }).navGrid(pager, {
+                edit: false,
+                add: false,
+                del: false,
+                search: false
+            });
+            AddButton(list, addData + "?depId=" + $(list).getGridParam("selrow"), updateData, deleteData, "#orgUButtons", "orgUModal");
+            
+
+            var departmentId = "";
+
+            var tableName2 = "Сотрудники";
+            var list2 = "#users";
+            var pager2 = "#pagerUsers";
+            var getData2 = '/OrganizationStructure/GetUsersToDepartment';
+            var deleteData2 = 'DeleteUser';
+            var updateData2 = 'UpdateUser';
+            var addData2 = 'AddUser';
+            var mtype2 = 'POST';
+            var cn2 = ['ИД', 'Должность', 'Имя', 'Фамилия', 'E-mail', 'Телефон'];
+            var cm2 = [
+                { name: 'Id', index: 'Id', hidden: true, key: true },
+                { name: 'Post', index: 'Post'},
+                { name: 'FirstName', index: 'FirstName'},
+                { name: 'LastName', index: 'LastName'},
+                { name: 'Email', index: 'Email'},
+                { name: 'Phone', index: 'Phone'}
+            ];
+
+            jqGridTable(tableName2,
+                        list2,
+                        pager2,
+                        getData2,
+                        deleteData2,
+                        updateData2,
+                        addData2,
+                        cn2,
+                        cm2,
+                        mtype2);
+            $(list2).jqGrid('setGridParam', {
+                serializeGridData: function (postdata) {
+                    postdata.departmentId = departmentId;
+                    return postdata;
+                },
+                gridComplete: function () {
+                    SetGridWidth("#right-component");
+                    
+                }
+            });
+
+            $(list).jqGrid('setGridParam', {
+                onSelectRow: function (rowid, status, e) {
+                    departmentId = rowid;
+                    $(list2).trigger('reloadGrid');
+                    SetGridHeight("#right-component");
+                    SetGridWidth("#right-component");
+                },
+                gridComplete: function (rowid, status, e) {
+                    SetGridHeight("#left-component");
+                    SetGridWidth("#left-component");
+                }
+            });
+
+            HideColumnNames(list);
+            
+        
+        
+        function PDP() {
+            openNewDialogAndLoadData(false, "addModal", "/Users/PeopleByDepartmentPicker");
+            //$("#addModal").load("/Users/PeopleByDepartmentPicker").modal({
+            //    show: true,
+            //    position: 'left'
+            //});
+        }
+
+
+        function SetChief() {
+            var selUserId = $("#users").jqGrid("getGridParam", "selrow");
+            var selDepId = $("#orgU").jqGrid("getGridParam", "selrow");
+            $.ajax({
+                url: '/OrganizationStructure/SetChief',
+                datatype: 'json',
+                type: 'POST',
+                data: {
+                    departmentId: selDepId,
+                    userId: selUserId
+                },
+                complete: function (xmldata, stat) {
+                    if (stat == "success") {
+                        jQuery('#users').trigger('reloadGrid');
+                        info('.top-right', 'Выполнено');
+                    }
+                },
+                error: function (xml) {
+                    info('.top-right', xml);
+                }
+            });
+        }
+
+        
+
+        function EditUser() {
+            var selUserId = $("#users").jqGrid("getGridParam", "selrow");
+            if (!selUserId) {
+                info(".top-right", "Выберите сотрудника");
+                return;
+            }
+                
+            openNewDialogAndLoadData(false, "dblDialog", "/Users/EditUser?UserId=" + selUserId, "modalDialog");
+            //$("#dblDialog").load("/Users/EditUser?UserId=" + selUserId).modal({
+            //    show: true
+            //});
+        }
+
+        $(function () {
+            $('div.split-pane').splitPane();
+        });
+
+        $.fn.modal.Constructor.prototype.enforceFocus = function () { };
+
+    </script>
+ <style type="text/css">
+        html, body {
+            width: 100%;
+            min-width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        
+    </style>
+
+    <div class="split-pane fixed-left">
+        <div class="split-pane-component" id="left-component">
+            <div class="decoration">
+                <div class="panel">
+                    <h5>Подразделения</h5>
+                        <div id="orgUButtons" class="onlyIcons"></div>
+                </div>
+                <table id="orgU" class="table table-bordered table-hover table-condensed"></table>
+            </div>
+        </div>
+        <div class="split-pane-divider" id="my-divider-left"></div>
+        <div class="split-pane-component" id="right-component">
+            <div class="decoration">
+                <div class="panel">
+                    <h5>Сотрудники</h5>
+                    <div class="btn-group">
+                        <a class="btn" onclick="EditUser();">Редактировать</a>
+                        <a href="#" class="btn" onclick="SetChief();">Назначить руководителем</a>
+                        
+                    </div>
+                </div>
+                <table id="users" class="table table-bordered table-hover table-condensed"></table>
+            </div>
+        </div>
+    </div>
+
+
+    @*<div>
+        <input type="button" value="Users" onclick="PDP()" />
+    </div>*@
+
+    <!-- Add modal -->
+    <div id="addModal" class="modal hide fade in" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    </div>
+
+    <div id="dblDialog" class='modal hide fade in' tabindex='-1' role='dialog' aria-labelledby='myModalLabel' aria-hidden='true' ></div>
+

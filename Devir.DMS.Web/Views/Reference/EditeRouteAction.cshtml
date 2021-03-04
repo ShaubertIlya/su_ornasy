@@ -1,0 +1,72 @@
+﻿@model Devir.DMS.Web.Models.Reference.RouteTypeActionsViewModel
+@{
+    ViewBag.Title = "FieldTemplate";
+    Layout = null;
+}
+
+ 
+
+@using (Ajax.BeginForm(new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "edit-modal" }))
+{
+    
+    @Html.HiddenFor(m => m.RouteTypeId);
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="addModalLabel">Добавить</h3>
+    </div>
+    <div class="modal-body" id="addModalBody">
+        <div class="controls controls-row">
+            <label class="span2">Наименование</label><label class="span2">Описание</label>
+        </div>
+         <div id="field" >
+            @Html.EditorFor(m => m.RouteActions, new { RouteActions = Model.RouteActionsList})
+        </div>
+    
+    </div>
+    <div><button id="addScnt" class="btn"><i class="icon-plus"></i>Добавить поле</button></div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+        <input type="submit" id="btnSave" class="btn btn-primary" value="Сохранить" />
+    </div>
+    <div id="dropdown" hidden="hidden">
+        @Html.DropDownList("newRouteActionsList", Model.RouteActionsList.Select(m => new SelectListItem() { Text=m.Name, Value=m.Id.ToString()}), new { @class = "span2" })
+    </div>
+<script>
+    $(function () {
+        var scntDiv = $('#field');
+        var i = $('#field div').size();
+        $(document).on('click', '#addScnt', function () {
+            $('<div class="controls controls-row content">' +               
+                '<div class="span2">' + dropdown(i) + '</div>' +
+                '<div class="btn-group"><a id="up" class="btn" href="#"><i class="icon-arrow-up"></i></a><a id="down" class="btn" href="#"><i class="icon-arrow-down"></i></a></div>' +
+                '<a class="btn" href="#" id="remScnt"><i class="icon-trash"></i></a>' +
+                '</div>').appendTo(scntDiv);
+            i++;
+            return false;
+        });
+        
+        function dropdown(i) {
+            var clone = $('#dropdown').clone().removeAttr('hidden', 'hidden');
+            clone.children().attr('name', 'RouteActions[' + i + '].RouteActionId');
+            clone.children().attr('id', 'RouteActions[' + i + '].RouteActionId');
+            return clone.html();
+        }
+
+        $(document).on('click', '#remScnt', function () {
+            if (i >= 1) {
+                $(this).parent('.controls').remove();
+                i--;
+            }
+            return false;
+        });
+        
+        
+        $(document).on('click','#btnSave', function () {
+            replaceAll();
+        });
+
+        $('.text-box.single-line').addClass('span2');
+
+            });
+</script>
+}

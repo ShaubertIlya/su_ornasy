@@ -1,0 +1,15 @@
+﻿@model Devir.DMS.Web.Models.Reference.RouteActionViewModel
+@{
+    var selectList = ((List<Devir.DMS.DL.Models.References.RouteAction>)ViewBag.RouteActions).Select(m => new SelectListItem() { Text = m.Name, Value = m.Id.ToString()});
+}
+<div class="controls controls-row content"> 
+
+    <div class="span2">@Html.DropDownListFor(m => m.RouteActionId, selectList)
+    @Html.ValidationMessageFor(model => model.RouteActionId)</div>  
+
+   
+    <div class="btn-group"><a id="up" class="btn" href="#"><i class="icon-arrow-up"></i></a><a id="down" class="btn" href="#"><i class="icon-arrow-down"></i></a></div>
+    <a class="btn" href="#" id="remScnt"><i class="icon-trash"></i></a>
+
+</div>
+

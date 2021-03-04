@@ -1,0 +1,48 @@
+﻿@model Devir.DMS.DL.Models.References.DynamicReferences.DynamicReference
+@{
+    ViewBag.Title = "Динамический справочник";
+    Layout = null;
+}
+
+<script>
+    var tableName = "Динамический справочник";
+    var typeTable = "DynamicReference";
+    var cn = ['Название', 'Описание'];
+    var cm = [
+        { name: 'Name', index: 'Name', width: 90 },
+        { name: 'Comment', index: 'Comment', width: 100 }
+    ];
+
+    var func = function OnSelectRow(id) {
+        $("#details").load("DynamicReferenceDetails?id=" + id);
+    };
+    jqGridTemplates(tableName, typeTable, cn, cm, func, "#buttons");
+    jQuery(list).trigger("reloadGrid");
+
+    $(function () {
+        $('div.split-pane').splitPane();
+    });
+
+</script>
+
+
+<div class="split-pane fixed-top">
+    <div class="split-pane-component" id="top-component">
+
+        <div class="decoration">
+
+            <!-- buttons from local.js -->
+            <div class="panel onlyIcons" id="buttons"></div>
+            <!-- jqGrid -->
+            <table id="list" class="table table-bordered table-condensed"></table>
+
+        </div>
+
+    </div>
+    <div class="split-pane-divider" id="my-divider"></div>
+    <div class="split-pane-component" id="bottom-component">
+        <div class="decoration">
+            <div id="details" style="background-color: white"></div>
+        </div>
+    </div>
+</div>

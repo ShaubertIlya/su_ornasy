@@ -1,0 +1,305 @@
+﻿@{
+    ViewBag.Title = "GetBadDocumentsReport";
+}
+<link href="~/Content/DevirGrid/DevirGrid.css" rel="stylesheet" />
+<style>
+    .tasksContainer {
+        padding: 5px;
+        border-radius: 5px 5px 5px 5px;
+        background-color: #fff;
+        height: 95%;
+        width: 100%;
+        overflow: auto;
+    }
+</style>
+
+<div id="mainReportNode" style="height: 100%;">
+
+    <b style="color:white;">Отчет по просрочкам с </b>
+
+    <span class="input-append date dp " id="dp" data-date="@DateTime.Now.ToString("dd.MM.yyyy")" data-date-format=" dd.mm.yyyy">
+        <input data-val="true" data-val-date="The field Дата исполнения must be a date." data-val-required="Необходимо заполнить дату исполнения документа" id="StartDate" name="StartDate" style="width:278px;" type="text" value="@DateTime.Now.ToString("dd.MM.yyyy")">
+        <span class="add-on"><i class="icon-calendar"></i></span>
+    </span>
+
+    <b style="color:white;">по </b>
+
+    <span class="input-append date dp " id="dp" data-date="@DateTime.Now.ToString("dd.MM.yyyy")" data-date-format=" dd.mm.yyyy">
+        <input data-val="true" data-val-date="The field Дата исполнения must be a date." data-val-required="Необходимо заполнить дату исполнения документа" id="FinishDate" name="FinishDate" style="width:278px;" type="text" value="@DateTime.Now.ToString("dd.MM.yyyy")">
+        <span class="add-on"><i class="icon-calendar"></i></span>
+    </span>    
+
+    <b style="color:white;">департамент </b>
+
+    <input type="hidden" id="departmentId" />
+
+    @*<b style="color:white;">Тип документа </b>
+    <input type="hidden" id="docTypeId" />*@
+
+    <button class="btn" data-bind="click:getData"> Получить</button>
+    <input type="submit" class="btn" value="Печать" onclick="$('#tasksContainer').printThis(); return false;" />
+    <br /> <br />
+    Нажмите на заголовок таблицы, чтобы сгруппировать, например, по "Типу документа" или по "Исполнителю".
+    <div id="tasksContainer" class="tasksContainer">
+       
+        <table class="table table-bordered table-striped">
+            <tr>
+                <td colspan="7">
+                    <span data-bind="text: 'Отчет по просрочкам с ' + $root.dateTimeFrom()"></span>
+                    <span data-bind="text: 'по ' + $root.dateTimeTo()"></span>
+                    <span data-bind="text: 'Департамент: ' + $root.department()"></span>
+                </td>
+                
+            </tr>
+            <tr>
+                <td>
+                    <span class="GridHeaderActive" onclick="sortAndGroup(this, 'DocumentNumber', 'RootDocTypeName')">Тип документа <i></i></span>
+                    
+                </td>
+                <td>
+                    Номер документа
+                </td>
+                <td>
+                    Дата создания
+                </td>
+                @*<td>
+                        Дата окончания
+                    </td>*@
+                <td>
+                    Поручение
+                </td>
+                <td>
+                    Дата исполнения
+                </td>
+                <td>
+                    <span class="GridHeaderActive" onclick="sortAndGroup(this, 'UserFor.LastName', 'InstructionIspolnitel')">Исполнитель <i></i></span>                    
+                </td>
+
+                <td>
+                    Дней просрочки
+                </td>
+            </tr>
+            <!-- ko foreach: data-->
+            <!-- ko ifnot: Group()==''-->
+            <tr data-bind="click: $parent.showHideGroup" style="cursor:pointer;  ">
+                <td class="gridGroup" colspan="5">
+
+                    <!-- ko if: Visible -->
+                    <i class="icon-play-circle rotated90"></i>
+                    <!-- /ko-->
+                    <!-- ko if: !Visible() -->
+                    <i class="icon-play-circle"></i>
+                    <!-- /ko-->
+                    &nbsp;&nbsp;<span data-bind="text: Group"></span>
+
+                </td>
+
+                <td class="gridGroup">
+                    <span data-bind="text: TotalDocsByGroup() + ' документов просрочено' "></span>
+                </td>
+                <td class="gridGroup" data-bind="text: TotalInstructionBadDaysCountByGroup"></td>
+            </tr>
+            <!-- /ko -->
+            <!-- ko if: Visible -->
+            <!-- ko foreach: Values-->
+            <tr>
+                <td>
+                    <span data-bind="text:RootDocTypeName"></span>
+                </td>
+
+                <td>
+                    <span data-bind="text:RootDocNumber"></span>
+                </td>
+
+
+                <td>
+                    <span data-bind="text:RootDocCreateDate"></span>
+                </td>
+
+                @*<td>
+                        <span data-bind="text:RootDocFinishDate"></span>
+                    </td>*@
+
+                <td>
+                    <span data-bind="text:InstructionNumber"></span>
+                </td>
+
+                <td>
+                    <span data-bind="text:InstructionFinishDate"></span>
+                </td>
+                <td>
+                    <span data-bind="text:InstructionIspolnitel"></span>
+                </td>
+                <td>
+                    <span data-bind="text:InstructionBadDaysCount"></span>
+                </td>
+
+            </tr>
+            <!-- /ko-->
+            <!-- /ko-->          
+
+            <!-- /ko-->
+
+            <tr >
+                <td class="gridGroup" colspan="5">Итого</td>
+                <td class="gridGroup">
+                    <span data-bind="text:  $root.grandTotalDocs() "></span>
+                </td>
+                <td class="gridGroup">
+                    <span data-bind="text: $root.grandTotalInstructionBadDaysCount()"></span>
+                </td>
+            </tr>
+
+        </table>
+
+        <div id="GridLoader" data-bind="visible: working">
+            <img src="~/Content/DevirGrid/preloader.gif" />
+        </div>
+
+    </div>
+
+
+    <script>
+
+    var departments =  @Html.Raw(Json.Encode(ViewData["departments"] ));
+    var docTypes =  @Html.Raw(Json.Encode(ViewData["docTypes"]));    
+
+    $(".date").click(function () {
+        if (!$(this).hasClass("hasDatepicker")) {
+            $(this).datepicker({
+                format: 'dd.mm.yyyy',
+                autoclose: true
+            }).on('changeDate', function () {
+                $(this).datepicker("hide");
+            });
+            $(this).datepicker("show");
+            $(this).addClass('hasDatepicker');
+        }
+    });
+
+    var reportViewModel = {
+
+        data: ko.observableArray([]),
+        grandTotalDocs: ko.observable(0),
+        grandTotalInstructionBadDaysCount: ko.observable(0),
+        working: ko.observable(false),
+
+        dateTimeFrom: ko.observable(""),
+        dateTimeTo: ko.observable(""),
+        department: ko.observable(""),
+
+
+        sortColumn: "UserFor.LastName",
+        sortDirection: "",
+        groupColumn: "InstructionIspolnitel",
+        departmentId : '@Guid.Empty',
+        userId : '@Guid.Empty',
+        docTypeId : '@Guid.Empty',
+
+        getData: function () {
+            that = this;
+            $.ajax({
+                type: "POST",
+                url: "/Stats/GetBadDocumentsResult",
+                data: {
+                    dateTimeTo: $("#FinishDate").val(),
+                    dateTImeFrom: $("#StartDate").val(),
+                    sortColumn: that.sortColumn,
+                    sortDirection: that.sortDirection,
+                    groupColumn: that.groupColumn,
+                    departmentId: that.departmentId,
+                    userId : that.userId,
+                    docTypeId: that.docTypeId
+                },
+                beforeSend: function () {
+                    that.working(true);
+                },
+            })
+              .done(function (data) {
+                  that.data.removeAll();
+                  //that.data(lst);
+
+                  //Обработка данных
+                  for (var dataIndex in data.Data) {
+                      //Проверка существует группа или нет
+                      var index = -1;
+                      for (var groupIndex in that.data()) {
+                          if (that.data()[groupIndex].Group() == data.Data[dataIndex].Group)
+                              index = groupIndex;
+                      }
+                      //Если существует то вставляем в группу
+                      if (index != -1) {
+                          for (var valueIndex in data.Data[dataIndex].Values)
+                              that.data()[groupIndex].Values.push(ko.mapping.fromJS(data.Data[dataIndex].Values[valueIndex]))
+                      } else {
+                          //Иначе создаем новую
+                          that.data.push(ko.mapping.fromJS(data.Data[dataIndex]));
+                      }
+                  };
+                  
+                  that.grandTotalDocs(ko.mapping.fromJS(data.GrandTotalDocs));               
+                  that.grandTotalInstructionBadDaysCount(ko.mapping.fromJS(data.GrandTotalInstructionBadDaysCount));
+
+                  that.dateTimeFrom(data.dateTimeFrom);
+                  that.dateTimeTo(data.dateTimeTo);
+                  that.department(data.department);
+
+                  that.working(false);
+              });
+
+        },
+
+        //Показываем/скрываем группировку
+        showHideGroup: function (groupItem) {
+            groupItem.Visible(!groupItem.Visible());
+        },
+
+    };
+
+    //Сортировка и группировка
+        function sortAndGroup(elem, sortColumn, groupColumn) {       
+
+        $(".ascendingSorting").not(elem).removeClass("ascendingSorting").find("i").removeClass();
+        $(".descendingSorting").not(elem).removeClass("descendingSorting").find("i").removeClass();
+
+        var sortDirection = 0;
+
+        if ($(elem).hasClass("ascendingSorting")) {
+            sortDirection = 0;
+            $(elem).removeClass("ascendingSorting").addClass("descendingSorting").find("i").removeClass().addClass("icon-arrow-down");
+
+        } else if ($(elem).hasClass("descendingSorting")) {
+            sortDirection = 1;
+            $(elem).removeClass("descendingSorting").addClass("ascendingSorting").find("i").removeClass().addClass("icon-arrow-up");
+        } else {
+            sortDirection = 0;
+            $(elem).addClass("descendingSorting").find("i").removeClass().addClass("icon-arrow-down");
+        };
+
+        reportViewModel.sortColumn = sortColumn;
+        reportViewModel.sortDirection = sortDirection;
+        reportViewModel.groupColumn = groupColumn;
+        reportViewModel.getData();
+    }
+    //!-сортировка
+
+    $('#departmentId').select2({
+        width: 400,
+        data: departments
+    }).on('change', function (e) {
+        reportViewModel.departmentId = e.val;
+    });
+
+    //$('#docTypeId').select2({
+    //    width: 400,
+    //    data: docTypes
+    //}).on('change', function (e) {
+    //    docTypeId = e.val;
+    //});
+    
+    ko.applyBindings(reportViewModel, document.getElementById("mainReportNode"));
+
+
+    </script>
+
+</div>

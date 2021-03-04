@@ -1,0 +1,59 @@
+﻿@model Tuple<Devir.DMS.DL.Models.Document.Document, List<Devir.DMS.DL.Models.Document.Route.RouteStage>>
+@{
+    Layout = null;
+    var isForInstruction = (bool)ViewBag.isForInstruction;
+}
+
+<div class="modal-header">
+                
+                <h3 id="addModalLabel">Исполненые задания</h3>
+            </div>
+
+                
+            <div class="modal-body"> 
+
+@if (Model.Item2.Any())
+{
+    <table style="width:600px;">
+        <tr>
+            <td>
+                Дата исполнения
+            </td>
+            <td>
+                Пользователь
+            </td>
+            <td>               
+            </td>
+        </tr>
+        @foreach (var item in Model.Item2)
+        {
+            var tmpUserRouteItem = Model.Item1.DocumentSignStages.FirstOrDefault(m=>m.RouteUsers.Exists(n=>n.Id== item.ControlPerformForRouteStageUserId)).RouteUsers.FirstOrDefault(n=>n.Id==item.ControlPerformForRouteStageUserId);
+            <tr>
+                <td>
+                    @tmpUserRouteItem.SignResult.Date
+                </td>
+                <td>
+                    @tmpUserRouteItem.SignUser.GetFIO()
+                </td>
+                <td>
+                    <a href="/Document/ViewSignResult?docId=@Model.Item1.Id&routeuserId=@tmpUserRouteItem.Id&isForInstruction=@(isForInstruction.ToString())" class="btn btn-small btn-warning">Перейти к карточке исполнения</a>
+                </td>
+            </tr>
+        }
+       
+    </table>
+   
+}
+else
+{
+    
+}
+
+                </div>
+  <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+              @*  <button class="btn btn-primary" onclick="$('#AddSignResult').submit(); return false;">@Model.Action.Name</button>*@
+                @*<input type="submit" class="btn btn-primary" value="@Model.Action.Name"/>*@
+            </div>
+
+

@@ -1,0 +1,60 @@
+﻿@using System.Web.Mvc.Html
+@model  Devir.DMS.DL.Models.FileStorage.MimeType
+@{
+    Layout = null;
+}
+
+<link href="~/Content/bootstrap/bootstrap-fileupload.min.css" rel="stylesheet" />
+<script src="~/Scripts/bootstrap/bootstrap-fileupload.min.js"></script>
+
+<script type="text/javascript">
+    
+    $('#uploadForm').ajaxForm({
+        beforeSubmit: function () {
+            myApp.showPleaseWait();
+        },
+        success: function (data) {
+            
+            //AttachmentsDivCount = $('#attachments .uploadedFile').size();
+
+           // FieldsForAttachments =
+           //'<input type="hidden" name="attachment[' + AttachmentsDivCount + ']" value="' + data + '"/>' +
+           //'<a style="margin: 5px 15px; float:left;" class="btn" href="#" id="btnRemoveFile"><i class="icon-trash"></i></a>';
+
+            $("#dlgFileUpload").modal('hide');
+
+            $.get("/File/ShowUploadedFile?guid=" + $.trim(data), function (s) {
+                $('#attachments').append(s);
+            });
+
+            myApp.hidePleaseWait();
+        }
+    });
+
+</script>
+
+
+
+
+<div>
+    <form id="uploadForm" action="/File/UploadDocument" method="post" enctype="multipart/form-data">
+       <b>Комметарий к файлу:</b> 
+        <br />
+        <textarea style="width: 510px; height: 80px; " name="description"></textarea>
+        <br />
+        <b>Выберите файл:</b> 
+        <br />
+
+        <div class="fileupload fileupload-new" data-provides="fileupload">
+            <span class="btn btn-file"><span class="fileupload-new">Обзор</span><span class="fileupload-exists">Изменить</span>
+                <input type="file" name="file" title="Обзор" /></span>
+            <span class="fileupload-preview"></span>
+            <a href="#" class="close fileupload-exists" data-dismiss="fileupload" style="float: none">×</a>
+        </div>
+
+      
+    </form>
+</div>
+
+
+

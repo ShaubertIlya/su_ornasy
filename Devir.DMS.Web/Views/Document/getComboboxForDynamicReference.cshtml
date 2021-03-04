@@ -1,0 +1,13 @@
+﻿@model Devir.DMS.Web.Models.Reference.DynamicReferenceEditorTemplateViewModel
+@{
+    Layout = null;
+    
+}
+
+<div class="input">
+   @Html.DropDownList(Model.FieldName+".value", ((List<SelectListItem>)ViewBag.list), new { @style="width:"+Model.Width+"px;" })
+</div>
+
+<script>
+    $("#@(Model.FieldName.Replace(".","_").Replace("[","_").Replace("]","_"))_value").select2();
+</script>

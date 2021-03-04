@@ -1,0 +1,67 @@
+﻿
+@{
+    ViewBag.Title = "TestImageScaner";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>TestImageScaner</h2>
+
+<script>
+    //scanned = function (data) {
+    //    //$get("")
+
+    //    $('#scanResults').append("<img width=100 height=100 src='/File/GetScanedImage?guid=" + $.trim(data) + "'>");
+    //};
+
+    //function getImageFromScaner() {
+    //    $.getJSON('http://127.0.0.1:6143/GetScanedImage?callback=?', function (data) {
+    //        scanned(data);
+    //    });
+    //}
+</script>
+
+
+
+<button onclick="getImageFromScaner();">Сканировать картинку</button>
+
+<br />
+
+@*<input type="file" name="uploadedFiles" id="file1" />*@
+@*<input id="fileupload" type="file" name="files[]" >*@
+
+@*<script>
+    $(function () {
+        $('#file1').fileupload({
+            url: '/File/UploadDocument',
+            dataType: 'json',
+            done: function (e, data) {
+                $.each(data.result.uploadedFiles, function (index, file) {
+                    $('<p/>').text(file.name).appendTo(document.body);
+                });
+            }
+        });
+    });
+</script>*@
+
+
+
+
+@*<div class="well">
+        <legend>Загрузить документ: </legend>        
+        @Html.MvcUploadButton("Выбрать", "#dlgFileUpload", Url.Action("UploadDocument"), Request.Url.PathAndQuery, @"/(\.|\/)(jpe?g|png)$/i", 5000000, new {@class="btn"})
+    </div>*@
+
+
+<!-- file upload modal dialog -->
+ @*   <div class="modal hide" id="dlgFileUpload" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-body"></div>
+    </div> *@
+
+<br />
+<div>
+    Результаты:
+</div>
+<div id="scanResults">
+</div>
+
+

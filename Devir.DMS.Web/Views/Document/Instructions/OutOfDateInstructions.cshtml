@@ -1,0 +1,63 @@
+﻿@{
+    Layout = null;
+}
+<script>
+    
+    var docsList = "#intstrList";
+    var getData = 'GetInstructions';
+    var mtype = 'POST';
+    var cn = ['Дата создания', 'Тип документа', 'Заголовок', 'Исполнитель', 'Просрочено', 'ИД', 'Классы', 'Документ'];
+    var cm = [
+        { name: 'CreateDate', index: 'CreateDate' },
+        { name: 'DocumentType', index: 'DocumentType.Name' },
+        { name: 'Header', index: 'Header' },
+        { name: 'UserFor', index: 'UserFor.LastName' },
+        { name: 'OutOfDate', index: 'OutOfDate', sortable: false },
+        { name: 'Id', index: 'Id', hidden: true, key: true },
+        { name: 'Classes', index: 'Classes', hidden: true },
+        { name: 'RootDocumentId', index: 'RootDocumentId', hidden: true }
+    ];
+   /* var serializeGridData = function (postdata) {
+        postdata.owner = $("#navOwner li.active").attr('id');
+        return postdata;
+    }*/
+    var serializeGridData = function (postdata) {
+        postdata.type = "outOfDate";
+        return postdata;
+    };
+    var gridComplete = function (data) {
+        var userdata = $(docsList).getGridParam("userData");
+        RefreshInstructionsCount(userdata);
+    };
+
+    jqGridTableSerialize(docsList,
+                getData,
+                '',
+                '',
+                '',
+                cn,
+                cm,
+                serializeGridData,
+                gridComplete);
+    //HideColumnNames(docsList);
+
+    $(docsList).jqGrid('setGridParam', {
+        gridComplete: function () {
+            SetGridWidth("#container");
+
+        },
+        onCellSelect: function (rowid, iRow, iCol, e) {
+            window.location = "GetDocument?DocumentId=" + $(docsList).jqGrid('getRowData', rowid).RootDocumentId + '&Tab=3';
+        }
+    });
+
+   
+</script>
+
+
+<div>
+   
+    <div id="container">
+        <table id="intstrList" class="table table-bordered table-condensed table-hover reloadableGrid" />
+    </div>
+</div>

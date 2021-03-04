@@ -1,0 +1,137 @@
+﻿@using PerpetuumSoft.Knockout
+@using Devir.DMS.Web.Models
+@model Devir.DMS.Web.Models.NegotiatorsKO.NegotiatorsEditorModel
+@{
+    Layout = null;
+    var ko = Html.CreateKnockoutContext();
+}
+
+
+<div data-model="NegotiatorsToAttach">
+
+<div style="padding-bottom:10px;">
+    
+        @using (var stage = ko.Foreach(m => m.NegotiatorsStage))
+        {
+<div style="background-color:#f0f0f0; width:900px; border: 1px dotted black; margin-bottom:10px;">
+   
+
+            <div @stage.Bind.Attr("Id", m=>m.order) style="padding-top:10px; padding-left:5px; padding-right:5px;">
+              
+            <table style="width:100%;">
+
+                @stage.Html.Hidden().Attr("value", m=>m.order).Attr("Id", m => "NegotiatorsStage_" + stage.Model.order + "__order").Attr("Name", m => "NegotiatorsStage[" + stage.Model.order + "].order")
+               
+            <tr style="width:100%">
+                <td style="width:5%; padding-top:10px; vertical-align:top;" rowspan="2">@stage.Html.Span(m => m.order+1, new { style="font-weight:bold;font-size:4em;" })
+                </td>
+                <td style="width:50%; vertical-align:top;"> 
+                    Тип согласования: 
+                    @stage.Html.DropDownList(m=>m.StageTypes, null, (m,item)=>item).Value(m=>m.StageType).Attr("Id", m => "NegotiatorsStage_" + stage.Model.order + "__StageType").Attr("Name", m => "NegotiatorsStage[" + stage.Model.order + "].StageType")
+                    @*                    <select @stage.Bind.Options(m => m.StageTypes).Value(m => m.StageType)></select>*@
+
+                </td>
+                <td style="width:40%; vertical-align:top;">
+                    @* @stage.Html.HyperlinkButton("", "DeleteStage", "NegotiatorsKO", new { StageIndex = stage.GetIndex()}, new { @class="btn"}).SetInnerHtml("<i class='icon-trash'></i> Удалить этап")*@
+
+                    <a class="btn" href="#" data-bind="click : function() {executeOnServer(viewModelNegotiatorsKO, '/NegotiatorsKO/DeleteStage?StageIndex='+$index()+'');}"><i class="icon-trash"></i>Удалить этап</a>
+                </td>
+            </tr>       
+            <tr>
+                <td colspan="2">
+                    @*@ko.Html.HyperlinkButton("Добавить согласующего", "AddUserToStage", "NegotiatorsKO", new { StageIndex = stage.GetIndex() })*@
+                    <a href="#" data-bind="click : function() {executeOnServer(viewModelNegotiatorsKO, '/NegotiatorsKO/AddUserToStage?StageIndex='+$index()+'');}">Добавить согласующего</a>
+                    
+                         
+                @using (stage.If(m => m.UsersForNegotiationStage.Count>0)){    
+                    <table style="width:100%; ">
+                        <tr>
+                            <td>
+                                Пользователь
+                            </td>
+                            <td>
+                                Дата согласования
+                            </td>
+                            <td>
+                                Обязательно
+                            </td>
+                        </tr>
+                        @using(var user = stage.Foreach(m=>m.UsersForNegotiationStage))
+                        {
+                        <tr>
+                            <td>   
+                                <div class="editor-field pdPicker">
+                                @user.Html.TextBox(m => m.userName, new { @class = "required", type="text" , @readonly="readonly", style="cursor:default",  data_val_required = "Необходимо заполнить поле" }).Attr("Id", m => "NegotiatorsStage_" + stage.Model.order + "__UsersForNegotiationStage_" + m.order + "__userName").Attr("Name", m => "NegotiatorsStage[" + stage.Model.order + "].UsersForNegotiationStage[" + m.order + "].userName").Value(M => M.userName).Custom("peoplePicker", "")
+                                   
+
+                              
+                                                                          
+                                @user.Html.Hidden().Attr("Id", m => "NegotiatorsStage_"+stage.Model.order+ "__UsersForNegotiationStage_" + m.order+"__userId").Attr("Name", m => "NegotiatorsStage["+stage.Model.order+ "].UsersForNegotiationStage[" + m.order+"].userId").Value(M=>M.userId).ValueUpdate(KnockoutValueUpdateKind.Change);
+                                   
+                                   
+                                    
+                                     </div>
+                                 <br />
+                                  @user.Html.Span("", new { @class = "field-validation-valid", data_valmsg_replace = "true" }).Attr("data_valmsg_for", m => "NegotiatorsStage[" + stage.Model.order + "].UsersForNegotiationStage[" + m.order + "].userName")
+                                @if(stage.Model != null)
+                                {
+                                @Html.ValidationMessage("NegotiatorsStage["+stage.Model.order+ "].UsersForNegotiationStage[" + user.Model.order+"].userId")
+                                }
+                            </td>
+                            <td>
+                                @user.Html.TextBox(m => m.signBefore).Attr("Id", m => "NegotiatorsStage_" + stage.Model.order + "__UsersForNegotiationStage_" + m.order + "__signBefore").Attr("Name", m => "NegotiatorsStage[" + stage.Model.order + "].UsersForNegotiationStage[" + m.order + "].signBefore").Value(M => M.signBefore).Custom("datePicker", "")
+                                @if(stage.Model != null)
+                                {
+                                @Html.ValidationMessage("NegotiatorsStage["+stage.Model.order+ "].UsersForNegotiationStage[" + user.Model.order+"].signBefore")
+                                }
+                              
+                            </td>
+                            <td>
+                                @user.Html.CheckBox(m=>m.isMust).Attr("Id", m => "NegotiatorsStage_"+stage.Model.order+ "__UsersForNegotiationStage_" + m.order+"__isMust").Attr("Name", m => "NegotiatorsStage["+stage.Model.order+ "].UsersForNegotiationStage[" + m.order+"].isMust").Checked(m=>m.isMust).Value(M=>M.isMust)
+                            </td>   
+                            <td>
+                                @user.Html.Hidden().Value(m=>m.order).Attr("Id", m => "NegotiatorsStage_"+stage.Model.order+ "__UsersForNegotiationStage_" + m.order+"__order").Attr("Name", m => "NegotiatorsStage["+stage.Model.order+ "].UsersForNegotiationStage[" + m.order+"].order").Value(M=>M.order)
+
+                                 <div class="btn-group">
+                                     @*@user.Html.HyperlinkButton("", "DecreaseUsersInStageOrder", "NegotiatorsKO", new { StageIndex = stage.GetIndex(), UserIndex = user.GetIndex() }, new { @class="btn"}).SetInnerHtml("<i class='icon-arrow-up'></i>") *@
+                                     <a class="btn" href="#" data-bind="click : function() {executeOnServer(viewModelNegotiatorsKO, '/NegotiatorsKO/DecreaseUsersInStageOrder?StageIndex='+$parentContext.$index()+'&UserIndex='+$index()+'');}"><i class="icon-arrow-up"></i></a>
+                                    @* @user.Html.HyperlinkButton("", "IncreaseUsersInStageOrder", "NegotiatorsKO", new { StageIndex = stage.GetIndex(), UserIndex = user.GetIndex() }, new { @class="btn"}).SetInnerHtml("<i class='icon-arrow-down'></i>") *@
+                                     <a class="btn" href="#" data-bind="click : function() {executeOnServer(viewModelNegotiatorsKO, '/NegotiatorsKO/IncreaseUsersInStageOrder?StageIndex='+$parentContext.$index()+'&UserIndex='+$index()+'');}"><i class="icon-arrow-down"></i></a>
+                                 </div>
+                                    @* @user.Html.HyperlinkButton("", "DeleteUserFromStage", "NegotiatorsKO", new { StageIndex = stage.GetIndex(), UserIndex = user.GetIndex() }, new { @class="btn"}).SetInnerHtml("<i class='icon-trash'></i>")*@
+                                    <a class="btn" href="#" data-bind="click : function() {executeOnServer(viewModelNegotiatorsKO, '/NegotiatorsKO/DeleteUserFromStage?StageIndex='+$parentContext.$index()+'&UserIndex='+$index()+'');}"><i class="icon-trash"></i></a>
+                            </td>                        
+                        </tr>
+                        }
+                    </table>                    
+                 }   
+                </td>
+            </tr>
+                 </table>
+                 </div>
+      
+
+   
+
+</div>
+        
+            
+              }
+
+        <div style="padding-bottom:3px;">
+ @*@ko.Html.HyperlinkButton("Добавить этап согласования", "AddNegotiationStage", "NegotiatorsKO", null, new { @class="btn", style="width:200px;"})*@
+<a class="btn" style="width:200px;" href="#" data-bind="click : function() {executeOnServer(viewModelNegotiatorsKO, '/NegotiatorsKO/AddNegotiationStage');}">Добавить этап согласования</a>
+        </div>
+
+</div>
+
+
+<script type="text/javascript"> 
+    var viewModelNegotiatorsKOJs = @Html.Raw(Model.ToJson());
+var viewModelNegotiatorsKO = ko.mapping.fromJS(viewModelNegotiatorsKOJs);
+ko.attach("NegotiatorsToAttach", viewModelNegotiatorsKO);
+</script>
+    </div>
+  
+
+@*@ko.Apply(Model)*@

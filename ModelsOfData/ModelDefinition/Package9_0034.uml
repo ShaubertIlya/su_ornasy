@@ -1,0 +1,131 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm4="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm5="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/LogicalClassDesigner"
+  dslVersion="1.0.0.0"
+  Id="0104200e-e5fb-4995-adf2-2dfb21fcdba7"
+  name="StorageDataTypes"
+  visibility="Private" xmlns="http://schemas.microsoft.com/dsltools/ModelStore">
+  <referencesInternal>
+    <reference
+      Id="4c77814e-4e75-431b-a648-5af52ba663ad"
+      handle="viewcode://./CodeSchema_Namespace?Namespace%3DDevir.DMS.DL.Models.References.StorageDataTypes"
+      tag="ViewCode" />
+  </referencesInternal>
+  <packagedElements>
+    <packageHasNamedElement>
+      <class
+        Id="5b340d47-5881-4805-bc1d-e46516c5d62b"
+        name="UserForRoute_DataType"
+        isAbstract="false"
+        isLeaf="false"
+        isActiveClass="false">
+        <referencesInternal>
+          <reference
+            Id="f9e23dc2-29b4-43fb-b893-4f1c577bfe3d"
+            handle="viewcode://./CodeSchema_Class?Assembly%3D&quot;file:%2F%2F%2FC:%2FUsers%2Fa.zorya%2FDocuments%2FVisual Studio 2012%2FProjects%2FDevir.DMS%2FDevir.DMS.DL%2Fbin%2FDebug%2FDevir.DMS.DL.dll&quot; Namespace%3DDevir.DMS.DL.Models.References.StorageDataTypes Type%3DUserForRoute_DataType"
+            tag="ViewCode" />
+        </referencesInternal>
+        <appliedStereotypesInternal>
+          <stereotypeInstance
+            Id="46d2edb7-61ba-4a67-94d4-9d72d360f5df"
+            name="class"
+            profile="CSharpProfile">
+            <propertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="345b59af-d64d-4cde-adb6-30e0f55a5d28">
+                <propertyInstance
+                  Id="e2c946eb-35c1-4ae6-b913-661e92c2880f"
+                  name="ClrAttributes" />
+              </stereotypeInstanceHasPropertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="0a98e669-d92d-4000-ac09-7fb1ea00bfd6">
+                <propertyInstance
+                  Id="24ad7aac-706d-4889-8bfd-964ff9cca933"
+                  name="IsPartial"
+                  value="false" />
+              </stereotypeInstanceHasPropertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="0560a899-186e-47ed-b214-41c943be91dc">
+                <propertyInstance
+                  Id="cfe19035-5b37-4c53-95b1-503fed622273"
+                  name="IsStatic"
+                  value="False" />
+              </stereotypeInstanceHasPropertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="061673a3-e73a-4fbc-b99e-02c087a2d1cf">
+                <propertyInstance
+                  Id="8322d8a2-aa3f-4839-a14a-29199148717e"
+                  name="IsUnsafe"
+                  value="false" />
+              </stereotypeInstanceHasPropertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="d8199e34-ab7c-4ed9-aae6-88ff777ca9e0">
+                <propertyInstance
+                  Id="18926943-14d4-41d1-af69-006b40b9b812"
+                  name="PackageVisibility"
+                  value="internal" />
+              </stereotypeInstanceHasPropertyInstances>
+            </propertyInstances>
+          </stereotypeInstance>
+        </appliedStereotypesInternal>
+      </class>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <class
+        Id="1a8591d4-ca60-448c-9f85-38e77361495d"
+        name="String_DataType"
+        isAbstract="false"
+        isLeaf="false"
+        isActiveClass="false">
+        <referencesInternal>
+          <reference
+            Id="2e45d3c2-f999-422e-8386-2f3db2dab4f5"
+            handle="viewcode://./CodeSchema_Class?Assembly%3D&quot;file:%2F%2F%2FC:%2FUsers%2Fa.zorya%2FDocuments%2FVisual Studio 2012%2FProjects%2FDevir.DMS%2FDevir.DMS.DL%2Fbin%2FDebug%2FDevir.DMS.DL.dll&quot; Namespace%3DDevir.DMS.DL.Models.References.StorageDataTypes Type%3DString_DataType"
+            tag="ViewCode" />
+        </referencesInternal>
+        <appliedStereotypesInternal>
+          <stereotypeInstance
+            Id="d1649c09-f0db-4716-a122-21310f6b7807"
+            name="class"
+            profile="CSharpProfile">
+            <propertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="842e43a9-4b93-4677-9b80-22ec887d93c8">
+                <propertyInstance
+                  Id="d5716c65-bae3-467a-a742-18f3f855a3f8"
+                  name="ClrAttributes" />
+              </stereotypeInstanceHasPropertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="dfea7bd7-a7d3-481e-a054-48cde746ae64">
+                <propertyInstance
+                  Id="a2cc6f4e-f261-4d84-a5dd-a5a4045f3489"
+                  name="IsPartial"
+                  value="false" />
+              </stereotypeInstanceHasPropertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="4095dadb-3e1f-4b53-ad2b-566d96c118a2">
+                <propertyInstance
+                  Id="7884d37d-3025-4708-be01-9094286892a1"
+                  name="IsStatic"
+                  value="False" />
+              </stereotypeInstanceHasPropertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="747a62f4-4ca5-4df0-8c23-652a977eeaed">
+                <propertyInstance
+                  Id="33317d66-bef4-4fbf-a845-b2dcd73a99f1"
+                  name="IsUnsafe"
+                  value="false" />
+              </stereotypeInstanceHasPropertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="d46de6bf-ca04-4d61-ac48-4dcb62caac7e">
+                <propertyInstance
+                  Id="b7efc964-ecf7-490a-adb7-856a7c2b8eaa"
+                  name="PackageVisibility"
+                  value="internal" />
+              </stereotypeInstanceHasPropertyInstances>
+            </propertyInstances>
+          </stereotypeInstance>
+        </appliedStereotypesInternal>
+      </class>
+    </packageHasNamedElement>
+  </packagedElements>
+</package>

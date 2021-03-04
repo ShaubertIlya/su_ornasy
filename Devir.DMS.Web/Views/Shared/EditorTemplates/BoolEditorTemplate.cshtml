@@ -1,0 +1,24 @@
+﻿@model Tuple<Boolean, String>
+
+@Html.CheckBox(Model.Item2, Model.Item1)
+@*<script>
+    jQuery(function ($) {
+        $('div.btn-group[data-toggle-name]').each(function () {
+            var group = $(this);
+            var hidden = $('#boolCheckbox');
+            $('button', group).each(function () {
+                var button = $(this);
+                button.live('click', function () {
+                    hidden.val($(this).val());
+                });
+                if (button.val() == hidden.val()) {
+                    button.addClass('active');
+                }
+            });
+        });
+    });
+</script>
+<div class="btn-group" data-toggle-name="sort_options" data-toggle="buttons-radio">
+        <button type="button" value="true" data-toggle="button" class="btn active">Да</button>
+        <button type="button" value="false" data-toggle="button" class="btn">Нет</button>
+</div>*@

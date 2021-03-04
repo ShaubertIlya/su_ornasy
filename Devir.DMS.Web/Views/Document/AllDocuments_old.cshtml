@@ -1,0 +1,68 @@
+﻿@{
+    Layout = null;
+}
+<script>
+    
+        var docsList = "#docsList";
+        var getData = 'GetAllDocuments';
+        var mtype = 'POST';
+        var cn = ['Время', 'Номер', 'Тип документа', 'Заголовок', 'Этап', 'Дата создания', 'ИД', 'Классы'];
+        var cm = [
+            { name: 'CreateTime', index: 'DocumentViewers.{UserId}.Time', sortable: true, formatter: timeFormatter },
+            { name: 'DocumentNumber', index: 'DocumentNumber', sortable: true },
+            { name: 'DocumentType.Name', index: 'DocumentType.Name'},
+            { name: 'Header', index: 'Header' },
+            { name: 'Stage', index: 'DocumentSignStages.Name', sortable: false },
+            { name: 'CreateDate', index: 'CreateDate', formatter: documentDateFormatter },
+            { name: 'Id', index: 'Id', hidden: true, key: true },
+            { name: 'Classes', index: 'Classes', hidden: true }
+        ];
+        var serializeGridData = function (postdata) {
+            postdata.owner = $("#navOwner li.active").attr('id');
+            postdata.period = $("#periodSelect li.selected").attr('id');            
+            postdata.searchText = $("#pdpSearch").val();
+            return postdata;
+        };
+        var gridComplete = function (data) {
+            var userdata = $(docsList).getGridParam("userData");
+            RefreshDocumentsCount(userdata);
+            SetGridWidth("#container");
+            SetGridHeight("#container");
+        };
+        jqGridGroupTable(docsList,
+                    getData,
+                    '',
+                    '',
+                    '',
+                    cn,
+                    cm,
+                    "CreateDate",
+                    true,
+                    "DocumentViewers.{UserId}.Time",
+                    "desc",
+                    10000,
+                    1,
+                    serializeGridData,
+                    gridComplete);
+    //HideColumnNames(docsList);
+        
+        $(docsList).jqGrid('setGridParam', {
+                       
+            onCellSelect: function (rowid, iRow, iCol, e) {
+                window.location = "GetDocument?DocumentId=" + rowid;
+            }
+        });
+
+        $("#navOwner li").click(function () {
+            $(docsList).trigger("reloadGrid");
+        });
+   
+</script>
+
+
+<div>
+   
+    <div id="container">
+        <table id="docsList" class="table table-bordered table-condensed table-hover reloadableGrid" gridType="All" />
+    </div>
+</div>

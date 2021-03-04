@@ -1,0 +1,162 @@
+﻿@model Devir.DMS.DL.Models.References.DynamicReferences.DynamicReference
+
+@{
+    Layout = null;
+}
+
+
+
+@functions{
+    public string GetColumnModel(Devir.DMS.DL.Models.References.DynamicReferences.DynamicReference reference)
+    {
+
+        var i = 0;
+
+        var sb = new System.Text.StringBuilder();
+
+        sb.Append("[");
+        reference.FieldTemplates.ForEach(m =>
+        {
+            sb.Append("{name:'" + m.Header + "', jsonmap: function (obj) { ");
+            sb.Append("var result = ''; $(obj.value).each(function(){ if(this.DynamicReferenceFieldTemplateId === '" + m.Id + "') {result=this.Value.Value.ValueToDisplay; }");
+            sb.Append("}); return result===''?'No data':result;");
+
+            sb.Append("}},");
+            i++;
+        });
+        sb.Append("]");
+
+        return sb.ToString();
+    }
+}
+
+
+<div>
+    @if (!ViewBag.isDialog)
+    {
+        
+           
+
+        <div class="decoration">
+
+            <!-- buttons from local.js -->
+            <div class="panel onlyIcons" id="buttons"></div>
+            <!-- jqGrid -->
+            <table id="list" class="table table-bordered table-condensed"></table>
+
+        </div>
+
+         
+            
+       
+    }
+    else
+    {
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="myModalLabel">Заголовок</h3>
+        </div>
+        <div class="modal-body">
+            <div class="panel onlyIcons" id="buttonsInModal"></div>
+            <table id="listModal" style="width:100%"></table>
+            <div id="modalPager"></div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+            <button class="btn btn-primary" id="choose" onclick="CloseRefModal(vbAddModal, drf, dfn, '#listModal')">Выбрать</button>
+        </div>
+        
+        <div id="addModal" class="modal hide fade in" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        </div>
+    }
+
+</div>
+
+
+<script>
+
+   
+
+    var tableName = '@Model.Name';
+    var GetDataFor = "/Reference/GetDataForDynamicRecord?Id=@Model.Id";
+    var Add = "/Reference/AddDynamicRecord?DynamicReferenceId=@Model.Id";
+    var Edit = "/Reference/EditDynamicRecord?DynamicReferenceId=@Model.Id";
+    
+    var cn= @(Html.Raw(Json.Encode(Model.FieldTemplates.Select(m => m.Header).ToList())));
+    var cm =  @Html.Raw(GetColumnModel(Model));
+
+
+    @*@(Html.Raw(Json.Encode(Model.FieldTemplates.Select(m=>new { name=m.Header, index=m.Header }))))*@
+ 
+    //jqGridTable(tableName, typeTable, cn, cm);
+    if("@(ViewBag.isDialog)"=="False")
+        jqGridTable(tableName, "#list", "#pager", GetDataFor, 'DeleteDynamicRecord', Edit, Add, cn, cm, "Post", null, "#buttons", '@Guid.NewGuid()');
+    else 
+        jqGridTableFalse(tableName, "#listModal", "#modalPager", GetDataFor, '/Reference/DeleteDynamicRecord', 
+                            Edit, Add, cn, cm, "@ViewBag.dynRefname", '@ViewBag.displayFieldName','@ViewBag.addModal', "#buttonsInModal", '@Guid.NewGuid()');
+        jQuery("#listModal").trigger("reloadGrid");
+        function OnSelectRow(id) {
+       
+        }
+
+
+        
+        var dataid;
+        var dataCol;
+        var vbAddModal;  //потом передаем и используем эти переменные в функции CloseRefModal
+        var drf;
+        var dfn;
+        
+
+        function jqGridTableFalse(tableName, list, pager, getData, deleteData, updateData, addData, cn, cm, dynRefname, displayFieldName, viewBagAddModal, buttonsDiv, ModalDivId) {
+            vbAddModal = viewBagAddModal;
+            drf = dynRefname;
+
+            dfn = displayFieldName;
+
+            list = "#listModal";
+            pager = "#modalPager";
+            jQuery(list).jqGrid({
+                url: getData,
+                datatype: "json",
+                jsonReader: { id: 'Id', repeatitems: false },
+                colNames: cn,
+                colModel: cm,
+                //rowNum: 1000,
+                //scroll:1,
+                //rowList: [10, 30],
+                //height: 50,
+                width:760,
+                hidegrid: false,
+                //pager: pager,
+                sortname: 'Id',
+                viewrecords: true,
+                sortorder: "desc",
+                caption: tableName,
+                mtype: "POST",
+                ondblClickRow: function(id) {
+                    dataid = jQuery(list).jqGrid('getGridParam', 'selrow');
+                    //var data = jQuery(list).jqGrid('getRowData', dataid);
+                    dataCol = jQuery(list).jqGrid('getCell', dataid, displayFieldName);
+                    
+                    //alert('#appendedInputButton_' + viewBagAddModal);
+                    $('#appendedInputButton_' + viewBagAddModal).val(dataCol);
+                    $('#' + dynRefname).val(dataid);
+                
+                    CloseRefModal();
+                    //$("#addModal_" + ModalDivId).modal('hide');
+                    //$("#addModal_" + ModalDivId).empty();
+                },
+            });
+      
+            AddButton(list, addData, updateData, deleteData, buttonsDiv, ModalDivId, viewBagAddModal);
+        }
+
+
+        $(function () {
+            $('div.split-pane').splitPane();
+        });
+
+</script>
+
+

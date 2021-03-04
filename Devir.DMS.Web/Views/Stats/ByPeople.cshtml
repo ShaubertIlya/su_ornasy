@@ -1,0 +1,115 @@
+﻿@using PerpetuumSoft.Knockout
+@using Devir.DMS.Web.Models
+@model Devir.DMS.Web.Models.Stats.StatsByPeopleViewModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .tasksContainer {
+        padding: 5px;
+        border-radius: 5px 5px 5px 5px;
+        background-color: #fff;
+        height: 100%;
+        width: 100%;
+        overflow: auto;
+    }
+</style>
+<b style="color:white;">Отчет по исполнителям:</b>
+<div id="tasksContainer" class="tasksContainer" data-model="byPeopleStats">
+
+    <table class="table">
+        <thead>
+            <tr>
+                <td></td>
+                <td style="width:150px">
+                    Количество заданий
+                </td>
+                <td style="width:150px">
+                    Количество просроченных заданий
+                </td>
+                <td style="width:150px">
+                    Количество непрочитанных заданий
+                </td>
+            </tr>
+
+        </thead>
+        <tbody>
+            <!-- ko foreach: Departments -->
+            <tr style="cursor:pointer;font-weight: bold;" data-bind="click: $parent.ExpandDepartment">
+                <td>
+                    <b><span data-bind="text: DepartmentName"></span></b>
+                </td>
+                <td>
+                    <span data-bind="text: Totals.TotalInWork"></span>
+                </td>
+                <td>
+                    <span style="color: red" data-bind="text: Totals.TotalOverDated"></span>
+                </td>
+                <td>
+                    <span style="color: darkgreen" data-bind="text: Totals.TotalUnViewed"></span>
+                </td>
+            </tr>
+
+            <!-- ko if: isExpanded-->
+            <!-- ko foreach: People-->
+            <tr style="background-color: #f0f0f0">
+                <td>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span data-bind="text: UserName"></span><br />
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span style="color: #a8a8a8;font-size: 0.95em;text-shadow: 0 1px 0 #FFFFFF;" data-bind="text: UserPost"></span>
+                </td>
+                <td>
+                    <span style="font-size: small" data-bind="text: Totals.TotalInWork"></span>
+                </td>
+                <td>
+                    <span style="color: red; cursor: pointer; font-size: small" data-bind="text: Totals.TotalOverDated, click: function(data, event) { $root.GetBadDocumnets(data.UserId()) } "></span>
+                </td>
+                <td>
+                    <span style="color: darkgreen; font-size: small" data-bind="text: Totals.TotalUnViewed"></span>
+                </td>
+            </tr>
+            <!-- /ko -->
+            <!-- /ko -->
+            <!-- /ko -->
+            <tr style="font-size: medium">
+                <td>
+                    Итого
+                </td>
+                <td style="vertical-align: middle">
+                   <span data-bind="text: Totals.TotalInWork"></span>
+                </td>
+                <td style="vertical-align: middle">
+                    <span style="color: red" data-bind="text: Totals.TotalOverDated"></span>
+                </td>
+                <td style="vertical-align: middle">
+                    <span style="color: darkgreen" data-bind="text: Totals.TotalUnViewed"></span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+</div>
+
+<div id="badDocumentsPopup">
+</div>
+
+<script type="text/javascript">
+    var viewModelByPeopleStatsJs = @Html.Raw(Model.ToJson());
+
+    viewModelByPeopleStatsJs.ExpandDepartment = function(item){
+        item.isExpanded(!item.isExpanded());
+    };
+
+    viewModelByPeopleStatsJs.GetBadDocumnets = function(item){       
+        openNewDialogAndLoadData(false, "badDocumentsPopup", "/Stats/GetDocuments?UserId="+item, "900");
+    };
+
+    var viewModelByPeopleStatKO = ko.mapping.fromJS(viewModelByPeopleStatsJs);
+    ko.attach("byPeopleStats", viewModelByPeopleStatKO);
+
+
+
+</script>
+
+

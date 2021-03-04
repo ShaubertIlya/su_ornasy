@@ -1,0 +1,104 @@
+﻿@model Devir.DMS.DL.Models.FileStorage.FileStorage
+@{
+    ViewBag.Title = "Результат загрузки файлов:";
+    Layout = null;
+}
+
+<script>    
+    
+    $(document).ready(function () {
+        RecalculateIndexes();
+    });
+
+</script>
+
+
+<div style="border-bottom: 1px solid #EEEEEE;" class="row-fluid uploadedFile">
+    <div class="span4" style="height: 50px; width: 50px">
+
+       
+
+        @if (Model.MimeType.Icon == null)
+        {
+            <a href="@Url.Action("DownloadFile", "File", new { guid = Model.Id })">
+                <img src="/File/GetScanedImage?guid=@Model.Id"/></a>
+        }
+        else
+        {
+
+            if (Model.PDFVersion != MongoDB.Bson.ObjectId.Empty)
+            {
+                
+                 <a style="cursor:pointer;" onclick="ShowPDFFile('@Model.Id');">
+                <img src="@Url.Action("ShowIcon", "File", new { guid = Model.MimeType.Id })"/>
+            </a>
+                
+                
+            }
+            else{
+                
+            <a href="@Url.Action("DownloadFile", "File", new { guid = Model.Id })">
+                <img src="@Url.Action("ShowIcon", "File", new { guid = Model.MimeType.Id })"/>
+            </a>
+        }
+            
+        }
+
+    </div>
+    <div class="span4">
+         <a href="@Url.Action("DownloadFile", "File", new { guid = Model.Id })">
+        @Model.FileName
+             </a>
+    </div>
+    <div class="span4">
+        <label style="font-weight: bold">Комментарий:</label> 
+        @Model.Description
+    </div>
+
+    <input type="hidden" name="" value="@Model.Id.ToString()"/>
+    @if((bool)ViewBag.isAdd)
+    { 
+    <a style="margin: 5px 15px; float: left;" class="btn" href="#" id="btnRemoveFile">
+        <i class="icon-trash"></i>
+    </a>
+    }
+</div>
+
+@*<div class="span7">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Описание
+                </th>
+                <th>Иконка
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+
+
+            <tr>
+                <td>
+                    @Model.Description
+                </td>
+                <td>
+                    <div class="span1" id="image" style="height: 120px; width: 120px">
+
+                        @if (Model.MimeType.Icon == null)
+                        {
+                            <a href="@Url.Action("DownloadFile", "File", new { guid = Model.Id })">
+                                <img src="/File/GetScanedImage?guid=@Model.Id"/>
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="@Url.Action("DownloadFile", "File", new { guid = Model.Id })">
+                                <img src="@Url.Action("ShowIcon", "File", new { guid = Model.MimeType.Id })"/>
+                            </a>
+                        }
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>*@

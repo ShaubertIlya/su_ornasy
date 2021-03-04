@@ -1,0 +1,82 @@
+﻿@model Devir.DMS.Web.Models.Reference.RouteTemplateViewModel
+@{
+    ViewBag.Title = "FieldTemplate";
+    Layout = null;
+}
+
+@using (Ajax.BeginForm(new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "edit-modal" }))
+{
+    @Html.HiddenFor(m => m.RouteTemplateId)
+    
+     <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="addModalLabel">Добавить</h3>
+            </div>
+    <div class="modal-body" id="addModalBody" style="width:800px;">
+        <div class="controls controls-row">
+                @*<label class="span1">Шаг</label>*@<label class="span2">Тип маршрута</label><label class="span2">Шаблон полей</label><label class="span2"></label>
+            </div>
+        <div id="field" >
+            @Html.EditorFor(m => m.RouteTemplates, new { RouteTypes = Model.RouteTypes, FieldTemplates = Model.FieldTemplates})
+        </div>
+    </div>
+    <div><button id="addScnt" class="btn"><i class="icon-plus"></i>Добавить поле</button></div>
+   <div class="modal-footer">
+    <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+    <input type="submit" id="btnSave" class="btn btn-primary" value="Сохранить" />
+</div>
+    <div id="dropdown" hidden="hidden">
+        @Html.DropDownList("newRouteTypesList", Model.RouteTypes.Select(m => new SelectListItem() { Text=m.Name, Value=m.Id.ToString()}), new { @class = "span2" })
+    </div>
+     <div id="dropdown2" hidden="hidden">
+    @Html.DropDownList("newFieldTemplatesList", Model.FieldTemplates.Select(m => new SelectListItem() { Text=m.Header, Value=m.Id.ToString()}), new { @class = "span2" })
+    </div>
+<script>
+    $(function () {
+        var scntDiv = $('#field');
+        var i = $('#field div').size();
+        $(document).on('click', '#addScnt', function () {
+            $('<div class="controls controls-row content">' +
+                //'<div class="span1"><span class="badge badge-info">' + i + '</span></div>' +
+                '<div><input type="hidden" name="RouteTemplates[' + i + '].FieldOrder" value="' + i + '" ></div>' +
+                '<div class="span2">' + dropdown(i) + '</div>' +
+                 '<div class="span2">' + dropdown2(i) + '</div>' +
+                '<div class="btn-group"><a id="up" class="btn" href="#"><i class="icon-arrow-up"></i></a><a id="down" class="btn" href="#"><i class="icon-arrow-down"></i></a></div>' +
+                '<a class="btn" href="#" id="remScnt"><i class="icon-trash"></i></a>' +
+                '</div>').appendTo(scntDiv);
+            i++;
+            return false;
+        });
+
+        function dropdown(i) {
+            var clone = $('#dropdown').clone().removeAttr('hidden', 'hidden');
+            clone.children().attr('name', 'RouteTemplates[' + i + '].TypeOfTheRouteId');
+            clone.children().attr('id', 'RouteTemplates[' + i + '].TypeOfTheRouteId');
+            return clone.html();
+        }
+        function dropdown2(i) {
+            var clone2 = $('#dropdown2').clone().removeAttr('hidden', 'hidden');
+            clone2.children().attr('name', 'RouteTemplates[' + i + '].DocumentFieldTemplate');
+            clone2.children().attr('id', 'RouteTemplates[' + i + '].DocumentFieldTemplate');
+            return clone2.html();
+        }
+
+        $(document).on('click', '#remScnt', function () {
+            if (i >= 1) {
+                $(this).parent('.controls').remove();
+                i--;
+            }
+            return false;
+        });
+
+
+        $(document).on('click', '#btnSave', function () {
+            replaceAll();
+        });
+
+        $('.text-box.single-line').addClass('span2');
+
+    });
+</script>
+
+}

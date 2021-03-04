@@ -1,0 +1,17 @@
+﻿@using Devir.DMS.Web.HtmlHelpers
+@model Devir.DMS.Web.Models.Reference.DynamicRecordFieldViewModel
+
+<div class="controls controls-row content">
+    @Html.HiddenFor(model=>model.Header)
+        @Html.HiddenFor(model=>model.isRequired)
+        @Html.HiddenFor(model=>model.TypeOfTheFieldId)
+        @Html.HiddenFor(model=>model.DynamicFieldTemplateId)
+    @Html.HiddenFor(m=>m.Id)
+
+    <div class="span2">@Model.Header</div> <div class="span2">@Html.DevirEditorFor(model => model.Value, Model, (bool)ViewBag.isForUpdate)</div> 
+    <div class="span2">@Html.ValidationMessageFor(model=>model.Value)</div>       
+  
+    @*<div class="span2"><a class="btn" href="#" id="remScnt"><i class="icon-trash"></i></a></div>*@
+
+</div>
+

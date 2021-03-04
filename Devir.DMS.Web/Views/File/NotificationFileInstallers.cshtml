@@ -1,0 +1,125 @@
+﻿@{
+    ViewBag.Title = "Инсталлеры";
+}
+
+<style>
+    #GridLoader {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        z-index: 800;
+    }
+</style>
+
+
+<script>
+
+    $(function () {
+        $('#FormForVersions').ajaxForm(function () {
+            alert("Файл загружен");
+            vm.clearData();
+            vm.getData();
+        });
+    });
+
+</script>
+
+<div id="NotificationFilesInstallerVersions" class="decoration" style="overflow:auto; ">
+
+    <h4> Интерфейс загрузки инсталлеров нотификатора</h4>
+
+    <form id="FormForVersions" action="/File/NotificationFileInstallerUpload/" method="post" enctype="multipart/form-data">
+
+        <table>
+            <tr>
+                <td><input type="file" name="file" id="file" /></td>
+                <td>
+                    <b>Платформа</b>   <br />               
+
+                    <input type="radio" name="platform" value="-1">Windows<br>
+                    <input type="radio" name="platform" value="-2">Mac <br />
+                    <input type="radio" name="platform" value="-3">Linux
+                </td>
+            </tr>
+
+            <tr>
+                <td><button type="submit" class="btn btn-primary"> Загрузить выбранный файл</button></td>
+            </tr>
+        </table>
+
+    </form>
+
+
+    <h4>Список файлов</h4>
+
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Имя файла</th>
+                <th>Номер версии файла</th>                
+                @*<th>Дата загрузки</th>*@
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <!-- ko foreach: data-->
+
+            <tr>
+                <td data-bind="text: FileName"></td>
+                <td data-bind="text: NumberOfVersion"></td>               
+                @*<td data-bind="text: CreateDate"></td>*@
+            </tr>
+
+            <!-- /ko-->
+
+        </tbody>
+    </table>
+
+    <div id="GridLoader" data-bind="visible: Working">
+        <img src="~/Content/DevirGrid/preloader.gif" />
+    </div>
+</div>
+
+<script>
+
+    var vm = {
+        data: ko.observableArray(),
+        Working: ko.observable(false),
+
+        getData: function () {
+            var that = this;
+            $.ajax({
+                url: '/File/NotificationFileInstallersGetData',
+                type: 'Get',
+                contentType: "application/json",
+                dataType: "json",
+                beforeSend: function () {
+                    that.Working(true);
+                },
+                success: function (response) {
+
+                    //Обработка данных
+                    for (var i in response.Data) {
+                        vm.data.push(ko.mapping.fromJS(response.Data[i]));
+                    }
+
+                    that.Working(false);
+                },
+            });
+
+        },
+
+        clearData: function () {
+            this.data.removeAll();
+        },
+    };
+
+    //Применяем байндинги
+    ko.applyBindings(vm, document.getElementById("NotificationFilesInstallerVersions"));
+
+    //Первоначальная загрузка данных
+    vm.clearData();
+    vm.getData();
+
+</script>

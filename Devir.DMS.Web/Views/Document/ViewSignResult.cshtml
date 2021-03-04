@@ -1,0 +1,360 @@
+﻿@*@{
+    ViewBag.Title = "GetDocument";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}*@
+
+@model Tuple<Devir.DMS.DL.Models.Document.Document, Devir.DMS.DL.Models.Document.Route.RouteStageUser, Devir.DMS.DL.Models.Document.Route.RouteStageUser>
+
+@{
+    ViewBag.Title = "Карточка исполнения для документа " + Model.Item1.DocumentType.Name + " Номер документа";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var isForInstruction= (bool)ViewBag.isForInstruction;
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+}
+
+
+
+<div id="scrolledDocumentAdd" style="overflow: auto;" class="decoration">
+
+
+    <div class="gridDetailHeader">Карточка исполнения для @Model.Item1.DocumentType.Name  @Model.Item1.DocumentNumber </div>
+
+    <div style="position: relative;">
+        <ul class="nav nav-tabs" id="tab-detail">
+            <li class="active">
+                <a href="#collapseOne">Карточка исполнения</a>
+            </li>
+            <li>
+                <a href="#collapseTwo">Основная информация по документу</a>
+            </li>           
+        </ul>
+    </div>
+
+    <div id='content' class="tab-content" style="overflow: hidden;margin-left: 10px;">
+
+         <div class="tab-pane fade in active" id="collapseOne">
+          <div class="controls controls-row content">
+                <div class="span2">
+                    Результат исполнения
+                </div>
+                <div style="width:80%">
+                   @Html.Raw(Model.Item2.SignResult != null ? Model.Item2.SignResult.Comment : "")
+                </div>
+            </div> 
+
+              <div class="controls controls-row content">
+                <div class="span2">
+                    Дата выполнения
+                </div>
+                <div class="span2">
+                   @Html.Raw(Model.Item2.SignResult != null ? Model.Item2.SignResult.Date.ToString("dd.MM.yyyy") : "")
+                </div>
+            </div> 
+
+     
+
+        
+          <div class="controls controls-row content">
+                <div class="span2"><br />
+                    <b>История исполнения</b>
+                </div>
+                <div class="span2">
+                    <hr style="width:900px;"/>
+                    <table style="min-width:900px"><tr>
+                        <td style="width:150px;">    
+                            @(Model.Item2.SignResult != null ? Model.Item2.SignResult.Date.ToString("dd.MM.yyyy") : "")
+                           </td>
+                        <td style="width:100px;">
+                           - <b>@(Model.Item2.SignUser != null ? Model.Item2.SignUser.GetFIO() : "")</b>
+                        </td>
+                        <td>
+                           @(Model.Item2.SignResult != null ? Model.Item2.SignResult.Action.Name : "")
+                        </td>                                                
+                           </tr>
+                   
+                    
+                    @*Результат контроля для первой попытки*@
+                   @if (@Model.Item1.DocumentSignStages.Exists(m =>m.ControlPerformForRouteStageUserId != null && m.ControlPerformForRouteStageUserId == Model.Item2.Id))
+                   {
+                       var itemSubstage = Model.Item1.DocumentSignStages.SingleOrDefault(m => m.ControlPerformForRouteStageUserId != null && m.ControlPerformForRouteStageUserId == Model.Item2.Id);
+                       if (itemSubstage != null)
+                       {
+
+                           foreach (var item in itemSubstage.RouteUsers)
+                           {
+                       
+                           <tr>
+                        <td style="text-align:center;">    
+                                  @(item.SignResult != null ?item.SignResult.Date.ToString():"-")
+                           </td>
+                        <td >
+                            - <b>@item.SignUser.GetFIO()</b>
+                        </td>
+                        <td>
+                            @(item.SignResult != null ? item.SignResult.Action.Name  : "Ожидает решения")
+                        </td>                                                
+                           </tr>                           
+                           }
+                       }
+
+
+                   }
+
+                        @if (Model.Item1.DocumentSignStages.Exists(m => m.RouteUsers.Exists(x => x.SecondChanceForId == Model.Item2.Id)))
+                        {
+                            foreach (var item in Model.Item1.DocumentSignStages.SingleOrDefault(m => m.RouteUsers.Exists(x => x.SecondChanceForId == Model.Item2.Id)).RouteUsers.Where(m => m.SecondChanceForId == Model.Item2.Id))
+                            {
+                                    <tr>
+                                     <td style="text-align:center;">    
+                                  @(item.SignResult != null ?item.SignResult.Date.ToString():"-")
+                           </td>
+                        <td >
+                            - <b>@item.SignUser.GetFIO()</b>
+                        </td>
+                        <td>
+                            @(item.SignResult != null ? item.SignResult.Action.Name  : "Ожидает решения")
+                        </td>                                                    
+                                    </tr> 
+                            //Результат выполнения для данной стадии
+                                if (@Model.Item1.DocumentSignStages.Exists(m => m.ControlPerformForRouteStageUserId != null && m.ControlPerformForRouteStageUserId == item.Id))
+                             {
+                                 var itemSubstage = Model.Item1.DocumentSignStages.SingleOrDefault(m => m.ControlPerformForRouteStageUserId != null && m.ControlPerformForRouteStageUserId == item.Id);
+                                 if (itemSubstage != null)
+                                 {
+
+                                     foreach (var item2 in itemSubstage.RouteUsers)
+                                     {
+                       
+                           <tr>
+                        <td>    
+                                   @(item2.SignResult != null ? @item2.SignResult.Date.ToString():"-")
+                           </td>
+                        <td>
+                           - <b>@item2.SignUser.GetFIO()</b> 
+                        </td>
+                        <td>
+                            @(item2.SignResult != null ? item2.SignResult.Action.Name  : "Ожидает решения")
+                        </td>                                                
+                           </tr>                           
+                                     }
+                                 }
+
+
+                             }
+                            
+                            }
+                        }
+
+                   
+
+                         </table>
+                </div>
+            </div> 
+        </div>
+
+
+        <div id="collapseTwo" class="tab-pane fade in">
+           
+              <div class="sort_container">
+                <div class="controls controls-row content" style="margin-bottom: 10px;">
+                    <div class="span2" style="margin-left: 20px;">
+                        <strong>Автор:</strong>
+                </div>
+                    <div style="margin-left: 20px; float: left;">
+                    @Model.Item1.Author.GetFIO()
+                </div>
+            </div>
+                <div class="controls controls-row content" style="margin-bottom: 10px;">
+                    <div class="span2" style="margin-left: 20px;">
+                        <strong>Дата создания:
+                        </strong>
+                </div>
+                    <div style="margin-left: 20px; float: left;">
+                    @Model.Item1.CreateDate
+                </div>
+            </div>
+            </div>
+            @*            <div class="controls controls-row content">
+                <div class="span2">
+                    Заголовок
+                </div>
+                <div style="margin-left:20px;float:left;">
+                    @Model.Header
+                </div>
+            </div>
+            <div class="controls controls-row content">
+                <div class="span2">
+                    Содержание
+                                   </div>
+                <div style="margin-left:20px;float:left;">
+
+                    @Html.Raw(Model.Body)
+                </div>
+            </div>*@
+
+            @*@foreach (var item in Model.FieldValues)
+            {
+                <div class="controls controls-row content">
+                    <div class="span2">
+                        @item.Header
+                    </div>
+                    <div style="margin-left:20px; float:left;">
+
+                        @item.ValueToDisplay
+                    </div>
+                </div>
+            }*@
+            <div>
+                @foreach (var container in Model.Item1.DocumentType.DocumentVisualTemplate)
+                {
+                    <div class="sort_container">
+                        @foreach (var group in container.Controls.Where(c1 => c1.FieldId != null && c1.Type == "textblock").OrderBy(ob => ob.Top).GroupBy(c => c.Top))
+                        {
+                            <div class="controls controls-row content" style="margin-bottom: 10px">
+                                <div style="float: left">
+                                    @foreach (var control in group.OrderBy(ob => ob.Left).GroupBy(gr => gr.FieldId))
+                                    {
+                                    
+                                        <div class="span2" style="margin-left: 20px;">
+                                            <strong>@control.First().LabelText:</strong>
+                                        </div>
+                                        <div style="margin-left: 20px; margin-right: 100px; float: left">
+                                            @if (control.Key.ToString().ToUpper() == "7F7DD51F-DDC6-4C2B-A0A5-3225E79ACABD")
+                                            {
+                                                <span>@Model.Item1.Header</span>
+                                            }
+                                            else
+                                            {
+                                                if (control.Key.ToString().ToUpper() == "B7B6C441-F1EA-4E04-BF1E-AA04A8DCAA09")
+                                                {
+                                                <span>@Model.Item1.FinishDate.ToString("dd.MM.yyyy")</span>
+                                                }
+                                                else
+                                                {
+
+
+                                                    if (Model.Item1.FieldValues.Select(fv => fv.FieldTemplateId).Contains(control.Key.Value))
+                                                    {
+                                                <span>@Model.Item1.FieldValues.Single(f => f.FieldTemplateId == control.Key.Value).ValueToDisplay</span>
+                                                    }
+                                                }
+
+                                            }
+                                        </div>
+                                        
+                                    }
+                </div>
+
+                            </div>
+            }
+                        @if (container.Type == "body" && container.Controls.Any(c => c.Type == "BodyEditor"))
+                        {
+                            <div class="controls controls-row content" style="margin-bottom: 10px">
+                                <div class="span2" style="margin-left: 20px;">
+                                    <strong>@container.Controls.Single(c => c.Type == "label").LabelText</strong>
+                                </div>
+                                <div style="margin-left: 20px; margin-right: 100px; float: left">
+                                    @Html.Raw(Model.Item1.Body)
+            
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+            @* Вложения *@
+            <br />
+            <br />
+            <br />
+            <label style="font-weight: bold">Вложения:</label>
+            <div id="attachments" style="height: auto">
+
+                @if (Model.Item1.Attachments != null){
+                foreach (var fileId in Model.Item1.Attachments)
+                {
+                    <div style="border-bottom: 1px solid #EEEEEE;" class="row-fluid uploadedFile">
+                        @{
+                    Html.RenderAction("ShowUploadedFile", "File", new { guid = fileId });
+                        }
+
+                    </div>
+                }
+                }
+            </div>
+            <div id="scanResults" style="height: auto"></div>
+
+
+
+
+        </div>
+
+       
+
+    </div>
+</div>
+
+
+
+
+
+<div class="panel onlyIcons navbar-fixed-bottom " style="left: 9px; background-color: #f0f0f0; padding: 5px; right: 9px;">
+    <a href="/Document/@Html.Raw(!isForInstruction?"GetDocument?DocumentId=":"GetInstruction?InstructionId=")@Model.Item1.Id"  class="btn"><i class="icon-backward"></i> Вернуться к документу</a>
+
+    <div style="float: right;">
+        <span></span>
+        <div class="btn-group">
+                                  
+               @if (Model.Item1.DocumentSignStages.Exists(m => m.ControlPerformForRouteStageUserId == Model.Item3.Id && m.RouteUsers.Exists(x => x.IsCurent == true && x.SignUser.UserId == Devir.DMS.DL.Repositories.RepositoryFactory.GetCurrentUser())))
+               {
+                   <button onclick="ShowSignResultWindow('@Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.OkControlPerformStage')" class="btn btn-success"><i class="icon-ok-circle"></i> Подтвердить исполнение</button>     
+                   <button onclick="ShowSignResultWindow('@Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.NotOkControlPerformStage')" class="btn btn-danger"><i class="icon-ok-circle"></i> Отправить на доработку</button>     
+               }
+            
+            
+          @*  <button onclick="getImageFromScaner()" class="btn "><i class="icon-share"></i> Поручить</button>*@
+            
+
+
+        
+    </div>
+</div>
+    </div>
+
+<div id="ModalSignResult" class="modal hide fade in">
+
+</div>
+
+<script>
+    //$(document).ready(function () {
+    //    $('textarea').ckeditor();
+    //});
+
+    $('#tab-detail a').click(function (e) {
+        e.preventDefault();
+        $(this).tab('show');
+    });
+
+
+    function ShowSignResultWindow(actionId) {
+
+        $.get("/Document/AddSignResult", { isForInstruction: @(isForInstruction?"true":"false"), DocumentId: "@Model.Item1.Id", ActionId: actionId, isForPerformControl:true, UserForRouteId:"@Model.Item3.Id" }, function (data) {
+            $("#ModalSignResult").empty();
+            $("#ModalSignResult").html(data);
+            $("#ModalSignResult").modal("show");
+        });
+
+
+    }
+
+    
+
+
+
+</script>
+
+
+

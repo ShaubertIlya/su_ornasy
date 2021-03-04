@@ -1,0 +1,478 @@
+﻿@model Devir.DMS.Web.Models.Document.DocumentViewModel
+
+@{
+    ViewBag.Title = "AddDocument";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var isForRoot = (bool)ViewBag.isForRoot;
+    var rootDocumentNumber = ViewBag.rootDocumentNumber;
+    Model.ForRootInstructionId = ViewBag.rootInstructionId;
+    Model.ForRootDocumentId = ViewBag.rootDocumentId;
+    Model.ForUserForRouteId = ViewBag.userForRouteId;
+}
+
+
+@*<link href="~/Content/themes/base/jquery.ui.all.css" rel="stylesheet" />*@
+<style>
+    .inner_textBlock {
+        position: absolute;
+    }
+
+    .sort_container {
+        position: relative;
+    }
+
+    .inner_container {
+        min-height: 50px;
+        height: 100%;
+        margin-bottom: -5px;
+    }
+</style>
+
+<div id="scrolledDocumentAdd" style="height: 100%; margin: 0px; padding: 0px; overflow: auto;" class="decoration">
+    <div style="margin-left: 40px">
+        <h4>Добавить новый документ: @ViewBag.DocumentType
+        @if (isForRoot)
+        {
+            <span style="color:darkcyan"><i>ответ на @rootDocumentNumber</i></span>
+        }
+        </h4>
+        
+    </div>
+
+
+
+
+
+
+    @using (Html.BeginForm((bool)ViewBag.isForUpdate == false ? "AddDocument" : "UpdateDocument", "Document", FormMethod.Post, new { id = "DocumentEditForm" }))
+    {
+        <div style="padding-left: 5px;">
+
+
+
+            @Html.ValidationSummary(true)
+            
+         @if (isForRoot){
+            @Html.HiddenFor(m=>m.ForRootDocumentId);
+            @Html.HiddenFor(m=>m.ForRootInstructionId);
+             @Html.HiddenFor(m=>m.ForUserForRouteId);
+           
+         }
+            @Html.HiddenFor(m => m.DocumentTypeId)
+
+            <fieldset>
+                <legend>Document</legend>
+
+                @* <div class="controls controls-row content">
+                        <div class="span2">
+                            @Html.LabelFor(model => model.Header)
+                        </div>
+                        <div class="span2">
+                            @Html.EditorFor(model => model.Header)
+                            @Html.ValidationMessageFor(model => model.Header)
+                        </div>
+                    </div>*@
+
+
+
+                @*                    <div style="padding-bottom: 5px;">
+                        @Html.EditorFor(model => model.Fields)
+                    </div>*@
+                <div id="sortable">
+                    @foreach (var container in Model.VisualFieldsTemplate)
+                    {
+
+                        <div type='@container.Type' @(container.Type == "simple" ? "style=height:" + container.Height + "px " : " ") id='@container.Id' class="sort_container">
+
+
+
+
+
+
+                            @foreach (var control in container.Controls)
+                            {
+                                Devir.DMS.Web.Models.Reference.DynamicRecordFieldViewModel tmpField = null;
+                                var fieldIndex = -1;
+                                var fieldTypeId = Guid.Empty;
+                                if (control.FieldId.HasValue)
+                                {
+                                    var tmpFields = Model.Fields.Where(m => m.TypeOfTheFieldId.ToString() != "e3224442-d53a-47e9-b1bb-495c034b10d8").ToList();
+
+                                    tmpField = tmpFields.SingleOrDefault(m => m.DynamicFieldTemplateId == control.FieldId);
+                                    if (tmpField != null)
+                                    {
+                                        fieldIndex = tmpFields.IndexOf(tmpField);
+                                        fieldTypeId = tmpField.TypeOfTheFieldId;
+                                    }
+                                }
+
+
+                                if (control.islabel)
+                                {
+                                    <span ondblclick='SelectElement(this);' style="width:@(control.Width)px; top:@(control.Top)px; left:@(control.Left)px;" id='@control.LabelId' class='inner_textBlock'>@control.LabelText</span>
+                                }
+                                else
+                                {
+
+                                    if (control.Type == "control")
+                                    {
+                                        <div ondblclick='SelectElement(this);' style="width:@(control.Width)px; top:@(control.Top)px; left:@(control.Left)px; padding:0px; margin:0px;" type='control' fieldid='@control.FieldId' class='inner_textBlock'>
+                                            @* <div style='width: 100%; padding-right: 0px; padding-left: 0px; cursor: move;' class='uneditable-input'>@control.LabelText</div>*@
+
+                                            @if (control.FieldId.ToString().ToUpper() == "7F7DD51F-DDC6-4C2B-A0A5-3225E79ACABD")
+                                            {
+
+                                                @Html.TextBox("Header", Model.Header, new { style = "width:" + control.Width + "px;" });
+
+                                            }
+
+                                            @if (control.FieldId.ToString().ToUpper() == "B7B6C441-F1EA-4E04-BF1E-AA04A8DCAA09")
+                                            {
+                                                <div class="input-append date dp span2" id="dp" data-date=" @((Model.FinishDate < DateTime.Now.Date) ? DateTime.Now.ToString("dd.MM.yyyy") : Model.FinishDate.ToString("dd.MM.yyyy")) " data-date-format=" dd.mm.yyyy">
+                                                    @Html.TextBox("FinishDate", (Model.FinishDate < DateTime.Now.Date) ? DateTime.Now.ToString("dd.MM.yyyy") : Model.FinishDate.ToString("dd.MM.yyyy"), new { @class = "span2", style = "width:" + control.Width + "px;" })
+                                                    <span class="add-on"><i class="icon-calendar"></i></span>
+                                                </div>
+                                            }
+
+
+
+                                            @if (fieldTypeId.ToString() == "a427dbfb-9cb7-4f52-9d5e-c7d0677e8103"
+                                          || fieldTypeId.ToString() == "8a37142c-0e29-4b40-b4a3-0a3a7d4f21d9"
+                                          || fieldTypeId.ToString() == "944388a1-b1e3-4a4d-910d-7ad9df107e20"
+                                          || fieldTypeId.ToString() == "f23165db-7c3d-49d5-bbc0-127eef90de36")
+                                            {                                                
+                                                @Html.TextBox("Fields[" + fieldIndex + "].Value", Model.Fields[fieldIndex].Value, new { style = "width:" + control.Width + "px;" });
+
+                                            }
+
+                                            @if (fieldTypeId.ToString() == "398877ee-49f3-46b6-bc2e-f567ecd75410")
+                                            {
+                                                @Html.Hidden("Fields[" + fieldIndex + "].Value", Model.Fields[fieldIndex].Value, new { @id = "select2InputDocNumber", style = "width:" + control.Width + "px;" }  );
+
+                                                @*@Html.DropDownList("Fields[" + fieldIndex + "].Value", new SelectList((System.Collections.IEnumerable)ViewData["inputDocNumbers"], "Value", "Text"), new { @id = "select2InputDocNumber", style = "width:" + 630 + "px;" });*@
+                                            }
+
+
+                                            @if (fieldTypeId.ToString() == "d88f464a-ca95-4c41-ad7d-7df5adfd90d8")
+                                            {
+                                                <div class="input-append date dp span2" id="dp" data-date="@DateTime.Now.ToString("dd.MM.yyyy")" data-date-format="dd.mm.yyyy">
+                                                    @Html.TextBox("Fields[" + fieldIndex + "].Value", String.IsNullOrEmpty(Model.Fields[fieldIndex].Value) ? DateTime.Now.ToString("dd.MM.yyyy") : Model.Fields[fieldIndex].Value, new { @class = "span2", style = "width:" + control.Width + "px;" })
+                                                    <span class="add-on"><i class="icon-calendar"></i></span>
+                                                </div>
+                                            }
+
+                                            @if (fieldIndex != -1)
+                                            {
+                                                if (Model.Fields[fieldIndex].DynamicReferenceId != Guid.Empty)
+                                                {
+                                                    Guid SpravochnikRes;
+                                                    Guid.TryParse(Model.Fields[fieldIndex].Value, out SpravochnikRes);
+                                                    if ((bool)ViewBag.isForUpdate == false)
+                                                    {
+                                                        Html.RenderPartial("EditorTemplates/DynamicReferenceEditorTemplate", new Devir.DMS.Web.Models.Reference.DynamicReferenceEditorTemplateViewModel() { ReferenceId = Model.Fields[fieldIndex].DynamicReferenceId, SelectedItemGuid = SpravochnikRes, FieldName = "Fields[" + fieldIndex + "]", FieldStringValue = Model.Fields[fieldIndex].DynamicReferenceResult, FieldStringHeader = Guid.NewGuid().ToString(), Width = control.Width });
+                                                    }
+                                                    else
+                                                    {
+                                                        Html.RenderPartial("EditorTemplates/DynamicReferenceEditorTemplate", new Devir.DMS.Web.Models.Reference.DynamicReferenceEditorTemplateViewModel() { ReferenceId = Model.Fields[fieldIndex].DynamicReferenceId, SelectedItemGuid = Model.Fields[fieldIndex].ValueId, FieldName = "Fields[" + fieldIndex + "]", FieldStringValue = Model.Fields[fieldIndex].Value, FieldStringHeader = Guid.NewGuid().ToString(), Width = control.Width });
+                                                    }
+                                                }
+                                            }
+
+
+                                            @if (fieldTypeId.ToString() == "9b7be5b0-3e69-466a-a876-eae0402ebbe7")
+                                            {
+                                                Html.RenderPartial("EditorTemplates/UserSelectorEditorTemplate", new Devir.DMS.Web.Models.Reference.DynamicReferenceEditorTemplateViewModel() { ReferenceId = Guid.Empty, SelectedItemGuid = Model.Fields[fieldIndex].ValueId, FieldName = "Fields[" + fieldIndex + "]", FieldStringValue = Model.Fields[fieldIndex].Value, FieldStringHeader = Guid.NewGuid().ToString(), Width = control.Width });
+                                            }
+
+
+                                            @if (fieldTypeId.ToString() == "2490becb-3476-43ab-8717-0f0b138a6ab2")
+                                            {
+                                                bool res = false;
+                                                Boolean.TryParse(Model.Fields[fieldIndex].Value, out res);
+                                                <span>
+                                                    @Html.CheckBox("Fields[" + fieldIndex + "].Value", res)
+                                                </span>
+                                                //html.RenderPartial("EditorTemplates/BoolEditorTemplate", new Tuple<Boolean,string>(res, "Value"));
+                                            }
+
+
+
+
+
+
+
+                                            @if (fieldIndex != -1)
+                                            {
+                                                @Html.Hidden("Fields[" + fieldIndex + "].DynamicFieldTemplateId", control.FieldId)
+                                                @Html.Hidden("Fields[" + fieldIndex + "].TypeOfTheFieldId", fieldTypeId)
+                                                @Html.Hidden("Fields[" + fieldIndex + "].isRequired", tmpField.isRequired)
+                                                @Html.Hidden("Fields[" + fieldIndex + "].DynamicReferenceId", tmpField.DynamicReferenceId)
+                                            }
+
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        if (control.Type == "validate")
+                                        {
+                                            <span ondblclick='SelectElement(this);' type='validate' fieldid='@control.FieldId' class='inner_textBlock' style='width:@(control.Width)px; top:@(control.Top)px; left:@(control.Left)px; color:red'>
+
+                                                @if (control.FieldId.ToString().ToUpper() == "7F7DD51F-DDC6-4C2B-A0A5-3225E79ACABD")
+                                                {
+                                                    @Html.ValidationMessage("Header");
+                                                }
+
+
+
+                                                @if (fieldIndex != -1)
+                                                {
+                                                    @Html.ValidationMessage("Fields[" + fieldIndex + "].Value")
+                                                }
+                                            </span>
+                                        }
+                                        else
+                                        {
+
+                                            if (control.Type == "textblock")
+                                            {
+                                                <span ondblclick='SelectElement(this);' type='textblock' fieldid='@control.FieldId' style='width:@(control.Width)px; top:@(control.Top)px; left:@(control.Left)px;' class='inner_textBlock'>@control.LabelText</span>
+                                            }
+                                            else
+                                            {
+                                                if (control.Type == "BodyEditor")
+                                                {
+                                                    <div type='BodyEditor' fieldid='BodyEditor' class='inner_textBlock' style='position:relative; width:@(control.Width)px; top:@(control.Top)px; left:@(control.Left)px; padding:0px; margin:0px;'>
+
+                                                        @* <div style='width: 700px; height: 100px; padding-right: 0px; padding-left: 0px; cursor: move;' class='uneditable-input'>Большой редактор текста</div>*@
+
+                                                        @Html.TextAreaFor(model => model.Body, new { @class = "ckeditor" })
+
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    if (control.Type == "NegotiatorsEditor")
+                                                    {
+                                                        <div type='NegotiatorsEditor' fieldid='NegotiatorsEditor' class='inner_textBlock' style='position:relative; width:@(control.Width)px; top:@(control.Top)px; left:@(control.Left)px; padding:0px; margin:0px;'>
+
+                                                            @Html.ValidationMessage("NegotiatorsStage")
+
+
+                                                            @{ Html.RenderAction("Index", "NegotiatorsKO", new { model = Model.NegotiatorsStage }); }
+
+                                                        </div>
+                                                    }
+                                                    else
+                                                    {
+                                                        if (control.Type == "PerformersEditor")
+                                                        {
+
+                                                            <div type='PerformersEditor' fieldid='PerformersEditor' class='inner_textBlock' style='position:relative; width:@(control.Width)px; top:@(control.Top)px; left:@(control.Left)px; padding:0px; margin:0px;'>
+                                                                @Html.ValidationMessage("Fields[" + fieldIndex + "].Value")
+                                                                @{ Html.RenderAction("Index", "UsersKO", new { model = Model.Fields[fieldIndex].ValueUsersKo, FieldName = Model.Fields[fieldIndex].Header, FieldPath = "Fields[" + fieldIndex + "]" }); }
+
+
+                                                            </div>
+                                                            if (fieldIndex != -1)
+                                                            {
+                                                                @Html.Hidden("Fields[" + fieldIndex + "].DynamicFieldTemplateId", control.FieldId)
+                                                                @Html.Hidden("Fields[" + fieldIndex + "].TypeOfTheFieldId", fieldTypeId)
+                                                                @Html.Hidden("Fields[" + fieldIndex + "].isRequired", tmpField.isRequired)
+                                                            }
+
+                                                        }
+                                                        else
+                                                        {
+                                                            if (control.Type == "InstructionEditor")
+                                                            {
+                                                                <div type='InstructionEditor' fieldid='InstructionEditor' class='inner_textBlock' style='position:relative; width:@(control.Width)px; top:@(control.Top)px; left:@(control.Left)px; padding:0px; margin:0px;'>
+
+                                                                    @Html.ValidationMessage("Instructions")
+
+
+                                                                    @{ Html.RenderAction("Index", "InstructionKO", new { model = Model.instructions, IsShowResolutions = !Model.DocumenType.SiplifiedInstructionField }); }
+
+                                                                </div>
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                            }
+                                        }
+                                    }
+
+                                }
+                            }
+
+                        </div>
+
+                        <hr />
+
+
+                    }
+                </div>
+
+
+
+                @*                    <div class="controls controls-row content">
+                        <div class="span2">
+                            @Html.LabelFor(model => model.FinishDate)
+                        </div>
+                        <div class="input-append date dp span2" id="dp" data-date="@DateTime.Now.ToString("dd.MM.yyyy")" data-date-format="dd.mm.yyyy">
+                            @Html.TextBox("FinishDate", DateTime.Now.ToString("dd.MM.yyyy"), new { @class = "span2" })
+                            <span class="add-on"><i class="icon-calendar"></i></span>
+                        </div>
+                    </div>*@
+
+                @* <div class="controls controls-row content">
+                        <div class="span2">
+                            @Html.LabelFor(model => model.Body)
+                        </div>
+                        <div class="span2" style="width: 70%">
+
+                            @Html.TextAreaFor(model => model.Body, new { @class = "ckeditor" })
+                            @Html.ValidationMessageFor(model => model.Body)
+
+                        </div>
+                    </div>*@
+
+
+
+
+            </fieldset>
+
+
+
+            @* загрузка файла и сканирование *@
+
+            <div id="dlgFileUpload" class="modal hide fade" style="background-color: #f5f5f5; width: 600px; ">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h3>Загрузить файл</h3>
+                </div>
+                <div class="modal-body">
+                    <div id="dlgFileUploadBody"></div>
+                </div>
+                <div class="modal-footer">
+                    <a id="modal-form-submit" class='btn btn-primary' href="#">Ок</a>
+                </div>
+            </div>
+
+            @*<div style="margin-left: 40px;">
+                    <span>Срочно:</span>
+                    <input type="checkbox" />
+                </div>*@
+
+            @Html.ValidationMessage("attachment");
+            <div style="margin-left: 40px;">
+                <label style="font-weight: bold">Вложения:</label>
+
+                <div id="attachments" style="height: auto">
+
+                    @* сюда добавляется div c классом row-fluid при добавлении файла *@
+
+                    @if (Model.attachment != null)
+                    {
+                        foreach (var item in Model.attachment)
+                        {
+                            Html.RenderAction("ShowUploadedFile", "File", new { guid = item });
+                        }
+                    }
+
+
+                    @Html.Hidden("isForTemplate", 0)
+
+                    @Html.Hidden("templateName", 0)
+
+                    @Html.HiddenFor(m => m.Version)
+                    @Html.HiddenFor(m => m.isNewVersion)
+                    @Html.HiddenFor(m => m.DocumentNumber)
+                    @Html.HiddenFor(m => m.ParentDoc)
+                    @Html.HiddenFor(m => m.RealDocNumber)
+
+                </div>
+            </div>
+            @*______________*@
+
+        </div>
+
+
+        <div class="panel onlyIcons navbar-fixed-bottom" style="left: 9px; background-color: #f0f0f0; padding: 5px; right: 9px;">
+            <button onclick="showModal(); return false;" class="btn">Загрузить файл</button>
+            <button onclick="getImageFromScaner(); return false;" class="btn">Сканировать картинку</button>
+            <input type="submit" id="btnSave" class="btn btn-primary submitter" value="Отправить" onclick="$(this).hide(); $('#isForTemplate').val(0); $('[data_valmsg_for]').each(function () { $(this).attr('data-valmsg-for', $(this).attr('data_valmsg_for')); });" />
+
+            <span style="margin-left:100px;">Срочный документ: @Html.CheckBox("isUrgent", false)</span>
+
+
+
+
+            <input type="submit" style="float:right;" onclick="$('#isForTemplate').val(1); inputText = window.prompt('Наименование шаблона', 'Новый шаблон'); $('#templateName').val(inputText);" id="btnSave" class="btn" value="Сохранить в шаблоны" />
+        </div>
+
+
+    }
+</div>
+
+<script>
+
+    @*var inputDocNumbers = JSON.stringify(@ViewData["inputDocNumbers"]);*@
+
+
+
+
+
+    $(document).ready(function () {       
+
+        $("#select2InputDocNumber").select2(
+            {
+                multiple: false,
+                width: 630,
+                allowClear: true,
+                placeholder: "Не связан",
+                ajax: {
+                    type: 'Get',
+                    url: '/Document/GetInboxDocNumbersForSelect2',
+                    dataType: 'json',
+                    quietMillis: 100,
+                    data: function (term, page) { // page is the one-based page number tracked by Select2
+                        return {
+                            term: term, //search term
+                            pageLimit: 10, // page size
+                            page: page // page number
+
+                        };
+                    },
+
+                    results: function (data, page) {
+                        var more = (page * 10) < data.total; // whether or not there are more results available
+
+                        // notice we return the value of more so Select2 knows if more results can be loaded
+                        return { results: data.rows, more: more };
+                    },
+
+                }
+            });
+    });
+
+    //$(document).ready(function () {
+    //    $('textarea').ckeditor();
+    //});
+    $(".date").click(function () {
+        if (!$(this).hasClass("hasDatepicker")) {
+            $(this).datepicker({
+                format: 'dd.mm.yyyy',
+                autoclose: true
+            }).on('changeDate', function () {
+                $(this).datepicker("hide");
+            });
+            $(this).datepicker("show");
+            $(this).addClass('hasDatepicker');
+        }
+    });
+
+</script>
+
+
+

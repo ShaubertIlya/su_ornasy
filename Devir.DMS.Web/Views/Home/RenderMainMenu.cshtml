@@ -1,0 +1,69 @@
+﻿@model Devir.DMS.Web.Models.MainMenu.MainMenuViewModel
+@{    
+    Layout = null;
+    var user = Devir.DMS.DL.Repositories.RepositoryFactory.GetRepository<Devir.DMS.DL.Models.References.OrganizationStructure.User>().Single(m => m.UserId == Devir.DMS.DL.Repositories.RepositoryFactory.GetCurrentUser());
+}
+                    <li>
+                <div class="MyMainMenu">
+                    @*    <img src="~/Content/MenuIcons/Documents.png" class="MyMainMenuImg" />*@
+                        @Html.ActionLink("Главная", "Index", "Home", null, new { @class="MyMainmenuText" }) 
+                          
+                    
+                          @if(Model.newNotificationsCount>0) {<span class="label" style="background-color:#66CC66;" id="NewNotificationsCount">@Model.newNotificationsCount уведомления</span>                    }
+                    
+                    </div>
+                        </li>
+<li>
+                    <div class="MyMainMenu">
+                        
+                    @*    <img src="~/Content/MenuIcons/Documents.png" class="MyMainMenuImg" />*@
+                        @Html.ActionLink("Документы", "Documents", "Document",null, new { @class="MyMainmenuText" })
+
+                        <span class="label" id="documentsCount">@Model.workingdocumentsCount</span>
+                        @if(Model.newDocumentsCount>0){ <span class="label" style="background-color:#66CC66;" id="newDocumentsCount">@Model.newDocumentsCount новых</span>}
+                    </div>
+    </li>
+
+                       <div class="MyMainMenu">
+                       @*    <img src="~/Content/MenuIcons/Tasks.png" class="MyMainMenuImg" />*@
+                        @Html.ActionLink("Задания", "Tasks", "Document",null, new { @class="MyMainmenuText" })
+
+                           <span class="label" id="InstructionsCount">@Model.workingTaskCount</span>
+                        @if(Model.newTasksCount>0){<span class="label" style="background-color:#66CC66;" id="newInstructionsCount">@Model.newTasksCount новых</span>}
+                           @if(Model.badTasksCount>0){<span class="label" style="background-color:#DA4F49;" id="badInstructionsCount">@Model.badTasksCount просрочено</span>}
+                    </div>
+
+                    <div class="MyMainMenu">
+                        @*   <img src="~/Content/MenuIcons/MyTasks.png" class="MyMainMenuImg" />*@
+                        @Html.ActionLink("Мои поручения", "Instructions", "Document",null, new { @class="MyMainmenuText" })
+
+                         <span class="label" id="newMyInstructionsCount">@Model.workingMyTasksCount</span>                       
+                         @if(Model.badMyTasksCount>0) { <span class="label" style="background-color:#DA4F49" id="badMyInstructionsCount">@Model.badMyTasksCount просрочено</span>}
+
+                    </div>
+
+    @if (user.InRole("Администраторы"))
+    {
+
+                    <div class="MyMainMenu" style="float:left; text-align:center; margin-left:20px; background-color:none;">
+                         @*  <img src="~/Content/MenuIcons/EditRederence.png" class="MyMainMenuImg" />*@
+                        @Html.ActionLink("Справочники", "References", "Reference",null, new { @class="MyMainmenuText" })
+                    </div>
+    }
+    
+@if (user.InRole("Канцелярия"))
+{
+
+    <div class="MyMainMenu" style="float:left; text-align:center; margin-left:20px; background-color:none;">
+        @*  <img src="~/Content/MenuIcons/EditRederence.png" class="MyMainMenuImg" />*@
+        @Html.ActionLink("Отчет по исполнителям", "ByPeople", "Stats", null, new { @class = "MyMainmenuText" })
+     
+    </div>
+    
+    <div class="MyMainMenu" style="float:left; text-align:center; margin-left:20px; background-color:none;">
+        @*  <img src="~/Content/MenuIcons/EditRederence.png" class="MyMainMenuImg" />*@
+        @Html.ActionLink("Отчет по просрочкам", "GetBadDocumentsReport", "Stats", null, new { @class = "MyMainmenuText" })
+     
+    </div>
+     
+}

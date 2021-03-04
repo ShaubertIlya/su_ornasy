@@ -1,0 +1,176 @@
+﻿@using PerpetuumSoft.Knockout
+@using Devir.DMS.Web.Models
+@model Devir.DMS.Web.Models.InstructionsKO.InstructionKOEditorModel
+@{
+    Layout = null;
+
+    //var fieldName = "UserToAttach" + Model.FieldName;
+
+    var koInstruction = Html.CreateKnockoutContext();
+}
+
+<div id="InstructionToAttach" data-model="InstructionToAttach">
+
+    <div style="padding-bottom:10px;">
+
+        @using (koInstruction.If(m => m.Instructions.Count > 0))
+        {
+            @koInstruction.Html.Hidden().Value(m => m.ShowResolutions)
+            @*<div style="background-color:#f0f0f0; width:900px; border: 1px dotted black; margin-bottom:10px; padding:10px;">*@
+            using (var instrk = koInstruction.Foreach(m => m.Instructions))
+            {
+                <div class="panel" style="margin-bottom:10px;">
+
+                    <div style="padding:10px;">
+                        <a class="btn" href="#" data-bind="click : function() {executeOnServer(viewModelInstrKO, '/InstructionKO/Delete?Index='+$index()+'');}"><i class="icon-trash"></i>Удалить Поручение</a>
+                    </div>
+                    <table>
+                        <tr>
+
+                            <td>
+
+                                <span>Исполнители</span>
+
+                                <div data-bind="attr: {id : $index()}" class="editor-field pdPicker multiple" style="min-width: 300px;">
+                                    <button type="button" class="btn pdpBtnSelect">Добавить пользователей</button>
+
+
+                                    @instrk.Html.Hidden().Custom("MultiplePeoplePicker", "")
+
+                                    @*@instrk.Html.TextBox(m => m.UserForS, new { @class = "required", type = "text", @readonly="readonly", style="cursor:default", data_val_required = "Необходимо заполнить поле" }).Attr("Id", m => "instructions_"+ m.Order + "__UserForS").Attr("Name", m =>"instructions[" + m.Order + "].UserForS").Value(M => M.UserForS).Custom("peoplePicker", "")
+
+                                    *@
+                                    @instrk.Html.Hidden().Attr("Id", m => "instructions_" + m.Order + "_ShowResolutions").Attr("Name", m => "Instructions[" + m.Order + "].ShowResolutions").Value(m => m.ShowResolutions).ValueUpdate(KnockoutValueUpdateKind.Change)
+
+
+                                </div>
+                                <div>
+                                    <!-- ko foreach: UsersFor -->
+                                    <span class="label label-info" style="margin: 5px">
+                                        <input hidden data-bind="attr: {name: 'instructions[' + $parent.Order() + '].UsersFor['+$index()+'].UserFor'}, value: UserFor" />
+                                        <input hidden data-bind="attr: {name: 'instructions[' + $parent.Order() + '].UsersFor['+$index()+'].UserForS'}, value: UserForS" />
+                                        <span data-bind="text: UserForS"></span>
+                                        <button class="close" type="button" style="float: none!important" data-bind="attr: {userId: UserFor, instructionId: $parent.Order}" onclick="RemoveUserFromsList(this)">×</button>
+                                    </span>
+                                    <!-- /ko -->
+                                </div>
+
+                                @instrk.Html.Span("", new { @class = "field-validation-valid", data_valmsg_replace = "true" }).Attr("data_valmsg_for", m => "instructions[" + m.Order + "].UserFor")
+                            </td>
+                            <td>
+
+                                <span>Дата исполнения</span>
+                                <div style="vertical-align:top;">
+                                    @instrk.Html.TextBox(m => m.DateBefore).Attr("Id", m => "instructions_" + m.Order + "__DateBefore").Attr("Name", m => "Instructions[" + m.Order + "].DateBefore").Value(M => M.DateBefore).Custom("datePicker", "")
+                                    @*@if(instrk.Model != null)
+
+                                        @instrk.Html.Span("", new { @class = "field-validation-valid", data_valmsg_replace = "true" }).Attr("data_valmsg_for", m => "instructions[" + m.Order + "].UserFor")
+                                    *@
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                @using (instrk.If(ins => ins.ShowResolutions == true))
+                                {
+
+                                    <span>Резолюция</span>
+                                    <div>
+
+                                        <div class="input-append">
+                                            @instrk.Html.TextBox(m => m.Resolutions, new { style = "width:600px;" }).Attr("RealId", m => m.Order).Attr("Id", m => "appendedInputButton_resolutions" + m.Order + "").Attr("Name", m => "Instructions[" + m.Order + "].Resolutions").Value(M => M.Resolutions).Custom("resolutions", "")
+                                            <button id="btn_openDialog" role="button" class="btn" data-toggle="modal">...</button>
+                                        </div>
+                                    </div>
+
+                                    <span>Содержание</span>
+                                    <div>
+                                        @instrk.Html.TextArea(m => m.Body, new { style = "width:630px;" }).Attr("Id", m => "instructions_" + m.Order + "__Body").Attr("Name", m => "Instructions[" + m.Order + "].Body").Value(M => M.Body)
+                                    </div>
+
+
+
+                                }
+
+                                <div>
+
+                                    @*<span>Контроль исполнения</span>*@
+                                    <div>
+                                        <div>
+                                            <label>
+                                                <input type="checkbox" value="true" data-bind="checked: isUseController, attr: {name: 'instructions[' + Order() + '].isUseController'}" /> Требуется контроль исполнения
+                                            </label>
+                                        </div>
+                                        <!-- ko if: isUseController-->
+                                        <div class="editor-field pdPicker" style="float:left">
+                                            @instrk.Html.TextBox(m => m.UserControllerS, new { @class = "required", type = "text", @readonly = "readonly", style = "cursor:default", data_val_required = "Необходимо заполнить поле" }).Attr("Id", m => "instructions_" + m.Order + "__UserControllerS").Attr("Name", m => "instructions[" + m.Order + "].UserControllerS").Value(m => m.UserControllerS).Custom("peoplePicker", "").ValueUpdate(KnockoutValueUpdateKind.Change)
+
+                                            @*.Attr("Id", m => "NegotiatorsStage_" + stgae.Model.order + "__UsersForNegotiationStage_" + m.order + "__userName").Attr("Name", m => "NegotiatorsStage[" + stage.Model.order + "].UsersForNegotiationStage[" + m.order + "].userName")*@
+
+                                            @instrk.Html.Hidden().Attr("Id", m => "instructions_" + m.Order + "__UserController").Attr("Name", m => "instructions[" + m.Order + "].UserController").Value(m => m.UserController).ValueUpdate(KnockoutValueUpdateKind.Change)
+                                        </div>
+                                        <!-- /ko -->
+                                    </div>
+                                    @instrk.Html.Span("", new { @class = "field-validation-valid", data_valmsg_replace = "true" }).Attr("data_valmsg_for", m => "instructions[" + m.Order + "].UserFor")
+
+
+                                    @* @userk.Html.HyperlinkButton("", "DeleteUser", "UsersKO", new { UserIndex = userk.GetIndex() }, new { @class = "btn" }).SetInnerHtml("<i class='icon-trash'></i>")*@
+                                    @*  <a class="btn" href="#" data-bind="click : function() {executeOnServer(viewModelInstrKO), '/InstructionKO/Delete?Index='+$index());}"><i class="icon-trash"></i></a>*@
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+
+                </div>
+
+            }
+            @*</div>*@
+        }
+
+
+        <div style="padding:3px;">
+            @*@koUser.Html.HyperlinkButton("Добавить пользователя", "AddUser", "UsersKO", null, new { @class="btn", style="width:200px;"})*@
+            <a href="#" data-bind="click : function() {executeOnServer(viewModelInstrKO, '/InstructionKO/Add'); }" class="btn" style="width:200px;">Добавить поручение</a>
+
+        </div>
+
+
+    </div>
+
+
+
+    @* <div id="addModal_resolutions" style="width:800px;" class="modal hide fade in" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    *@
+
+    @*@koUser.Apply(Model)*@
+
+    <script type="text/javascript">
+
+
+        var viewModelInstrKOJs = @Html.Raw(Model.ToJson());
+        var viewModelInstrKO = ko.mapping.fromJS(viewModelInstrKOJs);
+
+        $(document).ready(function () {
+            //ko.attach("InstructionToAttach", viewModelInstrKO);
+            ko.applyBindings(viewModelInstrKO, document.getElementById("InstructionToAttach"));
+        });
+
+
+        function RemoveUserFromsList(elem){
+            var usrId =  $(elem).attr("userId");
+            var instructionId =  $(elem).attr("instructionId");
+
+            $.get("/Users/IsUserInRole", { userId: usrId, roleName: "glbuh" }, function (data) {
+               if (!data) {
+                   viewModelInstrKO.Instructions()[instructionId].UsersFor.remove(function(item) { return item.UserFor() == usrId });
+               } else {
+                   
+               }
+            });
+
+           
+        }
+
+
+    </script>
+</div>    

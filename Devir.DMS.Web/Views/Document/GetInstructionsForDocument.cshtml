@@ -1,0 +1,100 @@
+﻿@model List<Devir.DMS.Web.Models.Document.InstructionForDocumentViewModel>
+
+@{
+    Layout = null;
+    var ParentDocId = ViewBag.ParentDocId;
+}
+
+@helper PrintChild(Guid parentId, Guid MainParent)
+{
+    foreach(var item in Model.Where(m=>m.ParentId == parentId).ToList())
+    {
+        
+         
+            <div style="padding:5px; margin-left:@(item.level*20)px; float:left; margin-bottom:2px; border: 1px solid black; background-color: @(item.DocState == Devir.DMS.DL.Models.Document.DocumentState.FinishedOk ? "#cff2bf" : item.DocState == Devir.DMS.DL.Models.Document.DocumentState.FinishedWithError?"#f3c4c4":"#f0f0f0") ; display:inline-block; width:80%;">
+                @if(item.ParentId!=MainParent){<div style="position:relative; left:-15px; float:left;"><b>┖</b></div>}
+            <div style="float:left; padding-right:20px;"><b>КП:</b></div>           
+            <div style="float:left; padding-right:20px;"> @item.UserNameFrom поручил(а) @item.UserNameFor</div>
+             <div style="float:left">(@item.Header)</div>
+               
+            <div style="float:right;vertical-align:central; width:200px;">
+                @*<a class="btn btn-small" href="/Document/GetInstruction?InstructionId=@item.Id">Перейти к поручению</a>*@
+                <div class="btn-group">         
+                    
+                       
+                    @if (item.CurrentSigner == Devir.DMS.DL.Repositories.RepositoryFactory.GetCurrentUser())
+{
+                        if(!item.isPerformControlAction)
+                        {
+                            if(item.DocState == Devir.DMS.DL.Models.Document.DocumentState.FinishedOk){
+                          <button onclick="ShowSignResultForInstruction('@item.FinishedRouteUserId', '@item.Id')" class="btn btn-small btn-success"><i class="icon-share-alt"></i>Карточка исполнения</button>
+                            }
+                            else { 
+    <button onclick="ShowSignResultWindowForInstruction('@item.Id', '@Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.OkPerformAction')" class="btn btn-small btn-success"><i class="icon-ok-circle"></i>Исполнить</button>
+                                        <button onclick="ShowAddInstructionForInstructionWindow('@item.Id', '@item.RouteStageId', '@item.RouteStageUserId');" class="btn btn-small"><i class="icon-share-alt"></i>Поручить</button>
+                        }
+                        }
+                        else
+                        {                                                        
+                            <button onclick="ShowSignResultForInstruction('@item.RouteStageUserId', '@item.Id')" class="btn btn-small btn-warning"><i class="icon-share-alt"></i>Контроль исполнения</button>
+                        }
+}
+                    else if (item.isPerformControlAction)
+                    {
+     <span class='label' style='background-color:#999999;'> Ожидает контроля исполнения <br /><i>@item.CurrentSignerFIO</i></span>
+}    else if(item.DocState == Devir.DMS.DL.Models.Document.DocumentState.FinishedOk){
+                          <button onclick="ShowSignResultForInstruction('@item.FinishedRouteUserId', '@item.Id')" class="btn btn-small btn-success"><i class="icon-share-alt"></i>Карточка исполнения</button>
+}
+                    else if (item.DocState != Devir.DMS.DL.Models.Document.DocumentState.FinishedWithError)
+                    { 
+     <span class='label' style='background-color:#999999;'> В работе</span>
+}
+                                       
+                    
+                    @*@if(item.Attachments)*@
+                                     
+                    </div>
+                </div>
+            <div style="float:right; padding-right:20px;">@item.DateBefore.ToString("dd.MM.yyyy HH:mm")</div>      
+                  
+                @if (item.DocState == Devir.DMS.DL.Models.Document.DocumentState.FinishedWithError)
+                {
+                    <div style="float: right; padding-right: 20px;"><span class="label" style="background-color: #DA4F49;">Отклонено</span></div>
+                }
+                else
+                {
+
+                    if (item.DocState == Devir.DMS.DL.Models.Document.DocumentState.FinishedOk)
+                    {
+                        if (item.DateBefore < item.FinishDate.Date)
+                        {
+                            <div style="float: right; padding-right: 20px;"><span class="label" style="background-color: #DA4F49;">Просрочено!</span></div>
+                        }
+                        <div style="float: right; padding-right: 20px;"><span class="label" style="background-color: #66CC66;">Выполнено</span></div>
+                    }
+                    else
+                    {
+                        if (item.DateBefore < DateTime.Now.Date)
+                        {
+                            <div style="float: right; padding-right: 20px;"><span class="label" style="background-color: #DA4F49;">Просрочено!</span></div>
+                        }
+                    }
+                }
+                                                                                                                                                                                                                                   
+               
+
+                <div style="clear:both; font-style:italic; color:#999999; font-size:smaller;">@item.Body</div>
+                
+        </div>
+            
+        @PrintChild(item.Id, MainParent)
+    }
+}
+
+
+@PrintChild(ParentDocId, ParentDocId)
+
+
+
+
+

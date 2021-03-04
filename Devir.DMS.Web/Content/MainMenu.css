@@ -1,0 +1,56 @@
+﻿UL.custom_menu { overflow: hidden;padding:0; margin:0 auto;}
+
+UL.custom_menu LI {
+	list-style-type:none;
+	float:left;
+	margin-right:-1px;
+	line-height:1;
+	text-align:center;
+	background-color:#5e5e5e;
+	background-image:-webkit-gradient(linear, 0 0, 0 100%, color-stop(0, rgba(255,255,255, 0.2)), color-stop(0.5, rgba(255,255,255, 0.1)), color-stop(0.5, transparent), to(rgba(255,255,255, 0.1)));
+	background-image:-webkit-linear-gradient(top, rgba(255,255,255, 0.2) 0, rgba(255,255,255, 0.1) 50%, transparent 50%, rgba(255,255,255, 0.1) 100%);
+	background-image:-moz-linear-gradient(top, rgba(255,255,255, 0.2) 0, rgba(255,255,255, 0.1) 50%, transparent 50%, rgba(255,255,255, 0.1) 100%);
+	background-image:-o-linear-gradient(top, rgba(255,255,255, 0.2) 0, rgba(255,255,255, 0.1) 50%, transparent 50%, rgba(255,255,255, 0.1) 100%);
+	background-image:linear-gradient(top, rgba(255,255,255, 0.2) 0, rgba(255,255,255, 0.1) 50%, transparent 50%, rgba(255,255,255, 0.1) 100%	);
+	border:1px solid #666;
+	-webkit-box-shadow:inset -1px 0 1px rgba(255, 255, 255, 0.2), inset 1px 0 1px rgba(255, 255, 255, 0.2), inset 0 0 1em rgba(255, 255, 255, 0.2);
+	-moz-box-shadow:inset -1px 0 1px rgba(255, 255, 255, 0.2), inset 1px 0 1px rgba(255, 255, 255, 0.2), inset 0 0 1em rgba(255, 255, 255, 0.2);
+	box-shadow: inset -1px 0 1px rgba(255, 255, 255, 0.2),	inset 1px 0 1px rgba(255, 255, 255, 0.2), inset 0 0 15px rgba(255, 255, 255, 0.2);
+	text-shadow: 0 2px 3px #333, 0 -1px 1px #333; 
+}
+
+UL.custom_menu LI:hover {
+	background-color:#666666;
+	background-image:-webkit-gradient(linear, 0 0, 0 100%, color-stop(0, rgba(255,255,255, 0.1)), color-stop(0.5, rgba(255,255,255, 0.05)), color-stop(0.5, transparent), to(rgba(255,255,255, 0.05)));
+	background-image:-webkit-linear-gradient(top, rgba(255,255,255, 0.1) 0, rgba(255,255,255, 0.05) 50%, transparent 50%, rgba(255,255,255, 0.05) 100%);
+	background-image:-moz-linear-gradient(top, rgba(255,255,255, 0.1) 0, rgba(255,255,255, 0.05) 50%, transparent 50%, rgba(255,255,255, 0.05) 100%);
+	background-image:-o-linear-gradient(top, rgba(255,255,255, 0.1) 0, rgba(255,255,255, 0.05) 50%, transparent 50%, rgba(255,255,255, 0.05) 100%);
+	background-image:linear-gradient(top, rgba(255,255,255, 0.1) 0, rgba(255,255,255, 0.05) 50%, transparent 50%,	rgba(255,255,255, 0.05) 100% );
+}
+
+UL.custom_menu LI:active {
+	background-color:#444444;
+	-webkit-box-shadow:inset 0 0.25em 0.5em rgba(0, 0, 0, 0.7);
+	-moz-box-shadow:inset 0 0.25em 0.5em rgba(0, 0, 0, 0.7);
+	box-shadow:inset 0 0.25em 0.5em rgba(0, 0, 0, 0.7);
+}
+
+UL.custom_menu LI:first-child {
+	border-radius:5px 0 0 5px;
+}
+
+UL.custom_menu LI:last-child {
+	width:7.375em;
+	border-radius:0 5px 5px 0;
+}
+
+UL.custom_menu LI A {
+	display:block;
+	padding:0.75em 1.25em 0.625em;
+	text-decoration:none;
+	color:#FFFFFF;
+}
+
+UL.custom_menu LI A:hover {
+	color:#FFFFFF;	
+}

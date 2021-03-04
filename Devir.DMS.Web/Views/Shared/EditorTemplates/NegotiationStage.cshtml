@@ -1,0 +1,28 @@
+﻿@model Devir.DMS.DL.Models.Document.NegotiatorsRoutes.NegotiationStage
+
+ <div id="negotiationStage" class="span12" style="background-color: white; border: 1px solid gray; margin: 10px 0">
+    <div class="row">
+    @*Согласующий*@
+    <div id="negotiationUsers" class="row span8">
+        <a class="btn" id="addNegotiator"><i class="icon-plus"></i>Добавить</a>
+            @Html.EditorFor(m => m.UsersForNegotiation)
+    </div>
+        <div class="span4">
+            @*Тип согласования*@
+            <div class="span2">
+                @Html.HiddenFor(model => model.StageType)
+                <select>
+                    <option>Не определен</option>
+                    <option>Последовательное</option>
+                    <option>Паралельное</option>
+                </select>
+            </div>
+            @*Порядок*@
+            <div class="span2">
+                @Html.HiddenFor(model => model.Order)
+                <div class="btn-group"><a id="up-step" class="btn" href="#"><i class="icon-arrow-up"></i></a><a id="down-step" class="btn" href="#"><i class="icon-arrow-down"></i></a></div>
+                <a class="btn" id="remStep"><i class="icon-trash"></i></a>
+            </div>
+        </div>
+        </div>
+</div>

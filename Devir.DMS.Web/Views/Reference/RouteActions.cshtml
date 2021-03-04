@@ -1,0 +1,41 @@
+﻿@model Devir.DMS.DL.Models.References.RouteAction
+
+@{
+    ViewBag.Title = "Действие маршрута";
+    Layout = null;
+}
+
+<script>
+    var tableName = "Действие маршрута";
+    var typeTable = "RouteAction";
+    var cn = ['Название', 'Описание'];
+    var cm = [
+        { name: 'Name', index: 'Name', width: 90 },
+        { name: 'Comment', index: 'Comment', width: 100 }
+    ];
+
+    jqGridTemplates(tableName, typeTable, cn, cm, null);
+    jQuery(list).trigger("reloadGrid");
+    function OnSelectRow(id) {
+    }
+
+</script>
+
+
+
+<div class="split-pane fixed-top">
+    <div class="split-pane-component" id="top-component">
+
+        <div class="decoration">
+
+            <!-- buttons from local.js -->
+            <div class="panel onlyIcons" id="buttons"></div>
+            <!-- jqGrid -->
+            <table id="list" class="table table-condensed table-bordered table-hover"></table>
+
+        </div>
+
+    </div>
+</div>
+   
+

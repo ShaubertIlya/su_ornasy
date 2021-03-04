@@ -1,0 +1,26 @@
+﻿@model Devir.DMS.Web.Models.Reference.DynamicReferenceEditorTemplateViewModel
+   @*//Принимает: Guid Справочника, Guid значения, String name поля, String визуальное отображение значения,  String название поля*@
+@*@Html.TextBox("DynamicReferenceResult", Model.Item4 , new { @class="DynamicRefence" }) <button>...</button> Это будет выбор из справочника :)*@
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        InitPeopleByDepartmentPicker();
+    });
+</script>
+<div class="input-append pdPicker">
+    <input class="span2" style="cursor:default; width:@(Model.Width)px;" readonly="readonly"  id="appendedInputButton_@(Model.FieldStringHeader)" type="text" name="@(Model.FieldName).value" value="@Model.FieldStringValue">
+   @* @Html.Hidden("DynamicReferenceId", Model.ReferenceId)*@
+    <input type="hidden" value="@Model.SelectedItemGuid" name="@(Model.FieldName).valueId" id="@Model.FieldName.Replace(".","_").Replace("[","_").Replace("]","_")">
+    @*<a href="#refModal_@(Model.FieldStringHeader)" id="btn_@(Model.FieldStringHeader)"  role="button" class="btn" data-toggle="modal">...</a>*@
+    @*<button id="btn_@(Model.FieldStringHeader)"  role="button" class="btn" data-toggle="modal">...</button>*@
+</div>
+<div id="addMOdal_@(Model.FieldStringHeader)" class="modal hide fade in" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    
+</div>
+
+
+<div>
+
+    
+
+</div>

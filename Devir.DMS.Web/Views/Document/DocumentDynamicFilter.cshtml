@@ -1,0 +1,420 @@
+﻿@model Devir.DMS.DL.Models.Filter.DocumentFilterVM
+@{
+    Layout = null;
+}
+
+<style>
+
+    #GridLoaderForFilter {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        z-index: 800;
+    }
+</style>
+
+
+<div id="FilterContainer" style="width: 600px; " data-bind="with: RowData">
+
+    <table id="filterTable">
+
+        <tr>
+            <td><b>Отдел:</b></td>
+            <td>
+                <input type="checkbox" data-bind="checked: IsSearchByDepartment" />
+            </td>
+            <td class="departmentpicker" style="margin-left:0;">
+                <input type="hidden" id="dpDepartmentId" data-bind="value: DepartmentId, valueUpdate: 'input' " />
+                <input type="text" id="filterDepartment" data-bind="value: DepartmentName, valueUpdate: 'input' " />
+            </td>
+        </tr>
+
+        <tr>
+            <td> <b>Дата с: </b> </td>
+            <td>
+                <input type="checkbox" data-bind="checked: IsSearchByStartDate" />
+            </td>
+            <td>
+                <input class="ndpicker" type="text" data-bind="datepicker: StartDate" />
+            </td>
+        </tr>
+
+        <tr>
+            <td> <b>Дата по: </b> </td>
+            <td>
+                <input type="checkbox" data-bind="checked: IsSearchByEndDate" />
+            </td>
+            <td>
+                <input class="ndpicker" type="text" data-bind="datepicker: EndDate" />
+            </td>
+        </tr>
+
+        <tr>
+            <td> <b>Заголовок: </b></td>
+            <td>
+                <input type="checkbox" data-bind="checked: IsSearchByHeader" />
+            </td>
+            <td>
+                <input type="text" id="searchHeader" data-bind="value: Header, valueUpdate: 'input'" />
+                @*<input id="IsSearchInHeader" type="checkbox" name="name" value=" " />*@
+            </td>
+            <td>
+                <input type="radio" name="MethodOfSearch" value="IsInclusionByHeader" data-bind="checked: MethodOfSearchForHeader" /> На вхождение
+                <br />
+                <input type="radio" name="MethodOfSearch" value="IsExactMatchByHeader" data-bind="checked: MethodOfSearchForHeader" /> Точно
+            </td>
+        </tr>
+
+
+        <!-- ko foreach: DynamicFields-->
+        @*чекбокс*@
+        <!-- ko if: FieldTemplate.FieldType.Id() === "2490becb-3476-43ab-8717-0f0b138a6ab2" -->
+        <tr>
+            <td>
+                <span data-bind="text: FieldTemplate.Header" style="font-weight: bold;"></span>
+            </td>
+            <td>
+                <input type="checkbox" data-bind="checked: Value, event: { change: $root.valueChanged($parent, $index()) } " />
+                <input type="hidden" data-bind="checked: IsSearchEnabled" />
+            </td>
+            <td></td>
+            <td>
+                <input type="hidden" data-bind="value: FieldTemplate.FieldType.Id" />
+            </td>
+        </tr>
+        <!-- /ko-->
+        @*текст*@
+        <!-- ko if: FieldTemplate.FieldType.Id() === "8a37142c-0e29-4b40-b4a3-0a3a7d4f21d9"
+                ||  FieldTemplate.FieldType.Id() === "944388a1-b1e3-4a4d-910d-7ad9df107e20"
+                ||  FieldTemplate.FieldType.Id() === "f23165db-7c3d-49d5-bbc0-127eef90de36"
+                ||  FieldTemplate.FieldType.Id() === "a427dbfb-9cb7-4f52-9d5e-c7d0677e8103"
+                ||  FieldTemplate.FieldType.Id() === "fbdb27a4-b79c-524f-9d5e-c7d0677e8103"
+            -->
+        <tr>
+            <td>
+                @*<span data-bind="text: FieldTemplate.FieldType.Id()"></span>*@
+                <span data-bind="text: FieldTemplate.Header" style="font-weight: bold;"></span>
+            </td>
+            <td>
+                <input type="checkbox" data-bind="checked: IsSearchEnabled" />
+            </td>
+            <td>
+                <input type="text" data-bind="value: Value, valueUpdate: 'afterkeydown', event: { change: $root.valueChanged($parent, $index()) } " />
+            </td>
+            <td>
+                <input type="radio" value="IsInclusion" data-bind="checked: MethodOfSearchForDynamicValue, attr:{ name: 'MethodOfSearchForDynamicValue_' + $index() } " /> На вхождение
+                <br />
+                <input type="radio" value="IsExactMatch" data-bind="checked: MethodOfSearchForDynamicValue, attr:{ name: 'MethodOfSearchForDynamicValue_' + $index() } " /> Точно
+            </td>
+
+            @*<td>
+                    <input type="hidden" data-bind="value: FieldTemplate.FieldType.Id" />
+                </td>*@
+        </tr>
+        <!-- /ko-->
+        @*справочник*@
+        <!--ko if: FieldTemplate.FieldType.DynamicReferenceId() !== "00000000-0000-0000-0000-000000000000" -->
+        <tr>
+            <td>
+                @*<span data-bind="text: FieldTemplate.FieldType.Id()"></span>*@
+                <span data-bind="text: FieldTemplate.Header" style="font-weight: bold;"></span>
+            </td>
+            <td>
+                <input type="checkbox" data-bind="checked: IsSearchEnabled" />
+            </td>
+            <td>
+                <input type="hidden" data-bind="select2: {value: Value, valueUpdate: 'afterkeydown'}, event: { change: $root.valueChanged($parent, $index()) } " />   @*data-bind="value: Value, valueUpdate: 'afterkeydown', attr: {id: 'reference_' +  $index()}"*@
+
+            </td>
+
+            <td>
+                <input type="hidden" data-bind="value: FieldTemplate.FieldType.Id" />
+            </td>
+        </tr>
+        <!-- /ko-->
+        @*дата*@
+        <!-- ko if: FieldTemplate.FieldType.Id() === "d88f464a-ca95-4c41-ad7d-7df5adfd90d8" -->
+        <tr>
+            <td>
+                <span data-bind="text: FieldTemplate.Header" style="font-weight: bold;"></span>
+            </td>
+            <td>
+                <input type="checkbox" data-bind="checked: IsSearchEnabled" />
+            </td>
+            <td>
+                <input class="ndpicker" type="text" data-bind="datepicker: Value, event: { change: $root.valueChanged($parent, $index()) } " />
+            </td>
+            <td>
+                <input type="hidden" data-bind="value: FieldTemplate.FieldType.Id" />
+            </td>
+        </tr>
+        <!-- /ko-->
+        <!-- /ko-->
+
+    </table>
+
+    <div data-bind="with: loaderForFilterVM">
+        <div id="GridLoaderForFilter" data-bind="visible: filterWorking">
+            <img src="~/Content/DevirGrid/preloader.gif" />
+        </div>
+    </div>
+</div>
+
+<script>
+
+
+
+
+
+    var initialData =  @Html.Raw(Json.Encode(Model));
+    DocumentFilterVM = {
+        RowData : ko.observable(ko.mapping.fromJS(initialData))
+    }
+
+
+    DocumentFilterVM.valueChanged = function (parent, index) {
+
+        var that = parent.DynamicFields()[index];
+
+        that.Value.subscribe( function () {
+            
+            that.IsSearchEnabled(true);
+        });        
+
+    }
+
+
+
+    //var nowTemp = new Date();
+    //var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
+
+    ko.bindingHandlers.datepicker = {
+        init: function (element, valueAccessor, allBindingsAccessor) {
+            //initialize datepicker with some optional options
+
+            $(element).datepicker({
+                format: 'dd.mm.yyyy'
+            });
+
+            var newAllBindingsAccessor = function () {
+                return ko.utils.extend(allBindingsAccessor());  //, {valueUpdate: 'keyup'}
+            };
+
+            var options = newAllBindingsAccessor().datepickerOptions || {};
+
+            $(element).datepicker(options).on("changeDate", function (ev) {
+                var observable = valueAccessor();
+                observable(ev.date);
+            });
+
+            ko.bindingHandlers.value.init(element, valueAccessor, newAllBindingsAccessor);
+
+        },
+        update: function (element, valueAccessor) {
+           
+            var value = ko.utils.unwrapObservable(valueAccessor());
+
+            $(element).datepicker("setValue", value);
+            $(element).datepicker("hide");
+        }
+    };
+
+
+    ko.bindingHandlers.select2 = {
+        init: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+
+            var refIdIndex = bindingContext.$index();
+
+            $(element).select2({
+                width: 220,
+                placeholder: "Выберите...",
+                ajax: {
+                    type: 'GET',
+                    url: '/Document/GetDynamicReferenceForSelect2',
+                    dataType: 'json',
+                    quietMillis: 100,
+                    data: function (term, page) {
+                        return {
+                            referenceId: DocumentFilterVM.RowData().DynamicFields()[refIdIndex].FieldTemplate.FieldType.DynamicReferenceId(),
+                            //term: term, //search term
+                            //pageLimit: 10, // page size
+                            //page: page // page number
+                        };
+                    },
+                    results: function (data, page) {
+                        var more = (page * 10) < data.total;
+                        return {results: data.rows, more: more};
+                    }
+                }
+            });
+
+            if ('@ViewBag.isNewFilter' === 'False') {
+                $(element).select2('data', {id: DocumentFilterVM.RowData().DynamicFields()[refIdIndex].Value(),
+                    text: DocumentFilterVM.RowData().DynamicFields()[refIdIndex].TextForReference() });
+            }
+
+            $(element).on('select2-selected', function(eventData) {
+                if ( eventData.choice ) {
+                    DocumentFilterVM.RowData().DynamicFields()[refIdIndex].Value(eventData.choice.id);
+                    DocumentFilterVM.RowData().DynamicFields()[refIdIndex].TextForReference(eventData.choice.text);
+
+                    // item selected
+                    //var dataObj = eventData.choice.data;
+                    //alert(dataObj);
+                    //var selectedId = eventData.choice.id;
+
+                } else {
+                    // item cleared
+                }
+            });
+        },
+    };
+
+
+    //подписки "если поле изменилось, то включить галочку"
+    DocumentFilterVM.RowData().DepartmentId.subscribe(function (newValue) {
+        DocumentFilterVM.RowData().IsSearchByDepartment(true);
+    });
+
+    DocumentFilterVM.RowData().Header.subscribe(function (newValue) {
+        DocumentFilterVM.RowData().IsSearchByHeader(true);
+    });
+
+    DocumentFilterVM.RowData().StartDate.subscribe(function (newValue) {
+        DocumentFilterVM.RowData().IsSearchByStartDate(true);
+    });
+    DocumentFilterVM.RowData().EndDate.subscribe(function (newValue) {
+        DocumentFilterVM.RowData().IsSearchByEndDate(true);
+    });
+
+
+
+
+    //for (var i in DocumentFilterVM.RowData().DynamicFields() ) {
+    //    var that =  DocumentFilterVM.RowData().DynamicFields()[i];
+    //    that.Value.subscribe( function (newValue) {
+    //        alert();
+    //        //alert(that.Value);
+    //        that.IsSearchEnabled(true);
+    //    });
+    //}
+
+
+    ko.cleanNode(document.getElementById("FilterContainer"));
+    ko.applyBindings(DocumentFilterVM, document.getElementById("FilterContainer"));
+
+    //выбор департамента
+    var dpDepartmentId = "";
+    var dpDepartmentName = "";
+    function FilterInitDepartmentPicker() {
+        $(".departmentpicker").each(function () {
+            $(this).css("border", 1);
+            $(this).css("width", '100%');
+            $(this).addClass("input-append");
+            $(this).append("<button class='dpBtnSelect btn' type=\"button\">...</button>")
+
+            $(document).on("click", "#FilterContainer .dpBtnSelect", function () {
+                dpDepartmentId = $(this).parent().find("input[type=hidden]").attr("id");
+                $(this).parent().find("input[type=hidden]").trigger('change');
+                dpDepartmentName = $(this).parent().find("input[type=text]").attr("id");
+                openNewDialogAndLoadData(true, "dpDialog", "/OrganizationStructure/DepartmentPicker");
+
+
+            });
+
+
+        });
+    }
+    $(function () {
+        FilterInitDepartmentPicker();
+        InitPeopleByDepartmentPicker();
+    });
+
+    //!--выбор департамента
+
+
+    //DocumentFilterVM.RowData().DepartmentName.subscribe(function () {
+    //    alert("1111");
+
+    //    DocumentFilterVM.RowData().DepartmentId(selRowIdOfDepatrtmentForDocumentFilter);
+    //    DocumentFilterVM.RowData().DepartmentName(selRowNameOfDepatrtmentForDocumentFilter);
+    //});
+
+
+    @*for(var index in DocumentFilterVM.RowData().DynamicFields()){
+
+        if (DocumentFilterVM.RowData().DynamicFields()[index].FieldTemplate.FieldType.DynamicReferenceId() !== "00000000-0000-0000-0000-000000000000") {
+
+            $('#reference_'+index).select2({
+                width: 220,
+                placeholder: "Выберите...",
+                ajax: {
+                    type: 'GET',
+                    url: '/Document/GetDynamicReferenceForSelect2',
+                    dataType: 'json',
+                    quietMillis: 100,
+                    data: function (term, page) { // page is the one-based page number tracked by Select2
+
+                        var refIdIndex = $(this).attr('id').replace( /^\D+/g, '');
+
+                        return {
+                            referenceId: DocumentFilterVM.RowData().DynamicFields()[refIdIndex].FieldTemplate.FieldType.DynamicReferenceId(),
+                            //term: term, //search term
+                            //pageLimit: 10, // page size
+                            //page: page // page number
+                        };
+                    },
+                    results: function (data, page) {
+                        var more = (page * 10) < data.total; // whether or not there are more results available
+                        // notice we return the value of more so Select2 knows if more results can be loaded
+                        return {results: data.rows, more: more};
+                    }
+                }
+            });
+
+
+            if ('@ViewBag.isNewFilter' === 'False') {
+                $('#reference_'+index).select2('data', {id: RowData().Value(), text: RowData().TextForReference() });
+            }
+
+
+        }
+
+    }*@
+
+
+
+    //$(function(){
+    //    $('.data-datepicker').datepicker({
+    //        "setDate": new Date(),
+    //        "autoclose": true
+    //    });
+    //});
+
+    //ko.bindingHandlers.datepicker = {
+    //    init: function(element, valueAccessor, allBindingsAccessor) {
+    //        //initialize datepicker with some optional options
+    //        var options = allBindingsAccessor().datepickerOptions || {};
+    //        $(element).datepicker(options);
+
+    //        //when a user changes the date, update the view model
+    //        ko.utils.registerEventHandler(element, "changeDate", function(event) {
+    //            var value = valueAccessor();
+    //            if (ko.isObservable(value)) {
+    //                value(event.date);
+    //            }
+    //        });
+    //    },
+    //    update: function(element, valueAccessor)   {
+    //        var widget = $(element).data("datepicker");
+    //        //when the view model is updated, update the widget
+    //        if (widget) {
+    //            widget.date = ko.utils.unwrapObservable(valueAccessor());
+    //            widget.setValue();
+    //        }
+    //    }
+    //};
+
+
+
+</script>

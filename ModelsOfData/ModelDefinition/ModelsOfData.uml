@@ -1,0 +1,487 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<modelStoreModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm4="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm5="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/SimpleShapesModel" xmlns:dm9="http://schemas.microsoft.com/dsltools/UseCaseModel"
+  dslVersion="1.0.0.0"
+  Id="c4a81dd8-d351-42ca-8dd3-303cab6292f0"
+  name="ModelsOfData" xmlns="http://schemas.microsoft.com/dsltools/ModelStore">
+  <profileInstances>
+    <packageHasProfileInstances
+      Id="0caec977-1f8c-4ba3-a7db-8cc9ad9cc73b">
+      <profileInstance
+        Id="e34d544e-0fea-4ed6-ac5e-1b74119ac791"
+        name="StandardProfileL2" />
+    </packageHasProfileInstances>
+    <packageHasProfileInstances
+      Id="29349502-908c-4fda-9054-c48619c59ed0">
+      <profileInstance
+        Id="532ea607-fb19-44b8-8502-3351b05452be"
+        name="StandardProfileL3" />
+    </packageHasProfileInstances>
+  </profileInstances>
+  <packagedElements>
+    <packageHasNamedElement>
+      <packageMoniker
+        Id="73080347-8adb-4e02-8e0d-c1d6ae23ac15"
+        LastKnownName="Devir"
+        LastKnownLocation="Package_0034.uml" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <packageMoniker
+        Id="52401abc-3ea7-4b68-a2f3-f68680e1a43b"
+        LastKnownName="System"
+        LastKnownLocation="Package4_0034.uml" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <actor
+        Id="8e06e83f-7c7d-427c-923a-8754474f3198"
+        name="Создатель"
+        isAbstract="false"
+        isLeaf="false" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <useCase
+        Id="c14c9709-4c4f-47d6-bede-4880fa4e8065"
+        name="Создание документа"
+        isAbstract="false"
+        isLeaf="false">
+        <suppliersInternal>
+          <dependency
+            Id="aff4df63-76a4-4088-83e7-e8014ec9b7af">
+            <actorMoniker
+              Id="f4f00194-8dea-4f65-a1b7-535754f184c3"
+              LastKnownName="Согласующий 2"
+              LastKnownLocation="ModelsOfData.uml" />
+          </dependency>
+          <dependency
+            Id="56436c49-316a-4fb7-91d9-3a3c938c11da">
+            <actorMoniker
+              Id="948883a0-a2ad-46f6-9d8e-1c3b3e13e717"
+              LastKnownName="Согласующий 3"
+              LastKnownLocation="ModelsOfData.uml" />
+          </dependency>
+          <dependency
+            Id="7c5a394d-5dbd-46d6-8674-e13885d7430a">
+            <actorMoniker
+              Id="646eb65c-6ba0-4868-abce-4c602ea56143"
+              LastKnownName="Согласующий 1"
+              LastKnownLocation="ModelsOfData.uml" />
+          </dependency>
+        </suppliersInternal>
+      </useCase>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <subsystem
+        Id="ffad2575-4000-40b0-9b23-36d50b65a6f5"
+        name="Согласующие"
+        isAbstract="false"
+        isLeaf="false"
+        isActiveClass="false" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <actor
+        Id="646eb65c-6ba0-4868-abce-4c602ea56143"
+        name="Согласующий 1"
+        isAbstract="false"
+        isLeaf="false" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <actor
+        Id="f4f00194-8dea-4f65-a1b7-535754f184c3"
+        name="Согласующий 2"
+        isAbstract="false"
+        isLeaf="false" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <actor
+        Id="948883a0-a2ad-46f6-9d8e-1c3b3e13e717"
+        name="Согласующий 3"
+        isAbstract="false"
+        isLeaf="false" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <subsystem
+        Id="830aec68-1aa1-4822-84ff-cae1eb935df5"
+        name="Subsystem1"
+        isAbstract="false"
+        isLeaf="false"
+        isActiveClass="false" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <subsystem
+        Id="c7de3ff7-8c8a-428c-8767-3da95cf341f5"
+        name="Subsystem2"
+        isAbstract="false"
+        isLeaf="false"
+        isActiveClass="false" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <useCase
+        Id="16b216cf-54a0-430b-9639-4d4f204ff591"
+        name="Согласовано"
+        isAbstract="false"
+        isLeaf="false">
+        <suppliersInternal>
+          <dependency
+            Id="90a8fdfd-b948-4c64-8b9c-bad0fdf497d8">
+            <actorMoniker
+              Id="8af01311-c7f6-4eec-b62e-6e6896bf00da"
+              LastKnownName="Подписант"
+              LastKnownLocation="ModelsOfData.uml" />
+          </dependency>
+        </suppliersInternal>
+      </useCase>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <useCase
+        Id="6ac25f02-437b-48f0-a23a-550df68f3258"
+        name="Согласовано"
+        isAbstract="false"
+        isLeaf="false">
+        <suppliersInternal>
+          <dependency
+            Id="99b03551-b953-42f5-b613-fa3ffd314892">
+            <actorMoniker
+              Id="8af01311-c7f6-4eec-b62e-6e6896bf00da"
+              LastKnownName="Подписант"
+              LastKnownLocation="ModelsOfData.uml" />
+          </dependency>
+        </suppliersInternal>
+      </useCase>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <useCase
+        Id="206966f2-2281-4375-aa72-a480f624ca3e"
+        name="Делегировано"
+        isAbstract="false"
+        isLeaf="false">
+        <suppliersInternal>
+          <dependency
+            Id="169b1085-f488-4314-a925-2e59660acd19">
+            <actorMoniker
+              Id="f8239cab-d5aa-49c4-b6cd-0bd5897548b1"
+              LastKnownName="Зам. согласующего"
+              LastKnownLocation="ModelsOfData.uml" />
+          </dependency>
+        </suppliersInternal>
+      </useCase>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <actor
+        Id="f8239cab-d5aa-49c4-b6cd-0bd5897548b1"
+        name="Зам. согласующего"
+        isAbstract="false"
+        isLeaf="false" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <useCase
+        Id="be4dbcd0-1af5-4996-9a32-8bcf86aa357f"
+        name="Распределение задач"
+        isAbstract="false"
+        isLeaf="false">
+        <suppliersInternal>
+          <dependency
+            Id="02218a9b-4044-463f-8c55-fdd560d2dd1c">
+            <actorMoniker
+              Id="92167217-7efe-4a59-9897-3f9e7c699e3e"
+              LastKnownName="Специалист"
+              LastKnownLocation="ModelsOfData.uml" />
+          </dependency>
+          <dependency
+            Id="ff22f2cf-29a2-4150-a6e3-46a5e0a0fa23">
+            <actorMoniker
+              Id="4f44f156-16b0-43e7-83d1-b751e8164605"
+              LastKnownName="Специалист"
+              LastKnownLocation="ModelsOfData.uml" />
+          </dependency>
+        </suppliersInternal>
+      </useCase>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <actor
+        Id="4f44f156-16b0-43e7-83d1-b751e8164605"
+        name="Специалист"
+        isAbstract="false"
+        isLeaf="false" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <useCase
+        Id="3ef8a6a8-6efc-4e75-befb-753d71d21329"
+        name="Принято"
+        isAbstract="false"
+        isLeaf="false">
+        <suppliersInternal>
+          <dependency
+            Id="51dc77e2-01e2-4cc2-8537-0861bde16662">
+            <actorMoniker
+              Id="969fc119-9ef9-4039-b028-97187fa13ee6"
+              LastKnownName="Зам. согласующего1"
+              LastKnownLocation="ModelsOfData.uml" />
+          </dependency>
+        </suppliersInternal>
+      </useCase>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <actor
+        Id="92167217-7efe-4a59-9897-3f9e7c699e3e"
+        name="Специалист"
+        isAbstract="false"
+        isLeaf="false" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <useCase
+        Id="3e5271da-a513-4e1d-bbba-bbd96528bcff"
+        name="Принято"
+        isAbstract="false"
+        isLeaf="false">
+        <suppliersInternal>
+          <dependency
+            Id="835be9e2-7be2-4634-8c80-3605d6ad76ed">
+            <actorMoniker
+              Id="969fc119-9ef9-4039-b028-97187fa13ee6"
+              LastKnownName="Зам. согласующего1"
+              LastKnownLocation="ModelsOfData.uml" />
+          </dependency>
+        </suppliersInternal>
+      </useCase>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <actor
+        Id="969fc119-9ef9-4039-b028-97187fa13ee6"
+        name="Зам. согласующего1"
+        isAbstract="false"
+        isLeaf="false" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <useCase
+        Id="3892fbbb-e55a-456c-8faf-bc7ac1dcd5fc"
+        name="Контроль"
+        isAbstract="false"
+        isLeaf="false">
+        <suppliersInternal>
+          <dependency
+            Id="4a1ca196-6091-4459-9353-cb78310a2ef5">
+            <actorMoniker
+              Id="4c3969b5-f666-4d46-9630-eacaea453e79"
+              LastKnownName="Согласующий 1"
+              LastKnownLocation="ModelsOfData.uml" />
+          </dependency>
+        </suppliersInternal>
+      </useCase>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <actor
+        Id="4c3969b5-f666-4d46-9630-eacaea453e79"
+        name="Согласующий 1"
+        isAbstract="false"
+        isLeaf="false" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <useCase
+        Id="9f24f551-8477-4262-85b7-4f6007fec8da"
+        name="Согласование на основе принятых решений"
+        isAbstract="false"
+        isLeaf="false">
+        <suppliersInternal>
+          <dependency
+            Id="8f71bba8-8285-4f9f-8925-b3083f1fe0b4">
+            <actorMoniker
+              Id="8af01311-c7f6-4eec-b62e-6e6896bf00da"
+              LastKnownName="Подписант"
+              LastKnownLocation="ModelsOfData.uml" />
+          </dependency>
+        </suppliersInternal>
+      </useCase>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <actor
+        Id="8af01311-c7f6-4eec-b62e-6e6896bf00da"
+        name="Подписант"
+        isAbstract="false"
+        isLeaf="false" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <useCase
+        Id="436e7956-d81e-4011-8a5b-ca57cfee9e57"
+        name="Подписание на сонове согласований"
+        isAbstract="false"
+        isLeaf="false">
+        <suppliersInternal>
+          <dependency
+            Id="c4dde86a-b9eb-4e35-9185-ad9ccef61906">
+            <actorMoniker
+              Id="6e48b4a9-f4f5-42a5-9172-3766211e689a"
+              LastKnownName="Исполнитель"
+              LastKnownLocation="ModelsOfData.uml" />
+          </dependency>
+        </suppliersInternal>
+      </useCase>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <actor
+        Id="6e48b4a9-f4f5-42a5-9172-3766211e689a"
+        name="Исполнитель"
+        isAbstract="false"
+        isLeaf="false" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <useCase
+        Id="54e18fe1-3163-44c0-a5ac-9ee662733e70"
+        name="Делегирование"
+        isAbstract="false"
+        isLeaf="false">
+        <suppliersInternal>
+          <dependency
+            Id="8c64d8d7-c834-4e79-8c99-662cb83b1c69">
+            <actorMoniker
+              Id="b26899fb-5643-4355-8166-ce2489c2f7f1"
+              LastKnownName="Исполнитель 1"
+              LastKnownLocation="ModelsOfData.uml" />
+          </dependency>
+          <dependency
+            Id="a1baec26-a1c8-44fb-b1b7-2118a39409e9">
+            <actorMoniker
+              Id="99494a2f-e007-4e98-9977-3031a3a2ac81"
+              LastKnownName="Исполнитель 2"
+              LastKnownLocation="ModelsOfData.uml" />
+          </dependency>
+        </suppliersInternal>
+      </useCase>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <actor
+        Id="b26899fb-5643-4355-8166-ce2489c2f7f1"
+        name="Исполнитель 1"
+        isAbstract="false"
+        isLeaf="false" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <actor
+        Id="99494a2f-e007-4e98-9977-3031a3a2ac81"
+        name="Исполнитель 2"
+        isAbstract="false"
+        isLeaf="false" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <useCase
+        Id="bc890fd5-c8dc-4fa8-997a-c765b5fd03a4"
+        name="Исполнение"
+        isAbstract="false"
+        isLeaf="false">
+        <suppliersInternal>
+          <dependency
+            Id="5cc8dd10-f5a1-4c62-8df6-fb59523cb8c5">
+            <actorMoniker
+              Id="b6c5730c-30b7-4adf-b2ba-1235d2306127"
+              LastKnownName="Исполнитель"
+              LastKnownLocation="ModelsOfData.uml" />
+          </dependency>
+        </suppliersInternal>
+      </useCase>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <useCase
+        Id="20c35d01-a78b-4ee8-a37f-9edc482dd64c"
+        name="Исполнение"
+        isAbstract="false"
+        isLeaf="false">
+        <suppliersInternal>
+          <dependency
+            Id="8aa90e98-ae0b-45f5-becd-bdb9814e56e9">
+            <actorMoniker
+              Id="b6c5730c-30b7-4adf-b2ba-1235d2306127"
+              LastKnownName="Исполнитель"
+              LastKnownLocation="ModelsOfData.uml" />
+          </dependency>
+        </suppliersInternal>
+      </useCase>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <actor
+        Id="b6c5730c-30b7-4adf-b2ba-1235d2306127"
+        name="Исполнитель"
+        isAbstract="false"
+        isLeaf="false" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <useCase
+        Id="ae5a07b7-5e0a-4e43-80a9-64a453649038"
+        name="Контроль исполнения, пометка о выплнении"
+        isAbstract="false"
+        isLeaf="false">
+        <suppliersInternal>
+          <dependency
+            Id="f7245b61-920e-45a7-b63f-aaba3b2f93e7">
+            <actorMoniker
+              Id="d25e5adf-f3e3-4f08-8631-9a743d9fe89f"
+              LastKnownName="Контроллер"
+              LastKnownLocation="ModelsOfData.uml" />
+          </dependency>
+        </suppliersInternal>
+      </useCase>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <actor
+        Id="d25e5adf-f3e3-4f08-8631-9a743d9fe89f"
+        name="Контроллер"
+        isAbstract="false"
+        isLeaf="false" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <useCase
+        Id="67925e8a-a5e6-4b58-ae6b-68280a234f57"
+        name="Контроль исполнения"
+        isAbstract="false"
+        isLeaf="false">
+        <suppliersInternal>
+          <dependency
+            Id="83d19928-260b-4a37-b020-fb571b794943">
+            <actorMoniker
+              Id="dae2ab8a-57a2-4160-9e09-b585b357c145"
+              LastKnownName="Actor1"
+              LastKnownLocation="ModelsOfData.uml" />
+          </dependency>
+          <dependency
+            Id="d4e1ce28-c22a-4c5d-a0f8-b2d61de65ca9">
+            <useCaseMoniker
+              Id="46a6c808-c625-4838-af19-8501f2c22991"
+              LastKnownName="Завершение маршрута"
+              LastKnownLocation="ModelsOfData.uml" />
+          </dependency>
+        </suppliersInternal>
+      </useCase>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <actor
+        Id="dae2ab8a-57a2-4160-9e09-b585b357c145"
+        name="Actor1"
+        isAbstract="false"
+        isLeaf="false" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <useCase
+        Id="46a6c808-c625-4838-af19-8501f2c22991"
+        name="Завершение маршрута"
+        isAbstract="false"
+        isLeaf="false" />
+    </packageHasNamedElement>
+  </packagedElements>
+  <primitiveType
+    Id="220a3521-e091-4221-bae9-3ef9018e845c"
+    name="Integer"
+    isAbstract="false"
+    isLeaf="false" />
+  <primitiveType
+    Id="8943dc84-709e-4f62-b15a-a3273aa6f165"
+    name="Boolean"
+    isAbstract="false"
+    isLeaf="false" />
+  <primitiveType
+    Id="59259974-6d55-42c6-b7bd-763d77ac8ef9"
+    name="String"
+    isAbstract="false"
+    isLeaf="false" />
+  <primitiveType
+    Id="3ab42e7d-4969-445a-b209-471f5cb8209c"
+    name="UnlimitedNatural"
+    isAbstract="false"
+    isLeaf="false" />
+</modelStoreModel>

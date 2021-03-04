@@ -1,0 +1,74 @@
+﻿@model List<Devir.DMS.DL.Models.Document.DocumentNotifications.Notifications>
+
+
+@{
+    ViewBag.Title = "GetNotifications";
+    Layout = null;
+}
+
+@if (Model.Count == 0)
+{
+    <script>
+
+        $(document).ready(function() {
+            $('#notifications').find("h4").replaceWith('<h4>Нет новых уведомлений</h4>')
+        });
+
+       
+    </script>
+}
+
+@if (Model.Any())
+{
+    <script>
+        //setTimeout(function () {
+        //    $.ajax({
+        //        url: "/Home/SetViewDateTime",
+        //        success: function () {
+        //            info('.top-right', "Все уведомления прочитаны");
+        //        }
+        //    });
+        //}, 4000); //4 seconds
+
+    </script>
+}
+
+
+@*<script>
+
+    $(document).ready(
+        function refreshNotifyDiv(message) {
+            alert(message);
+
+            //$('#notificationsBody').prepend(message);
+        });
+</script>*@
+
+<div>
+    <div id="notifications" class="decoration">
+
+        <div class="modal-header">
+
+            <h4>Новые уведомления</h4>
+        </div>
+        @if (Model.Any())
+        {
+            <div class="modal-body" style="overflow: auto; max-height: 350px;">
+                @foreach (var item in Model)
+                {
+                    <div id="notificationsBody" class="alert alert-error">
+                        @item.Text
+                        <br />
+                        <a href="@Html.Raw(item.LinkText)">Просмотр</a>
+                    </div>
+                }
+
+            </div>
+            <div class="modal-footer">
+            </div>
+        }
+    </div>
+</div>
+
+
+

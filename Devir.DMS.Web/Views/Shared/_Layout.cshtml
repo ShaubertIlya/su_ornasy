@@ -1,0 +1,316 @@
+﻿@using Devir.DMS.Web
+@*{
+    var mvcApp = ApplicationInstance as Devir.DMS.Web.MvcApplication;
+}*@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewBag.Title</title>
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width" />
+    <script src="~/Scripts/jquery-1.9.1.js"></script>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @*    @Scripts.Render("~/bundles/jquery")*@
+    @RenderSection("scripts", required: false)
+    <link href="~/Content/bootstrap/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/jquery.mCustomScrollbar.css" rel="stylesheet" />
+    <link href="~/Content/Custom.css" rel="stylesheet" />
+   @* <script src="~/Content/FaswTransitionss/fasw.transitions.min.js"></script>
+    <link href="~/Content/FaswTransitionss/transition.min.css" rel="stylesheet" />*@
+     @*<link href="~/Content/bootstrap/jquery-ui-1.10.0.custom.css" rel="stylesheet" />*@
+    <script src="~/Scripts/jquery.mCustomScrollbar.concat.min.js"></script>
+    <link href="~/Content/jqGrid/ui.jqgrid.css" rel="stylesheet" />
+    <link href="~/Content/jqGrid/bootstrap-notify.css" rel="stylesheet" />
+    <link href="~/Content/jqGrid/alert-bangtidy.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap/datepicker.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap/bootstrapSwitch.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-ui-1.10.3.custom.min.js"></script>
+    <script src="~/Scripts/jqGrid/jquery.jqGrid.src.js"></script>
+    <script src="~/Scripts/jqGrid/i18n/grid.locale-ru.js"></script>
+    <script src="~/Scripts/bootstrap/bootstrap.min.js"></script>
+    <script src="~/Scripts/jqGrid/jquery.jgrowl.js"></script>
+    <script src="~/Scripts/jqGrid/jquery.blockUI.js"></script>
+    <script src="~/Scripts/jqGrid/bootstrap-notify.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js" type="text/javascript"> </script>
+    <script src="~/Scripts/local/local.js"></script>
+    <script src="~/Scripts/local/jquery.json-2.4.min.js"></script>
+    <script src="~/Scripts/bootstrap/bootbox.min.js"></script>
+    <script src="~/Scripts/bootstrap/bootstrap-datepicker.js" charset="UTF-8"></script>
+    <script src="~/Scripts/waypoints.min.js"></script>
+    <script src="~/Content/select2-3.4.5/select2.min.js"></script>
+    <script src="~/Content/select2-3.4.5/select2_locale_ru.js"></script>
+    <link href="~/Content/select2-3.4.5/select2.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery.Print.js"></script>
+    
+    <script src="~/Scripts/bootstrap/bootstrapSwitch.js"></script>
+    <script src="~/Scripts/local/peoplepicker.js"></script>
+    <script type="text/javascript" src="~/Scripts/local/departmentpicker.js"></script>
+    <script src="~/Scripts/jquery.signalR-2.0.3.min.js"></script>
+    @*<script src="~/Scripts/jquery.signalR-1.1.2.min.js" type="text/javascript"></script>*@
+    <script src="~/Content/ckeditor/ckeditor.js"></script>
+        <script src="~/Content/ckeditor/adapters/jquery.js"></script>
+        @*<link href="~/Content/ckeditor/contents.css" rel="stylesheet" />*@
+
+
+    <script src="~/Scripts/knockout-2.3.0.debug.js"></script>
+    <script src="@Url.Content("~/Scripts/knockout.mapping-latest.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/perpetuum.knockout.js")" type="text/javascript"></script>
+
+
+
+    <script src="~/signalr/hubs" type="text/javascript"></script>
+       <script src="~/Scripts/jquery.livequery.js"></script>
+    <script src="~/Scripts/knockout.multimodels-0.1.js"></script>
+    
+     <script type="text/javascript" src="~/Scripts/split-pane.js"></script>
+    <link href="~/Content/splitPanel/split-pane.css" rel="stylesheet" />
+    <link href="~/Content/splitPanel/pretty-split-pane.css" rel="stylesheet" />
+    
+    @*используется при загрузке файла*@
+    <script src="~/Scripts/jquery.form.js"></script>
+
+
+
+   
+     <script>
+
+         //$(document).ready(function () {
+
+         ko.bindingHandlers.peoplePicker = {
+
+             init: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                 InitPeopleByDepartmentPicker();
+             },
+             update: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+
+             }
+         };
+
+         ko.bindingHandlers.MultiplePeoplePicker = {
+
+             init: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+
+                 var id = $(element).parent().attr("id");
+                 
+
+                 InitPeopleByDepartmentPicker();
+
+                 SetCallback(id, function (data) {
+
+                     for (var dat in data) {
+                         //alert(.toSource());
+                         viewModelInstrKO.Instructions()[id].UsersFor.push({ UserForS: data[dat].text, UserFor: ko.observable(data[dat].id) });
+                     }
+
+                     //alert(data.toSource());
+
+                 });
+                 
+             },
+             update: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+
+             }
+         };
+
+         ko.bindingHandlers.datePicker = {
+             init: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                 $(element).datepicker({
+                     format: 'dd.mm.yyyy'
+                 });
+
+             },
+             update: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+
+
+
+             }
+         };
+
+         ko.bindingHandlers.resolutions = {
+             init: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                 $(element).parent().find("#btn_openDialog").click(function () {
+                     id = '6c873d6a-45f4-433e-9b1d-b97d9595d245';
+                          refname = "BlaBlaBlaBudityatina_value";
+                         
+                          openNewDialogAndLoadData(true, "sss", "/Reference/ShowDynamicReference?id=" + id + "&dynRefname=" + refname + "&isDialog=True" + "&addModal=resolutions" + $(element).attr("RealId"), 800);
+
+                       
+                      });
+
+
+                 //});
+             },
+             update: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+
+
+
+             }
+         };
+         //});
+
+
+</script>
+
+
+
+    <script type="text/javascript">
+
+        var currentModal = new Array();
+
+        $.fn.modal.Constructor.prototype.enforceFocus = function () { };
+
+      
+        
+
+        $(document).ready(function () {
+            $.ajaxSetup({ cache: false });
+            var notify = $.connection.webNotificationHub;
+
+            notify.client.receiveChat = function (message) {
+                
+                if (message == "refreshMain") {
+                    $.get("/Home/RenderMainMenu", function (data) {
+                        $("#mainMenushka").html(data);
+                    });
+                }
+
+                if (message == "refreshMainGrid") {
+                        
+                        var id = $(".reloadableGrid[gridtype='All']").attr("id");
+                        $("#" + id).trigger("reloadGrid");
+                    }
+
+                if (message.indexOf("refreshGrid:") != -1) {
+
+                    message = message.substring(12);
+
+                    var id = $(".reloadableGrid[gridtype='" + message + "']").attr("id");
+                        $("#" + id).trigger("reloadGrid");
+                }
+
+               
+                //нужно prepend-ить новые уведомления на глваную страницу
+                //if (message.indexOf("refreshNotificationDiv:") != -1) {
+                //    message = message.substring(23);
+
+                //    if ($.isFunction($.fn.refreshNotifyDiv)) {
+                //        refreshNotifyDiv(message);
+                //    }
+                //}
+            };
+
+            // Start the connection
+            $.connection.hub.start().done(function () {
+                
+            });
+
+            
+            
+            $.ajaxSetup({ cache: false });
+            $(function () {
+                function stripTrailingSlash(str) {
+                    if (str.substr(-1) == '/') {
+                        return str.substr(0, str.length - 1);
+                    }
+                    return str;
+                }
+
+                var url = window.location.pathname;
+                var activePage = stripTrailingSlash(url);
+
+                $('.nav li a').each(function () {
+                    var currentPage = stripTrailingSlash($(this).attr('href'));
+
+                    if (activePage == currentPage) {
+                        $(this).parent().addClass('active');
+                    }
+                });
+            });
+        });
+
+        
+
+    </script>
+</head>
+<body>
+   
+
+   
+        <div id="header">
+
+               @* <div class="panel onlyIcons navbar-fixed-top" style="left: 9px; padding:5px; background-color:#666666; border:0px; right: 9px;">
+
+                     @Html.Action("Login", "Home")
+                          <span id="mainMenushka">
+                     @Html.Action("RenderMainMenu", "Home")
+                    </span>
+                     
+        </div>*@
+
+            <div class="navbar navbar-inverse">
+                <div class="navbar-inner navbar-inner-mainMenushka">
+                    <div class="container">
+                        <div class="nav-collapse collapse">
+                            <ul class="nav navbar-inverse">
+                                @Html.Action("RenderMainMenu", "Home", new {UserId=Devir.DMS.DL.Repositories.RepositoryFactory.GetCurrentUser()})
+                            </ul>
+                            <div class="pull-right">
+                                 @Html.Action("Login", "Home")
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+ </div>
+        <div id="body">
+                <div class='notifications top-right'></div>
+        @RenderSection("sidebar", required: false)
+      @*  <section class="clear-fix">*@
+            @RenderBody()
+@*        </section>*@
+                  
+    </div>
+
+ 
+<!--Footer!-->
+
+        @*<div id="footer">
+        <div class="content-wrapper">
+            <div class="float-left">
+                <p>&copy; @DateTime.Now.Year</p>
+            </div>
+        </div>
+    </div>     *@   
+   
+
+    <div id="ModalSignResult" class="modal hide fade in">
+    </div>
+
+    <div id="ModalInstructionResult" class="modal hide fade in">
+    </div>
+
+    <div id="ModalShowSignResult" class="modal hide fade in">
+    </div>
+
+    <div id="ModalSignedUsersControl" class="modal hide fade in">
+    </div>
+
+
+    <div id="PDFModal" style="display:none; position:fixed; left:0; top:0px; width:100%; height:100%; z-index: 99998;">
+    </div>
+
+    <div id="bottomPanelPDF" class="panel onlyIcons navbar-fixed-bottom" style="left: 9px; background-color: #f0f0f0; padding: 5px; right: 9px; display: none; z-index: 99999;">
+        <a onclick="HidePDFFile();" class="btn"><i class="icon-backward"></i>Закрыть просмотр</a>
+        <a id="ShowPrevBtn" class="btn"><</a>
+        <a id="ShowNextBtn" class="btn">></a>
+    </div>
+
+    <div>
+    </div>
+
+
+</body>
+</html>

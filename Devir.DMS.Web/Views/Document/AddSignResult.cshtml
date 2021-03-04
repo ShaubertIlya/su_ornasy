@@ -1,0 +1,116 @@
+﻿@model Devir.DMS.DL.Models.Document.Route.UserSignResult
+@{
+    Layout = null;
+    var nowIshod = ViewBag.nowIshod;
+    var nowIshodNumber = ViewBag.nowIshodNumber;
+    var DocumentId = (Guid)ViewBag.DocumentId;
+    var RootDocumentId = (Guid?)ViewBag.RootDocumentId;
+    var UserForRouteId = (Guid?)ViewBag.UserForRouteId;
+    var isIshod = (bool)ViewBag.isIshod;
+    var isForPerformControl = (bool)ViewBag.isForPerformControl;
+    var isForInstruction = (bool)ViewBag.isForInstruction;
+    var nowIshodNumberLink = ViewBag.nowIshodNumberLink;
+}
+
+
+@using (Ajax.BeginForm("AddSignResult", null, new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "ModalSignResult" }, new { id = "AddSignResult" }))
+{
+    <div class="modal-header">
+
+        <h3 id="addModalLabel">@Model.Action.Name</h3>
+    </div>
+
+                
+    <div class="modal-body" id="SignResultModalBody" style="width:650px;">
+        @if(!nowIshod){
+
+        @Html.HiddenFor(m => m.ActionId)
+        @Html.Hidden("DocumentId", DocumentId)
+
+        @Html.Hidden("UserForRouteId", UserForRouteId)
+        @Html.Hidden("isForPerformControl", isForPerformControl)
+        @Html.Hidden("isForInstruction", isForInstruction)
+
+        <div class="controls controls-row">
+            <label>@Html.LabelFor(m => m.Comment)</label>
+        </div>
+        <div class="editor-field">
+            @Html.TextAreaFor(model => model.Comment, new { style = "width:535px" })
+        </div>
+
+        @Html.HiddenFor(m => m.Date)
+
+
+        @* загрузка файла и сканирование *@
+        <h4>Вложения:</h4>
+        <div id="attachments_inModal" style="height: auto">
+
+            @* сюда добавляется row-fluid при добавлении файла *@
+            
+            @if (Model.attachment != null)
+            {
+                foreach (var item in Model.attachment)
+                {
+                    Html.RenderAction("ShowUploadedFile", "File", new { guid = item });
+                }
+            }
+        </div>
+        }else{
+        <h4 style="color: crimson; text-decoration: underline; cursor: pointer;" onclick="openIshod()">@nowIshodNumber</h4>
+        }
+
+    </div>
+    <div>
+       
+        <div class="modal-footer">
+            @if (!nowIshod)
+            {
+                <div style="float: left">
+                    <button onclick=" showModalInModal(); return false; " class="btn">Загрузить файл</button>
+                    <button onclick=" getImageFromScaner(); return false; " class="btn">Сканировать</button>
+                </div>
+            }
+               
+
+            <button class="btn" data-dismiss="modal" aria-hidden="true">Закрыть</button>
+            @if(!nowIshod){
+                if (isIshod){
+                    <button class="btn" data-dismiss="modal" onclick="createIshod();" aria-hidden="true">Ответить исходящим</button>
+                }
+                <button class="btn btn-primary submitter" onclick="$(this).hide(); $('#AddSignResult').submit(); return false;">@Model.Action.Name</button>
+                    @*<input type="submit" class="btn btn-primary" value="@Model.Action.Name"/>*@
+            }
+        </div>
+        </div>
+
+}
+@if(isIshod){
+    <script>
+  
+        function createIshod() {
+            window.open("/Document/AddDocument?id=9655a0c3-a516-41cb-a2df-cbd2a096cf2a&rootDocumentId=@RootDocumentId&rootInstructionId=@DocumentId&userForRouteId=@UserForRouteId", "_blank");
+        }
+
+    
+        @*var s = '@DocumentId';
+    alert(s);
+
+    alert('@RootDocumentId');*@
+        //$(".ckeditor").ckeditor();
+
+    </script>
+}
+
+@if (nowIshod)
+{
+    <script>
+
+        function openIshod() {
+            window.open("@nowIshodNumberLink", "_blank");
+        }
+
+
+     
+
+    </script>
+}

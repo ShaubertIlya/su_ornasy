@@ -1,0 +1,253 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Devir.DMS.Web", "Devir.DMS.Web\Devir.DMS.Web.csproj", "{CB665A3B-BB34-4EBE-A1C0-1B97A57FE963}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Devir.DMS.Web.TestForFileUpload", "Devir.DMS.Web.TestForFileUpload\Devir.DMS.Web.TestForFileUpload.csproj", "{418EB8BE-5FED-49E8-8772-D4A41F7A3EB9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Devir.DMS.DL", "Devir.DMS.DL\Devir.DMS.DL.csproj", "{CA890185-CDC8-465D-B583-955034DF15A6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Devir.DMS.BL", "Devir.DMS.BL\Devir.DMS.BL.csproj", "{6653B0F6-A0FF-442C-82D2-F75EE45BC7B9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Devir.DMS.TestMongoConnection", "Devir.DMS.TestMongoConnection\Devir.DMS.TestMongoConnection.csproj", "{533F7A86-EEA4-459A-9438-B3007A1DF577}"
+EndProject
+Project("{F088123C-0E9E-452A-89E6-6BA2F21D5CAC}") = "ModelsOfData", "ModelsOfData\ModelsOfData.modelproj", "{84162BF5-F619-4C0A-A562-E597FFAF9909}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{FCD710E2-DAE0-4999-9F3A-9C4FDE242CA1}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Devir.DMS.ADImport", "Devir.DMS.ADImport\Devir.DMS.ADImport.csproj", "{875D327D-44E1-4C3D-8D1E-4E2553884C3D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BdsSoft.DirectoryServices.Linq", "BdsSoft.DirectoryServices.Linq\BdsSoft.DirectoryServices.Linq.csproj", "{9426C3F6-CD05-4249-B9B7-47A084AD1B70}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Devir.DMS.ADSync", "Devir.DMS.ADSync\Devir.DMS.ADSync.csproj", "{423CDC71-4A8D-4F09-B869-64F51D7689ED}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Devir.DMS.TaskManager", "Devir.DMS.TaskManager\Devir.DMS.TaskManager.csproj", "{0A9943DA-84F4-4802-A3FC-67F72FF0B444}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Devir.DMS.ScanSubsystem", "Devir.DMS.ScanSubsystem\Devir.DMS.ScanSubsystem.csproj", "{34C84699-8CC7-4AC8-94C4-442B55021D9D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Devir.DMS.SimpleHTTPServer", "Devir.DMS.SimpleHTTPServer\Devir.DMS.SimpleHTTPServer.csproj", "{4365C8C4-D970-403A-8B8E-43F752C1EBF2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Devir.DMS.NotifyMessenger", "Devir.DMS.NotifyMessenger\Devir.DMS.NotifyMessenger.csproj", "{21AC0288-DD6D-47D8-8265-397C9D69910B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Devir.DMS.OfficeToPDFConverter", "Devir.DMS.OfficeToPDFConverter\Devir.DMS.OfficeToPDFConverter.csproj", "{C013D9EC-968F-41A8-8A65-7B99E4D3C8E6}"
+	ProjectSection(ProjectDependencies) = postProject
+		{827BFAD8-FBCB-4E0D-8D59-A698A43AD7CC} = {827BFAD8-FBCB-4E0D-8D59-A698A43AD7CC}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Devir.DMS.FulltextSearchEngine", "Devir.DMS.FulltextSearchEngine\Devir.DMS.FulltextSearchEngine.csproj", "{827BFAD8-FBCB-4E0D-8D59-A698A43AD7CC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EPocalipse.IFilter", "EPocalipse.IFilter\EPocalipse.IFilter.csproj", "{400462CE-40B3-498F-B95A-B1D2AE679359}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Devir.DMS.FTSEngine", "Devir.DMS.FTSEngine\Devir.DMS.FTSEngine.csproj", "{146F0D8D-BB60-4486-90DA-C0DF8240FFFE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Devir.DMS.Notify.Scanning", "Devir.DMS.Notify.Scanning\Devir.DMS.Notify.Scanning.csproj", "{C133B939-9565-4B94-858F-EAF63C89ADB7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAndLoadTestProject1", "WebAndLoadTestProject1\WebAndLoadTestProject1.csproj", "{5A151910-1A86-4F20-885D-8CA23F4C9A7B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{66555A4A-E141-4F14-B5C9-97D63ED215CA}"
+	ProjectSection(SolutionItems) = preProject
+		Local.testsettings = Local.testsettings
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FixScript_18.11.2014", "FixScript_18.11.2014\FixScript_18.11.2014.csproj", "{139F46D6-224D-40A6-AB76-95408ED65833}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FixScript-28.11.2014", "FixScript-28.11.2014\FixScript-28.11.2014.csproj", "{2D64DA3B-F164-404C-905A-D47D5174BF3D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FixScript_09.12.2014", "FixScript_09.12.2014\FixScript_09.12.2014.csproj", "{3DB5E39B-2906-4B93-A478-0BE1EBB85C9F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FixScript_19.12.2014", "FixScript_19.12.2014\FixScript_19.12.2014.csproj", "{80762C6D-D529-4A55-A3FF-B4CB2911DDDA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FixScript_02042015", "FixScript_02042015\FixScript_02042015.csproj", "{5502F4B4-1CEA-405B-AE2C-EA20D129A4D8}"
+EndProject
+Global
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 25
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://azorya.visualstudio.com/defaultcollection
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = Devir.DMS.BL\\Devir.DMS.BL.csproj
+		SccProjectName1 = Devir.DMS.BL
+		SccLocalPath1 = Devir.DMS.BL
+		SccProjectUniqueName2 = Devir.DMS.DL\\Devir.DMS.DL.csproj
+		SccProjectName2 = Devir.DMS.DL
+		SccLocalPath2 = Devir.DMS.DL
+		SccProjectUniqueName3 = Devir.DMS.TestMongoConnection\\Devir.DMS.TestMongoConnection.csproj
+		SccProjectName3 = Devir.DMS.TestMongoConnection
+		SccLocalPath3 = Devir.DMS.TestMongoConnection
+		SccProjectUniqueName4 = Devir.DMS.Web.TestForFileUpload\\Devir.DMS.Web.TestForFileUpload.csproj
+		SccProjectName4 = Devir.DMS.Web.TestForFileUpload
+		SccLocalPath4 = Devir.DMS.Web.TestForFileUpload
+		SccProjectUniqueName5 = Devir.DMS.Web\\Devir.DMS.Web.csproj
+		SccProjectName5 = Devir.DMS.Web
+		SccLocalPath5 = Devir.DMS.Web
+		SccProjectUniqueName6 = ModelsOfData\\ModelsOfData.modelproj
+		SccProjectName6 = ModelsOfData
+		SccLocalPath6 = ModelsOfData
+		SccProjectUniqueName7 = Devir.DMS.ADImport\\Devir.DMS.ADImport.csproj
+		SccProjectName7 = Devir.DMS.ADImport
+		SccLocalPath7 = Devir.DMS.ADImport
+		SccProjectUniqueName8 = BdsSoft.DirectoryServices.Linq\\BdsSoft.DirectoryServices.Linq.csproj
+		SccProjectName8 = BdsSoft.DirectoryServices.Linq
+		SccLocalPath8 = BdsSoft.DirectoryServices.Linq
+		SccProjectUniqueName9 = Devir.DMS.ADSync\\Devir.DMS.ADSync.csproj
+		SccProjectName9 = Devir.DMS.ADSync
+		SccLocalPath9 = Devir.DMS.ADSync
+		SccProjectUniqueName10 = Devir.DMS.TaskManager\\Devir.DMS.TaskManager.csproj
+		SccProjectName10 = Devir.DMS.TaskManager
+		SccLocalPath10 = Devir.DMS.TaskManager
+		SccProjectUniqueName11 = Devir.DMS.ScanSubsystem\\Devir.DMS.ScanSubsystem.csproj
+		SccProjectName11 = Devir.DMS.ScanSubsystem
+		SccLocalPath11 = Devir.DMS.ScanSubsystem
+		SccProjectUniqueName12 = Devir.DMS.SimpleHTTPServer\\Devir.DMS.SimpleHTTPServer.csproj
+		SccProjectName12 = Devir.DMS.SimpleHTTPServer
+		SccLocalPath12 = Devir.DMS.SimpleHTTPServer
+		SccProjectUniqueName13 = Devir.DMS.NotifyMessenger\\Devir.DMS.NotifyMessenger.csproj
+		SccProjectName13 = Devir.DMS.NotifyMessenger
+		SccLocalPath13 = Devir.DMS.NotifyMessenger
+		SccProjectUniqueName14 = Devir.DMS.OfficeToPDFConverter\\Devir.DMS.OfficeToPDFConverter.csproj
+		SccProjectName14 = Devir.DMS.OfficeToPDFConverter
+		SccLocalPath14 = Devir.DMS.OfficeToPDFConverter
+		SccProjectUniqueName15 = Devir.DMS.FulltextSearchEngine\\Devir.DMS.FulltextSearchEngine.csproj
+		SccProjectName15 = Devir.DMS.FulltextSearchEngine
+		SccLocalPath15 = Devir.DMS.FulltextSearchEngine
+		SccProjectUniqueName16 = EPocalipse.IFilter\\EPocalipse.IFilter.csproj
+		SccProjectName16 = EPocalipse.IFilter
+		SccLocalPath16 = EPocalipse.IFilter
+		SccProjectUniqueName17 = Devir.DMS.FTSEngine\\Devir.DMS.FTSEngine.csproj
+		SccProjectName17 = Devir.DMS.FTSEngine
+		SccLocalPath17 = Devir.DMS.FTSEngine
+		SccProjectUniqueName18 = Devir.DMS.Notify.Scanning\\Devir.DMS.Notify.Scanning.csproj
+		SccProjectName18 = Devir.DMS.Notify.Scanning
+		SccLocalPath18 = Devir.DMS.Notify.Scanning
+		SccProjectUniqueName19 = WebAndLoadTestProject1\\WebAndLoadTestProject1.csproj
+		SccProjectName19 = WebAndLoadTestProject1
+		SccLocalPath19 = WebAndLoadTestProject1
+		SccProjectUniqueName20 = FixScript_18.11.2014\\FixScript_18.11.2014.csproj
+		SccProjectName20 = FixScript_18.11.2014
+		SccLocalPath20 = FixScript_18.11.2014
+		SccProjectUniqueName21 = FixScript-28.11.2014\\FixScript-28.11.2014.csproj
+		SccProjectName21 = FixScript-28.11.2014
+		SccLocalPath21 = FixScript-28.11.2014
+		SccProjectUniqueName22 = FixScript_09.12.2014\\FixScript_09.12.2014.csproj
+		SccProjectName22 = FixScript_09.12.2014
+		SccLocalPath22 = FixScript_09.12.2014
+		SccProjectUniqueName23 = FixScript_19.12.2014\\FixScript_19.12.2014.csproj
+		SccProjectName23 = FixScript_19.12.2014
+		SccLocalPath23 = FixScript_19.12.2014
+		SccProjectUniqueName24 = FixScript_02042015\\FixScript_02042015.csproj
+		SccProjectName24 = FixScript_02042015
+		SccLocalPath24 = FixScript_02042015
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CB665A3B-BB34-4EBE-A1C0-1B97A57FE963}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB665A3B-BB34-4EBE-A1C0-1B97A57FE963}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB665A3B-BB34-4EBE-A1C0-1B97A57FE963}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB665A3B-BB34-4EBE-A1C0-1B97A57FE963}.Release|Any CPU.Build.0 = Release|Any CPU
+		{418EB8BE-5FED-49E8-8772-D4A41F7A3EB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{418EB8BE-5FED-49E8-8772-D4A41F7A3EB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{418EB8BE-5FED-49E8-8772-D4A41F7A3EB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{418EB8BE-5FED-49E8-8772-D4A41F7A3EB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA890185-CDC8-465D-B583-955034DF15A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA890185-CDC8-465D-B583-955034DF15A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA890185-CDC8-465D-B583-955034DF15A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA890185-CDC8-465D-B583-955034DF15A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6653B0F6-A0FF-442C-82D2-F75EE45BC7B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6653B0F6-A0FF-442C-82D2-F75EE45BC7B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6653B0F6-A0FF-442C-82D2-F75EE45BC7B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6653B0F6-A0FF-442C-82D2-F75EE45BC7B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{533F7A86-EEA4-459A-9438-B3007A1DF577}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{533F7A86-EEA4-459A-9438-B3007A1DF577}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{533F7A86-EEA4-459A-9438-B3007A1DF577}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{533F7A86-EEA4-459A-9438-B3007A1DF577}.Release|Any CPU.Build.0 = Release|Any CPU
+		{84162BF5-F619-4C0A-A562-E597FFAF9909}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84162BF5-F619-4C0A-A562-E597FFAF9909}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84162BF5-F619-4C0A-A562-E597FFAF9909}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84162BF5-F619-4C0A-A562-E597FFAF9909}.Release|Any CPU.Build.0 = Release|Any CPU
+		{875D327D-44E1-4C3D-8D1E-4E2553884C3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{875D327D-44E1-4C3D-8D1E-4E2553884C3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{875D327D-44E1-4C3D-8D1E-4E2553884C3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{875D327D-44E1-4C3D-8D1E-4E2553884C3D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9426C3F6-CD05-4249-B9B7-47A084AD1B70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9426C3F6-CD05-4249-B9B7-47A084AD1B70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9426C3F6-CD05-4249-B9B7-47A084AD1B70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9426C3F6-CD05-4249-B9B7-47A084AD1B70}.Release|Any CPU.Build.0 = Release|Any CPU
+		{423CDC71-4A8D-4F09-B869-64F51D7689ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{423CDC71-4A8D-4F09-B869-64F51D7689ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{423CDC71-4A8D-4F09-B869-64F51D7689ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{423CDC71-4A8D-4F09-B869-64F51D7689ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A9943DA-84F4-4802-A3FC-67F72FF0B444}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A9943DA-84F4-4802-A3FC-67F72FF0B444}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A9943DA-84F4-4802-A3FC-67F72FF0B444}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A9943DA-84F4-4802-A3FC-67F72FF0B444}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34C84699-8CC7-4AC8-94C4-442B55021D9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34C84699-8CC7-4AC8-94C4-442B55021D9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34C84699-8CC7-4AC8-94C4-442B55021D9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34C84699-8CC7-4AC8-94C4-442B55021D9D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4365C8C4-D970-403A-8B8E-43F752C1EBF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4365C8C4-D970-403A-8B8E-43F752C1EBF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4365C8C4-D970-403A-8B8E-43F752C1EBF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4365C8C4-D970-403A-8B8E-43F752C1EBF2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21AC0288-DD6D-47D8-8265-397C9D69910B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21AC0288-DD6D-47D8-8265-397C9D69910B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21AC0288-DD6D-47D8-8265-397C9D69910B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21AC0288-DD6D-47D8-8265-397C9D69910B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C013D9EC-968F-41A8-8A65-7B99E4D3C8E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C013D9EC-968F-41A8-8A65-7B99E4D3C8E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C013D9EC-968F-41A8-8A65-7B99E4D3C8E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C013D9EC-968F-41A8-8A65-7B99E4D3C8E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{827BFAD8-FBCB-4E0D-8D59-A698A43AD7CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{827BFAD8-FBCB-4E0D-8D59-A698A43AD7CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{827BFAD8-FBCB-4E0D-8D59-A698A43AD7CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{827BFAD8-FBCB-4E0D-8D59-A698A43AD7CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{400462CE-40B3-498F-B95A-B1D2AE679359}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{400462CE-40B3-498F-B95A-B1D2AE679359}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{400462CE-40B3-498F-B95A-B1D2AE679359}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{400462CE-40B3-498F-B95A-B1D2AE679359}.Release|Any CPU.Build.0 = Release|Any CPU
+		{146F0D8D-BB60-4486-90DA-C0DF8240FFFE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{146F0D8D-BB60-4486-90DA-C0DF8240FFFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{146F0D8D-BB60-4486-90DA-C0DF8240FFFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{146F0D8D-BB60-4486-90DA-C0DF8240FFFE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C133B939-9565-4B94-858F-EAF63C89ADB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C133B939-9565-4B94-858F-EAF63C89ADB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C133B939-9565-4B94-858F-EAF63C89ADB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C133B939-9565-4B94-858F-EAF63C89ADB7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A151910-1A86-4F20-885D-8CA23F4C9A7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A151910-1A86-4F20-885D-8CA23F4C9A7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A151910-1A86-4F20-885D-8CA23F4C9A7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A151910-1A86-4F20-885D-8CA23F4C9A7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{139F46D6-224D-40A6-AB76-95408ED65833}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{139F46D6-224D-40A6-AB76-95408ED65833}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{139F46D6-224D-40A6-AB76-95408ED65833}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{139F46D6-224D-40A6-AB76-95408ED65833}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D64DA3B-F164-404C-905A-D47D5174BF3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D64DA3B-F164-404C-905A-D47D5174BF3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D64DA3B-F164-404C-905A-D47D5174BF3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D64DA3B-F164-404C-905A-D47D5174BF3D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3DB5E39B-2906-4B93-A478-0BE1EBB85C9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3DB5E39B-2906-4B93-A478-0BE1EBB85C9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3DB5E39B-2906-4B93-A478-0BE1EBB85C9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3DB5E39B-2906-4B93-A478-0BE1EBB85C9F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80762C6D-D529-4A55-A3FF-B4CB2911DDDA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80762C6D-D529-4A55-A3FF-B4CB2911DDDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80762C6D-D529-4A55-A3FF-B4CB2911DDDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80762C6D-D529-4A55-A3FF-B4CB2911DDDA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5502F4B4-1CEA-405B-AE2C-EA20D129A4D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5502F4B4-1CEA-405B-AE2C-EA20D129A4D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5502F4B4-1CEA-405B-AE2C-EA20D129A4D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5502F4B4-1CEA-405B-AE2C-EA20D129A4D8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

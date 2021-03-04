@@ -1,0 +1,30 @@
+﻿@model Devir.DMS.Web.Models.Reference.DynamicReferenceEditorTemplateViewModel
+   @*//Принимает: Guid Справочника, Guid значения, String name поля, String визуальное отображение значения,  String название поля*@
+@*@Html.TextBox("DynamicReferenceResult", Model.Item4 , new { @class="DynamicRefence" }) <button>...</button> Это будет выбор из справочника :)*@
+
+
+
+@Html.Action("getComboboxForDynamicReference", "document", new { model = Model })
+
+
+@*<script type="text/javascript">
+    $(document).ready(function() {
+        $("#btn_@(Model.FieldStringHeader)").click(function() {
+            id = "@Model.ReferenceId";
+            refname = "@Model.FieldName.Replace(".", "_").Replace("[", "_").Replace("]", "_")_value";
+
+            openNewDialogAndLoadData(true, "@(Model.FieldStringHeader)", "/Reference/ShowDynamicReference?id=" + id + "&dynRefname=" + refname + "&isDialog=True" + "&addModal=@(Model.FieldStringHeader)");
+
+        });
+    });
+</script>
+<div class="input-append">
+    <input class="span2" style="width:@(Model.Width)px;" name="@(Model.FieldName).DynamicReferenceResult" id="appendedInputButton_@(Model.FieldStringHeader)" type="text" value="@Model.FieldStringValue">
+    @Html.Hidden("DynamicReferenceId", Model.ReferenceId)
+    <input type="hidden" value="@Model.SelectedItemGuid" name="@(Model.FieldName).value" id="@(Model.FieldName.Replace(".","_").Replace("[","_").Replace("]","_"))_value">
+  
+    <button id="btn_@(Model.FieldStringHeader)"  role="button" class="btn" data-toggle="modal">...</button>
+</div>
+<div id="addModal_@(Model.FieldStringHeader)" class="modal hide fade in" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    
+</div>*@

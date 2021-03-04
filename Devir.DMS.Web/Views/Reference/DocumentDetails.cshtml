@@ -1,0 +1,116 @@
+﻿@model Devir.DMS.DL.Models.Document.DocumentType
+
+@{
+ViewBag.Title = "";
+Layout = null;
+}
+<script type="text/javascript" >
+    $(".edit").click(function () {
+        $("#addModal").empty();
+        $("#addModal").modal('show');
+        var id = $(".edit").attr("value");
+        $("#addModal").load(this.id +"?id=" + id);
+    });
+    $('#tab-detail a').click(function (e) {
+        e.preventDefault();
+        $(this).tab('show');
+    });
+</script>
+
+<div >
+
+    <div class="gridDetailHeader">
+            @Model.Name
+    </div>
+
+    <!-- gridDetails -->
+<div class="tab-pane" id="gridDetails">
+    <ul class="nav nav-tabs" id="tab-detail">
+        <li class="active">
+            <a href="#collapseOne">Поля документа</a>
+        </li>
+        <li><a href="#collapseTwo">Динамические маршруты</a></li>
+         <li><a href="#collapseThree">Разрешенные роли</a></li>
+        <li><a href="#" onclick="window.open('/Reference/DocumentVisualConstructor?DocumentTypeId=@Model.Id')">Визуальный конструктор документа</a></li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane fade in active" id="collapseOne">
+            <button id='EditFieldsTemplate' class="btn edit" value="@Model.Id" type="button">
+                <i class="icon-pencil icon-black"></i>
+            </button>
+            <table  class="table table-hover table-bordered table-condensed EditFieldsTemplater">
+                <tr>
+                    <th>Заголовок</th>
+                    <th>Тип поле</th>
+                    <th>Необходимое поле</th>
+                    <th>Порядок</th>
+                </tr>
+                <tbody>
+                    @foreach (var item in Model.FieldTemplates)
+                    {
+                        <tr>
+                            <td>@item.Header</td>
+                            <td>@item.FieldType.Name</td>
+                            <td>@item.isRequired</td>
+                            <td>@(item.FieldOrder+1) </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+                    
+                   
+        </div>
+        <div class="tab-pane fade in" id="collapseTwo">
+            <button id='EditRouteTemplate' class="btn edit" value="@Model.Id" type="button">
+                <i class="icon-pencil icon-black"></i>
+            </button>
+            <table  class="table table-hover">
+                <tr>
+                    <th>Тип маршрута</th>
+                    <th>Поле документа</th>
+                    <th>Порядок</th>
+                </tr>
+                <tbody>
+                    @foreach (var item in Model.RouteTemplates)
+                    {
+                        <tr>
+                            <td>@item.TypeOfTheRoute.Name</td>
+                            <td>@item.DocumentFieldName</td>
+                            <td>@item.FieldOrder</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <br/>
+                   
+        </div>
+
+           <div class="tab-pane fade in" id="collapseThree">
+            <button id='EditDocumentTypeRoles' class="btn edit" value="@Model.Id" type="button">
+                <i class="icon-pencil icon-black"></i>
+            </button>
+            <table  class="table table-hover">
+                <tr>
+                    <th>Роль</th>
+                   
+                </tr>
+                <tbody>
+                    @foreach (var item in Model.Roles)
+                    {
+                        <tr>
+                            <td>@item.Name</td>                            
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <br/>
+                   
+        </div>
+
+    </div>
+  
+</div>
+@*<div id="edit-modal" class="modal hide fade in" style="width: 800px" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+</div>*@
+    
+    </div>

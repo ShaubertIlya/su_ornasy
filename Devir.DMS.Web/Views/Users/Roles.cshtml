@@ -1,0 +1,177 @@
+﻿@{
+    ViewBag.Title = "Роли";
+    Layout = null;
+}
+@*<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Роли</title>*@
+
+
+    <script>
+
+        var roleId;
+
+        $(document).ready(function () {
+            var tableName = "Группы";
+            var list = "#roles";
+            var pager = "#pagerRoles";
+            var getData = '/Users/GetRoles';
+            var deleteData = '/Users/DeleteRole';
+            var updateData = '/Users/EditRole';
+            var addData = '/Users/AddRole';
+            var mtype = 'POST';
+            var cn = ['ИД', 'Наименование'];
+            var cm = [
+                { name: 'Id', index: 'Id', hidden: true, key: true },
+                { name: 'Name', index: 'Name', width: 300 }
+            ];
+
+            jqGridTable(tableName,
+                        list,
+                        pager,
+                        getData,
+                        deleteData,
+                        updateData,
+                        addData,
+                        cn,
+                        cm,
+                        mtype,
+                        null,
+                        "#rolesButtons");
+
+            //$(list).jqGrid('setGridParam', {
+            //    width: "200"
+            //});
+
+            var tableName2 = "Пользователи";
+            var list2 = "#users";
+            var pager2 = "#pagerUsers";
+            var getData2 = '/Users/GetUsersFromRole';
+            var deleteData2 = '/Users/DeleteUserFromRole';
+            var addData2 = '/Users/UsersToRole';
+            var updateData2 = "/Users/Update";
+            var mtype2 = 'POST';
+            var cn2 = ['ИД', 'Логин', 'Имя', 'Фамилия', 'E-mail', 'Телефон'];
+            var cm2 = [
+                { name: 'UserId', index: 'UserId', hidden: true, key: true },
+                { name: 'Name', index: 'Post' },
+                { name: 'FirstName', index: 'FirstName' },
+                { name: 'LastName', index: 'LastName' },
+                { name: 'Email', index: 'Email' },
+                { name: 'Phone', index: 'Phone' }
+            ];
+
+            jqGridTable(tableName2,
+                        list2,
+                        pager2,
+                        getData2,
+                        deleteData2,
+                        updateData2,
+                        addData2,
+                        cn2,
+                        cm2,
+                        mtype2);
+            $(list2).jqGrid('setGridParam', {
+                serializeGridData: function (postdata) {
+                    postdata.roleId = roleId;
+                    return postdata;
+                }
+            });
+
+            $(list).jqGrid('setGridParam', {
+                onSelectRow: function (rowid, status, e) {
+                    roleId = rowid;
+                    $(list2).trigger('reloadGrid');
+                    SetGridHeight("#bottom-component");
+                }
+            });
+
+            //HideColumnNames(list);
+        });
+
+        function OpenAddUserToRole() {
+            var selRole = $("#roles").jqGrid("getGridParam", "selrow");
+            if (selRole == null) {
+                info(".top-right", "Выберите группу");
+                return;
+            }
+
+            openNewDialogAndLoadData(false, "usersToRole", "/Users/UsersToRole?roleId=" + selRole);
+            
+        }
+
+        function DeleteUserFromRole() {
+            var selRole = $("#roles").jqGrid("getGridParam", "selrow");
+            var selUser = $("#users").jqGrid("getGridParam", "selrow");
+            $.ajax({
+                url: '/Users/DeleteUserFromRole',
+                data: '{ "roleId": "' + selRole + '" , "userId": "' + selUser + '" }',
+                dataType: "json",
+                type: 'POST',
+                contentType: "application/json; charset=utf-8",
+                success: function (xmldata, stat) {
+                    if (stat == "success") {
+                        $("#users").trigger("reloadGrid");
+                    }
+                },
+                error: function (xml) {
+                    //showError(xml, 'Получить модели');
+                }
+            });
+        }
+
+        $(function () {
+            $('div.split-pane').splitPane();
+        });
+    </script>
+
+    <style type="text/css">
+        /*html, body {
+            height: 100%;
+            min-height: 100%;
+            margin: 0;
+            padding: 0;
+        }*/
+    </style>
+@*</head>
+<body>*@
+        <div class="split-pane fixed-top">
+            <div class="split-pane-component" id="top-component">
+                <div class="decoration">
+                    <div class="panel">
+                        <h5>Роли</h5>
+                        <div id="rolesButtons" class="onlyIcons" style="width: 100%; height: 100%"></div>
+                    </div>
+                    
+                    <table id="roles" class="table table-condensed table-bordered"></table>
+            </div>
+
+        </div>
+        <div class="split-pane-divider" id="my-divider"></div>
+        <div class="split-pane-component" id="bottom-component">
+            <div class="decoration">
+                <div class="panel">
+                    <h5>Участники
+                    </h5>
+                    <div class="btn-group">
+                        <button type="button" onclick="OpenAddUserToRole();" class="btn" id="AddButton">
+                            <i class="icon-plus icon-black"></i>
+                         </button>
+                        <button type="button" onclick="DeleteUserFromRole();" class="btn" id="DeleteButton">
+                            <i class="icon-trash icon-black"></i>
+                         </button>
+                    </div>
+                </div>
+                 
+                    <table id="users" class="table table-condensed table-bordered"></table>
+            </div>
+        </div>
+    </div>
+
+    <div id="addModal" class="modal hide fade in" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    </div>
+@*</body>
+</html>*@

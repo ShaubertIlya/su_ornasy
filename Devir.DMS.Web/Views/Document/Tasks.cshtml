@@ -1,0 +1,128 @@
+﻿@{
+    ViewBag.Title = "Задания";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/Content/DevirGrid/DevirGrid.css" rel="stylesheet" />
+
+<style>
+    .tasksContainer {
+        padding: 5px;
+        border-radius: 5px 5px 5px 5px;
+        background-color: #fff;
+        height: 100%;
+       /*// width: 100%;*/      
+    }
+</style>
+
+<div class="tasksContainer" id="tasksContainer">
+    <div id="gridHeader">
+        <table class="table borderless table-condensed">
+            <tr>
+                <td style="width:50px; margin:0px; padding:0px;"></td>
+                <td style="width: 150px; ">
+                    <span class="GridHeaderActive" onclick="sortAndGroup(this, 'Name', 'Name')">ЗАДАНИЕ <i></i></span>
+                </td>
+                <td>
+                    <span class="GridHeaderActive" onclick="sortAndGroup(this, 'Number', 'Number')">ДОКУМЕНТ <i></i></span>
+                </td>
+                <td style=" width: 250px;">
+                    <span class="GridHeaderActive" onclick="sortAndGroup(this, 'AuthorName', 'AuthorName')">ОТПРАВИТЕЛЬ <i></i></span>
+                </td>
+                <td style="width: 250px; vertical-align: middle;">
+                    <span class="GridHeaderActive" onclick="sortAndGroup(this, 'Date', 'gDate')">СРОК ИСПОЛНЕНИЯ <i></i></span>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div id="GridContainer" style="height:100%; width:100%; overflow: auto;">
+
+
+        <div style="width:100%;  overflow:auto;">
+            <div id="TasksGrid" style="height: 100%;">
+                <ul>
+                    <!-- ko foreach: RawData -->
+                    <!-- ko ifnot: Group()==''-->
+                    <li data-bind="click: $parent.showHideGroup">
+                        <div class="gridGroup">
+
+                            <!-- ko if: Visible -->
+                            <i class="icon-play-circle rotated90"></i>
+                            <!-- /ko-->
+                            <!-- ko if: !Visible() -->
+                            <i class="icon-play-circle"></i>
+                            <!-- /ko-->
+                            &nbsp;&nbsp;<span data-bind="text: Group"></span>
+
+                        </div>
+                    </li>
+                    <!-- /ko -->
+                    <!-- ko if: Visible -->
+                    <!-- ko foreach: Values-->
+                    <li class="gridRow" data-bind="click: $root.clickRow">
+
+                        <table class="table borderless table-condensed">
+                            <tr>
+                                <td rowspan="2" style="width: 50px; vertical-align: middle; padding: 0px; margin: 0px;">
+                                    <!--ko if: isNew-->
+                                    <div id="gridBadInstructionsCount" class="label" style="background-color: #66CC66;">Новое</div>
+                                    <!--/ko-->
+                                    <!--ko if: isUrgent-->
+                                    <div id="gridBadInstructionsCount" class="label" style="background-color: #ff6a00;">Срочно</div>
+                                    <!--/ko-->
+                                </td>
+                                <td rowspan="2" style="width: 150px;">
+                                    <span data-bind="text: Name"></span>
+                                </td>
+                                <td>
+                                    <span data-bind="text: Number"></span>
+                                </td>
+                                <td style="width: 250px; text-align: left;">
+                                    <span data-bind="text: AuthorName"></span>
+                                </td>
+                                <td style="width: 250px; vertical-align: middle;" rowspan="2">
+                                    <b><span data-bind="text: sDate"></span></b>
+                                    <br />
+                                    <!--ko if: isExpired-->
+                                    <span class="label" style="background-color: #DA4F49; font-size: xx-small;  width: auto;">
+                                        Просрочено
+                                        <span style="font-weight:bold;" data-bind="text: ExpiredTimeSpan.Days"></span>
+                                        <span style=" font-weight:normal; font-size: xx-small; width: 32px;">дн.</span>
+                                    </span>
+                                    <!--/ko-->
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td colspan="3" style="color: #a8a8a8; font: small; font-size: 0.95em; text-decoration: none; text-shadow: 0 1px 0 #FFFFFF;">
+                                    <span data-bind="text: Header"></span>
+                                </td>
+                            </tr>
+                        </table>
+
+                    </li>
+                    <!-- /ko-->
+                    <!-- /ko-->
+                    <!-- /ko -->
+                </ul>
+
+                <div id="GridLoader" data-bind="visible: working">
+                    <img src="~/Content/DevirGrid/preloader.gif" />
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="~/Scripts/GridSystem/Tasks/TasksVM.js"></script>
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,31 @@
+﻿@model Devir.DMS.DL.Models.DocumentTemplates.FieldTemplate
+@{
+var selectList = ((List<Devir.DMS.DL.Models.References.FieldType>)ViewBag.FieldTypes).Select(m => new SelectListItem() { Text=m.Name, Value=m.Id.ToString()});
+}
+<div class="controls controls-row content">
+    @Html.HiddenFor(model=>model.Id)
+
+
+    <div class="span2">@Html.EditorFor(m=>m.Header, new { @class = "span2" })
+    @Html.ValidationMessageFor(model => model.Header)</div>
+
+
+    <div class="span2">@Html.DropDownListFor(m => m.FieldTypeId, selectList, new { @class = "span2" })
+        @Html.ValidationMessageFor(model => model.FieldType)</div>
+    
+     <div class="span2">@Html.CheckBoxFor(m => m.isRequired, new { value = Model.isRequired.ToString(), @class = "isRequired" })      
+    </div>
+    
+    @*<div class="span2">@Html.EditorFor(m=>m.FieldTypeId, new { @class = "span2" })
+    @Html.ValidationMessageFor(model => model.FieldType)</div>*@
+   
+
+     @*<div class="span2">@Html.HiddenFor(m=>m.FieldOrder, new { @class = "span2" })</div>*@
+    @*@Html.ValidationMessageFor(model => model.FieldOrder)*@
+    
+    <div><input type="hidden" name="FieldTemplates[0].FieldOrder" class="order" value="[0]" ></div>
+    <div class="btn-group"><a id="up" class="btn" href="#"><i class="icon-arrow-up"></i></a><a id="down" class="btn" href="#"><i class="icon-arrow-down"></i></a></div>
+    <a class="btn" href="#" id="remScnt"><i class="icon-trash"></i></a>
+
+</div>
+

@@ -1,0 +1,42 @@
+﻿@{
+    //Layout = null;
+}
+
+<script type="text/javascript">
+    function showModalFileUpload() {
+        $("#dlgIconUploadBody").load("/File/IconModal");
+        $("#dlgIconUpload").modal('show');
+    }
+
+    function btnUploadIcon() {
+        $("#uploadForm").submit();
+        $("#dlgIconUpload").modal('hide');
+        $("#dlgFileUploadBody").html(""); //чистим буфера (*)(*)
+    }
+
+</script>
+
+
+<div class="well">
+    <legend>Загрузить иконку:</legend>
+    <br />
+    <button onclick="showModalFileUpload()" class="btn">Загрузить</button>
+</div>
+
+
+<div id="dlgIconUpload" class="modal hide fade">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>Загрузить иконку</h3>
+    </div>
+    <div class="modal-body">
+        <div id="dlgIconUploadBody"></div>
+    </div>
+    <div class="modal-footer">
+        <a id="modal-form-submit" onclick="btnUploadIcon(); return false;" class='btn btn-primary' href="#">Ок</a>
+    </div>
+</div>
+
+
+<div id="resultIcon">
+</div>

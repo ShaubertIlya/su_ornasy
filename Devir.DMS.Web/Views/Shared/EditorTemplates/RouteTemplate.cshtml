@@ -1,0 +1,36 @@
+﻿@model Devir.DMS.DL.Models.DocumentTemplates.RouteTemplate
+@{
+    var selectList = ((List<Devir.DMS.DL.Models.DocumentTemplates.RouteType>)ViewBag.RouteTypes).Select(m => new SelectListItem() { Text = m.Name, Value = m.Id.ToString() });
+
+    var selectList2 = ((List<Devir.DMS.DL.Models.DocumentTemplates.FieldTemplate>)ViewBag.FieldTemplates).Select(m => new SelectListItem() { Text = m.Header, Value = m.Id.ToString() });
+}
+<div class="controls controls-row content"> 
+
+    @Html.HiddenFor(m => m.Id)
+    @Html.HiddenFor(m=>m.RouteCondition)
+    @Html.HiddenFor(m=>m.UserByDefault)
+
+    <div class="span2">@Html.DropDownListFor(m => m.TypeOfTheRouteId, selectList, new { @class = "span2" })
+        @Html.ValidationMessageFor(model => model.TypeOfTheRouteId)</div>  
+
+    <div class="span2">@Html.DropDownListFor(m => m.DocumentFieldTemplate, selectList2, new { @class = "span2" })
+    @Html.ValidationMessageFor(model => model.DocumentFieldTemplate)</div>  
+        
+    
+
+    @Html.HiddenFor(m=>m.NeedSignResultConfirmation)
+    @Html.HiddenFor(m=>m.UserByDefault)
+    @Html.HiddenFor(m=>m.RouteCondition)
+    @Html.HiddenFor(m => m.isAuthor);
+    
+
+
+   @* <div class="span2">@Html.CheckBox("NeedSignResultConfirmation", Model.NeedSignResultConfirmation??true) Подтверждение исполнения</div>
+    
+    <div class="span2">@Html.TextBox("NeedSignResultConfirmation", Model.NeedSignResultConfirmation??true) Подтверждение исполнения</div>*@
+
+    <div><input type="hidden" name="RouteTemplates[0].FieldOrder" class="order" value="[0]" ></div>
+    <div class="btn-group"><a id="up" class="btn" href="#"><i class="icon-arrow-up"></i></a><a id="down" class="btn" href="#"><i class="icon-arrow-down"></i></a></div>
+    <a class="btn" href="#" id="remScnt"><i class="icon-trash"></i></a>
+
+</div>

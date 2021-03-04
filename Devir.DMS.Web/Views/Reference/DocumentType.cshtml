@@ -1,0 +1,69 @@
+﻿@model Devir.DMS.DL.Models.Document.DocumentType
+@{
+    ViewBag.Title = "Тип документа";
+    Layout = null;
+}
+
+<style type="text/css">
+    /*html, body {
+        height: 100%;
+        min-height: 100%;
+        margin: 0;
+        padding: 0;
+    }*/
+</style>
+
+
+<script>
+    var tableName = "Тип документа";
+    var typeTable = "DocumentType";
+    var cn = ['ИД', 'Название', 'Описание', 'Автоматический cдвиг даты'];
+    var cm = [
+        { name: 'Id', index: 'Id', key: true, hidden: true },
+        { name: 'Name', index: 'Name' },
+        { name: 'Comment', index: 'Comment' },
+        { name: 'AutoShiftDate', index: 'AutoShiftDate' }
+    ];
+    var func = function OnSelectRow(id) {
+        $("#details").load("DocumentDetails?id=" + id);
+    };
+
+
+    jqGridTemplates(tableName, typeTable, cn, cm, func, "#buttons", "EditDocumentType");
+    jQuery(list).trigger("reloadGrid");
+
+    $(function () {
+        $('div.split-pane').splitPane();
+    });
+
+</script>
+
+
+<div class="split-pane fixed-top">
+    <div class="split-pane-component" id="top-component">
+
+        <div class="decoration">
+
+            <!-- buttons from local.js -->
+            <div class="panel onlyIcons" id="buttons"></div>
+            <!-- jqGrid -->
+            <table id="list" class="table table-condensed table-bordered"></table>
+
+        </div>
+
+    </div>
+    <div class="split-pane-divider" id="my-divider"></div>
+    <div class="split-pane-component" id="bottom-component">
+        <div class="decoration">
+
+            <div id="details" style="background-color: white; overflow: auto"></div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+

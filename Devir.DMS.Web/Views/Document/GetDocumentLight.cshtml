@@ -1,0 +1,705 @@
+﻿@*@{
+    ViewBag.Title = "GetDocument";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}*@
+
+@model Devir.DMS.DL.Models.Document.Document
+
+@{
+    ViewBag.Title = Model.DocumentType.Name + "Номер документа";
+    Layout = null;
+    int ActiveTab = Convert.ToInt32(ViewBag.ActiveTabPane);
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+}
+
+<script src="/Scripts/PDF/pdfobject.js"></script>
+<style>
+    .inner_textBlock {
+        position: absolute;
+    }
+
+    .sort_container {
+        position: relative;
+    }
+
+    .inner_container {
+        min-height: 50px;
+        height: 100%;
+        margin-bottom: -5px;
+    }
+</style>
+
+<div id="scrolledDocumentAdd" style="overflow: hidden;" class="decoration">
+
+    <div style="position: relative; text-align: right; height: 0px; background: none; top: 20px; right: 30px;">
+
+         @if (Model.docState == Devir.DMS.DL.Models.Document.DocumentState.FinishedOk)
+        {
+            <img src="~/Content/DocumentStates/Выполнено.png" />
+        }
+        else
+        {
+
+        if (Model.docState == Devir.DMS.DL.Models.Document.DocumentState.FinishedWithError)
+        {
+            <img src="~/Content/DocumentStates/Отклонено.png" />
+            }
+            else
+            {
+
+        if (Model.CurentStageTypeId == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.NegotiationStage)
+        {
+            <img src="~/Content/DocumentStates/На%20согласовании.png" />
+        }
+
+        if (Model.CurentStageTypeId == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.PerformStage)
+        {
+            <img src="~/Content/DocumentStates/На исполнении.png" />
+        }
+
+        if (Model.CurentStageTypeId == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.SignStage)
+        {
+            <img src="~/Content/DocumentStates/На подписи.png" />
+        }
+
+       
+
+        
+
+        if (Model.docState == Devir.DMS.DL.Models.Document.DocumentState.Draft)
+        {
+            <img src="~/Content/DocumentStates/Черновик.png" />
+        }
+        }
+         }
+
+    </div>
+
+
+
+
+    <div class="gridDetailHeader">@Model.DocumentType.Name №@Model.DocumentNumber</div>
+
+
+    <div>
+        <ul class="nav nav-tabs" id="tab-detail">
+            <li @(ActiveTab == 1 ? "class=active" : "")>
+                <a href="#collapseOne">
+                Основная информация</a>
+            </li>
+            <li @(ActiveTab == 2 ? "class=active" : "") >
+                <a href="#collapseTwo">
+                Маршрут движения документа</a>
+            </li>
+
+            @if (Model.DocumentSignStages.Any(m => m.RouteUsers != null && m.RouteUsers.Any(n => n.Instructions != null && n.Instructions.Any())))
+{
+    <li @(ActiveTab == 3 ? "class=active" : "")>
+                <a href="#collapseThree">
+        Задания и поручения</a>
+    </li>
+}
+
+
+          @*  <li>
+                <a href="#collapseFour">История работы с документом</a>
+            </li>*@
+        </ul>
+    </div>
+
+    <div id='content' class="tab-content" style="overflow: auto; margin-left: 10px;">
+
+
+        <div id="collapseOne" class="tab-pane fade in@(ActiveTab==1?" active":"")">
+            <div style="overflow:auto;">
+            <div class="sort_container">
+                <div class="controls controls-row content" style="margin-bottom: 10px;">
+                    <div class="span2" style="margin-left: 20px;">
+                        <strong>Автор:</strong>
+                </div>
+                    <div style="margin-left: 20px; float: left;">
+                    @Model.Author.GetFIO()
+                </div>
+            </div>
+                <div class="controls controls-row content" style="margin-bottom: 10px;">
+                    <div class="span2" style="margin-left: 20px;">
+                        <strong>Дата создания:
+                        </strong>
+                </div>
+                    <div style="margin-left: 20px; float: left;">
+                    @Model.CreateDate
+                </div>
+            </div>
+            </div>
+
+                   <div class="controls controls-row content" style="margin-bottom: 10px;">
+                    <div class="span2" style="margin-left: 20px;">
+                        <strong> Краткое содержание:</strong>
+                </div>
+                    <div style="margin-left: 20px; float: left;">
+                  @Model.Header
+                </div>
+            </div>
+
+               @*       <div class="controls controls-row content">
+                <div class="span2">
+                   
+                </div>
+                <div style="margin-left:20px;float:left;">
+                   
+                </div>
+            </div>*@
+         @*   <div class="controls controls-row content">
+                <div class="span2">
+                    Содержание
+                                   </div>
+                <div style="margin-left:20px;float:left;">
+
+                    @Html.Raw(Model.Body)
+                </div>
+            </div>*@
+
+            @*@foreach (var item in Model.FieldValues)
+            {
+                <div class="controls controls-row content">
+                    <div class="span2">
+                        @item.Header
+                    </div>
+                    <div style="margin-left:20px; float:left;">
+
+                        @item.ValueToDisplay
+                    </div>
+                </div>
+            }*@
+            <div>
+                @foreach (var container in Model.DocumentType.DocumentVisualTemplate)
+                {
+                    <div class="sort_container">
+                        @foreach (var group in container.Controls.Where(c1 =>c1.FieldId != null && c1.Type == "validate").OrderBy(ob => ob.Top).GroupBy(c => c.Top))
+                        {
+                            <div class="controls controls-row content" style="margin-bottom: 10px">
+                                <div style="float: left">
+                                    @foreach (var control in group.OrderBy(ob => ob.Left).GroupBy(gr => gr.FieldId))
+                                    {
+                                    
+                                        <div class="span2" style="margin-left: 20px;">
+                                           @*@if(control.Any(m=>m.Type=="label")){<strong>@control.Where(m=>m.islabel).FirstOrDefault().LabelText</strong>}
+                                             else{
+                                                <strong>@control.First().LabelText</strong>
+                                            }*@   
+                                            
+                                            @if(control.Key.HasValue)
+                                            {
+                                             if (Model.FieldValues.Select(fv => fv.FieldTemplateId).Contains(control.Key.Value))
+                                            {
+                                            <strong>@(Model.DocumentType.FieldTemplates.Where(m=>m.Id == control.Key.Value).FirstOrDefault() != null? Model.DocumentType.FieldTemplates.Where(m=>m.Id == control.Key.Value).FirstOrDefault().Header : "")</strong>                                                                   
+                                            }
+                                            }
+                                        </div>
+                                        <div style="margin-left: 20px; margin-right: 100px; float: left">
+                                            @if (control.Key.ToString().ToUpper() == "7F7DD51F-DDC6-4C2B-A0A5-3225E79ACABD")
+                                            {
+                                                <span>@Model.Header</span>
+                                            }
+                                            else
+                                            {
+                                                if (control.Key.ToString().ToUpper() == "B7B6C441-F1EA-4E04-BF1E-AA04A8DCAA09")
+                                                {
+                                                <span>@Model.FinishDate.ToString("dd.MM.yyyy")</span>
+                                                }
+                                                else
+                                                {
+
+                                                   if(control.Key.HasValue)
+                                                   {
+                                                    if (Model.FieldValues.Select(fv => fv.FieldTemplateId).Contains(control.Key.Value))
+                                                    {
+                                                <span>@Model.FieldValues.Single(f => f.FieldTemplateId == control.Key.Value).ValueToDisplay</span>
+                                                    }
+                                                    }
+                                                }
+
+                                            }
+                                        </div>
+                                        
+                                    }
+                </div>
+
+                            </div>
+            }
+                        @if (container.Type == "body" && container.Controls.Any(c => c.Type == "BodyEditor"))
+                        {
+                            <div  class="controls controls-row content" style="margin-bottom: 10px">
+                                <div class="span2" style="margin-left: 20px;">
+                                    <strong>@container.Controls.Single(c => c.Type == "label").LabelText</strong>
+                                </div>
+                                <div class="documentBody" style="margin-left: 20px; margin-right: 100px; float: left">
+                                    @Html.Raw(Model.Body)
+            
+                                    <script>
+
+                                        $(".documentBody").find("table").addClass("table table-striped table-bordered");
+
+                                    </script>
+
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+
+                <div style="width:80%">
+                <label style="font-weight: bold">Поручения:</label>
+                    @if (ViewBag.instructions != null)
+                    {
+                        Html.RenderAction("Index", "InstructionKO", new { model = ViewBag.instructions });                        
+                    }
+
+                </div>
+
+            @* Вложения *@
+            <br />
+            <br />
+            <br />
+            <label style="font-weight: bold">Вложения:</label>
+            <div id="attachments" style="height: auto">
+
+
+                @foreach (var fileId in Model.Attachments)
+                {
+                    <div style="border-bottom: 1px solid #EEEEEE;" class="row-fluid uploadedFile">
+                        @{
+                    Html.RenderAction("ShowUploadedFile", "File", new { guid = fileId, isAdd = false });
+                        }
+
+                    </div>
+                }
+            </div>
+            <div id="scanResults" style="height: auto"></div>
+
+
+                <div>
+
+                    <div style="">
+                       <label style="font-weight: bold">Результаты подписей:</label>
+                    </div>
+                    
+                     @foreach (var item in Model.DocumentSignStages.Where(x => x.RouteTypeId != Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.ControlPerformStage).ToList())
+                     {
+                         foreach (var subItem in item.RouteUsers.Where(b=>b.SignResult!=null))
+                         {
+                            <div class="panel">
+                               <div ><b>Пользователь</b>: @subItem.SignUser.GetFIO() (@subItem.SignUser.Phone)</div>
+                                <div ><b>Результат:</b> @subItem.SignResult.Action.Name</div>
+                                <div >
+                                    <b>Содержание:</b> @Html.Raw(subItem.SignResult.Comment)
+                                    <div>
+                                        @if (subItem.SignResult.attachment != null){
+                                     foreach (var fileId in subItem.SignResult.attachment)
+                                                    {
+                                                        <div style="border-bottom: 1px solid #EEEEEE;" class="row-fluid uploadedFile">
+                                                            @{
+                                                        Html.RenderAction("ShowUploadedFile", "File", new { guid = fileId });
+                                                            }
+
+                                                        </div>
+                                                    }
+                                        }
+                                    </div>
+                                </div>
+                            </div>   
+                         }
+                         <br />
+                     }
+
+                    <div>
+                         <label style="font-weight: bold">Исполнение поручений:</label>
+                    </div>
+                      @Html.Action("GetInstructionsForMainWindowDocument", new { DocId = Model.Id })
+          
+
+                </div>
+
+
+                </div>
+        </div>
+
+        <div class="tab-pane fade in@(ActiveTab==2?" active":"")" id="collapseTwo">
+            @foreach (var item in Model.DocumentSignStages.Where(x => x.RouteTypeId != Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.ControlPerformStage).ToList())
+            {
+                <div style="width: 98%; margin-right: 10px;">
+
+                    <div style="background-color: @(item.RouteUsers.Exists(n => n.SignResult != null && (n.SignResult.Action.Id == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.NotOkNegotiationAction || n.SignResult.Action.Id == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.NotOkSigntAction || n.SignResult.Action.Id == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.NotOkPerformAction)) ? "#eac4c4" : item.isCurrent ? "#f0f0f0" : item.RouteUsers.Count(m => m.isSigned) > 0 ? "#baf6b5" : "#f0f0f0"); width: 98%;  border: 1px dotted black;  margin-bottom: 10px;">
+                        <div style="padding-top: 10px; padding-left: 5px; padding-right: 5px;">
+                            <table style="width: 100%;">
+                                <tr style="width: 100%">
+                                    <td style="width: 5%; padding-top: 10px; vertical-align: top;" rowspan="2">
+                                        <span style="font-weight: bold; font-size: 4em;">@(item.Order + 1)</span>
+                                    </td>
+                                    <td style="width: 50%; vertical-align: top;">
+                                        Тип стадии: @(Devir.DMS.DL.Repositories.RepositoryFactory.GetRepository<Devir.DMS.DL.Models.DocumentTemplates.RouteType>().Single(m => m.Id == item.RouteTypeId).Name)
+
+                                    </td>
+                                    <td style="width: 40%; vertical-align: top;">
+                                        Статус:
+
+                                        @(item.RouteUsers.Exists(n => n.SignResult != null && (n.SignResult.Action.Id == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.NotOkNegotiationAction || n.SignResult.Action.Id == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.NotOkSigntAction || n.SignResult.Action.Id == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.NotOkPerformAction)) ? "Отклонена" : item.isCurrent ? "Текущая" : item.RouteUsers.Count(m => m.isSigned) > 0 ? "Завершена" : "В ожидании")
+
+
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <br />
+                                        <table style="width: 100%;">
+                                            <tr>
+                                                <td></td>
+                                                <td style="width: 300px;">
+                                                    <b>Пользователь</b>
+                                                </td>
+                                                <td style="text-align: left;">
+                                                    <b>Результат подписи</b>
+                                                </td>
+                                            </tr>
+
+                                            @foreach (var userItem in item.RouteUsers)
+                                            {
+
+                                                <tr>
+                                                    <td style="width: 20px;">
+                                                        @if (userItem.IsCurent)
+                                                        { <span><i class="icon-hand-right"></i></span> }
+                                                </td>
+                                                <td>@userItem.SignUser.GetFIO() (вн.тел.:@userItem.SignUser.Phone)</td>
+                                                <td style="text-align: left;">@Html.Raw(userItem.IsCurent ? "Ожидание решения" : userItem.SignResult == null ? "-" : userItem.SignResult.Action.Name + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + userItem.SignResult.Date.ToString("dd.MM.yyyy HH:ss") + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + userItem.SignResult.Comment)</td>
+                                                @if (Model.DocumentSignStages.Exists(m => m.ControlPerformForRouteStageUserId == userItem.Id))
+                                                {
+                                                    var routesigner = Model.DocumentSignStages.FirstOrDefault(m => m.ControlPerformForRouteStageUserId == userItem.Id).RouteUsers.FirstOrDefault();
+                                                    <td>
+                                                        @Html.Raw(routesigner.SignResult == null ? "<span class='label' style='background-color:#999999;'> Ожидает контроля исполнения</span>" : routesigner.SignResult.Action.Id == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.OkControlPerformStage ? "<span class='label' style='background-color:#66CC66;'>" + routesigner.SignResult.Action.Name + "</span>" + routesigner.SignResult.Comment : "<span class='label' style='background-color:#DA4F49;'>" + routesigner.SignResult.Action.Name + "</span>" + routesigner.SignResult.Comment)
+                                                    </td>
+                                                }
+                                            </tr>
+                                            }
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                                            if (item.RouteUsers.Exists(n => n.SignResult != null && (n.SignResult.Action.Id == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.NotOkNegotiationAction || n.SignResult.Action.Id == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.NotOkSigntAction || n.SignResult.Action.Id == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.NotOkPerformAction)))
+                                            { break; }
+
+                                            if (item.Order != Model.DocumentSignStages.Max(m => m.Order))
+                                            {
+                                                <div style="width: 100%; text-align: center;"><i class="icon-arrow-down"></i></div>
+                                            }
+
+
+            }
+        </div>
+
+
+
+        <div class="tab-pane fade in@(ActiveTab==3?" active":"")" id="collapseThree">
+
+            @Html.Action("GetInstructionsForDocument", new { DocId = Model.Id })
+
+        </div>
+
+      
+        <br /><br /><br /><br /><br /><br />
+    </div>
+</div>
+
+
+
+
+
+<div id="bottomPanel1" class="panel onlyIcons navbar-fixed-bottom " style="left: 9px; background-color: #f0f0f0; padding: 5px; right: 9px;">
+    @if (ActiveTab == 3)
+{
+    <a href="/Document/Tasks" class="btn"><i class="icon-backward"></i>Вернуться к списку заданий</a>
+}
+else
+{
+    <a href="/Document/Documents" class="btn"><i class="icon-backward"></i>Вернуться к списку документов</a>
+    }
+
+    <div style="float: right;">
+        <span></span>
+        <div class="btn-group">
+
+            @foreach (var item in (List<Devir.DMS.DL.Models.References.RouteAction>)ViewBag.UserActions)
+            {
+
+                if (item.Id == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.OkControlPerformStage)
+                {
+                <button onclick="ShowSignedUsers();" class="btn btn-success"><i class="icon-ok-circle"></i>Просмотреть исполненые задания</button>        
+                }
+
+                if (item.Id == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.OkNegotiationAction)
+                {
+                <button onclick="ShowSignResultWindow('@item.Id');" class="btn btn-success"><i class="icon-ok-circle"></i>Согласовать</button>        
+                }
+
+                if (item.Id == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.OkSignAction)
+                {
+                <button onclick="ShowSignResultWindow('@item.Id');" class="btn btn-success"><i class="icon-ok-circle"></i>Подписать</button>        
+                }
+
+                if (item.Id == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.AdditionalPerformRequired)
+                {
+                <button onclick="ShowAddInstructionWindow();" class="btn"><i class="icon-share-alt"></i>Поручить</button>        
+                }
+
+
+                if (item.Id == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.OkPerformAction)
+                {
+                <button onclick="ShowSignResultWindow('@item.Id');" class="btn btn-success"><i class="icon-ok-circle"></i>Исполнить</button>        
+                }
+
+                if (item.Id == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.NotOkNegotiationAction || item.Id == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.NotOkPerformAction || item.Id == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.NotOkSigntAction)
+                {
+                <button onclick="ShowSignResultWindow('@item.Id');" class="btn btn-danger"><i class="icon-remove-circle"></i>Отклонить</button>
+                }
+                
+                @*     
+                if (item.Id == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.AdditionalNegotiationRequired)
+                {
+                <button onclick="ShowSignResultWindow('@item.Id');" class="btn"><i class="icon-time"></i>Дополнительное согласование</button>
+                }*@
+            }
+
+        </div>
+
+       @* @if (Devir.DMS.DL.Repositories.RepositoryFactory.GetCurrentUser() == Model.Author.UserId)
+        {
+            <button onclick="getImageFromScaner()" class="btn btn-info"><i class="icon-eye-open"></i>Отправить на ознакомление</button>
+        }*@
+
+        @if (Model.docState == Devir.DMS.DL.Models.Document.DocumentState.FinishedWithError)
+        {
+             <a class="btn btn-info" href="/Document/AddDocumentNewVersion?DocumentId=@Model.Id"><i class="icon-share"></i>Создать новую версию</a>
+        }
+             
+            
+             
+              
+                      
+               
+            
+            
+@*  <button onclick="getImageFromScaner()" class="btn "><i class="icon-share"></i> Поручить</button>*@
+
+
+
+
+    </div>
+</div>
+
+<div id="bottomPanelPDF" class="panel onlyIcons navbar-fixed-bottom" style="left: 9px; background-color: #f0f0f0; padding: 5px; right: 9px; display: none; z-index: 99999;">    
+     <a onclick="HidePDFFile();" class="btn"><i class="icon-backward"></i>Закрыть просмотр</a>
+     <a id="ShowPrevBtn" class="btn"><</a>
+     <a id="ShowNextBtn" class="btn">></a>
+    </div>
+
+<script>
+    //$(document).ready(function () {
+    //    $('textarea').ckeditor();
+    //});
+
+    $('#tab-detail a').click(function (e) {
+        e.preventDefault();
+        $(this).tab('show');
+    });
+
+    var CurrentFileIndex = 0;
+
+
+    function ShowSignResultWindow(actionId) {
+
+        if (actionId == "ce9d0f74-80d9-46d8-aae9-36e2652f7d91") {
+            @Html.Raw(@"$.get('/Document/AddSignResult', { DocumentId: '"+Model.Id+@"', ActionId: actionId }, function (data) {
+                $('#ModalSignResult').empty();
+            $('#ModalSignResult').html(data);
+            $('#ModalSignResult').modal('show');
+        });")
+        }
+        else {
+
+            @if (ViewBag.instructions != null && Model.DocumentSignStages.SingleOrDefault(m => m.Id == Model.CurentStageId) != null)
+                    {
+            if(Model.DocumentType.StageAfterSendInstructions == Guid.Empty || Model.DocumentType.StageAfterSendInstructions == Model.DocumentSignStages.Single(m=>m.Id==Model.CurentStageId).RouteTemplateId)
+            {
+        @Html.Raw("executeOnServerInstructionsSend(viewModelInstrKO, '/InstructionKO/SaveToDocumentViewModelDBAndSendInstructions?DocId=" + Model.Id + "', '" + Model.Id + "', actionId);");
+        } else{
+                @Html.Raw("executeOnServer(viewModelInstrKO, '/InstructionKO/SaveToDocumentViewModelDB?DocId="+Model.Id+"');");
+                 @Html.Raw(@"$.get('/Document/AddSignResult', { DocumentId: '"+Model.Id+@"', ActionId: actionId }, function (data) {
+                $('#ModalSignResult').empty();
+                $('#ModalSignResult').html(data);
+                $('#ModalSignResult').modal('show');
+            });")    
+            }
+                    }
+        else
+        {
+            @Html.Raw(@"$.get('/Document/AddSignResult', { DocumentId: '"+Model.Id+@"', ActionId: actionId }, function (data) {
+                $('#ModalSignResult').empty();
+                $('#ModalSignResult').html(data);
+                $('#ModalSignResult').modal('show');
+            });")    
+        }
+        }
+
+
+    }
+
+
+    function ShowSignResultForInstruction(RouteUserId, docId) {
+        $.get("/Document/ViewSignResult", {isForInstruction: true, RouteUserId: RouteUserId , docId: docId, isDialog: true}, function (data) {
+            $("#ModalShowSignResult").empty();
+            $("#ModalShowSignResult").html(data);
+            $("#ModalShowSignResult").modal("show");
+        });
+    }
+
+
+    function ShowSignResultWindowForInstruction(DocId, actionId) {
+        $.get("/Document/AddSignResult", {isForInstruction: true,  DocumentId: DocId, ActionId: actionId }, function (data) {
+            $("#ModalSignResult").empty();
+            $("#ModalSignResult").html(data);
+            $("#ModalSignResult").modal("show");
+        });
+    }
+
+
+    function ShowSignResultWindowForPerformation(docId, actionId, routeUserId) {
+
+        $("#ModalShowSignResult").empty();
+        $("#ModalShowSignResult").modal("hide");
+
+        $.get("/Document/AddSignResult", { isForInstruction: true, DocumentId: docId, ActionId: actionId, isForPerformControl: true, UserForRouteId: routeUserId }, function (data) {
+            $("#ModalSignResult").empty();
+            $("#ModalSignResult").html(data);
+            $("#ModalSignResult").modal("show");
+        });
+
+
+    }
+
+
+
+
+    function ShowAddInstructionForInstructionWindow(DocumentId, RouteStageId, RouteStageUserId) {
+
+        $.get("/Document/AddInstructionForDocument", { isForInstruction: true, DocumentId: DocumentId, RouteStageId: RouteStageId, RouteStageUserId: RouteStageUserId, RootDocumentId: "@Model.Id" }, function (data) {
+            $("#ModalInstructionResult").empty();
+            $("#ModalInstructionResult").html(data);
+            $("#ModalInstructionResult").modal("show");
+        });
+
+
+    }
+
+    function refreshCollapseThree() {
+
+        $.get("/Document/GetInstructionsForDocument", { DocId: "@Model.Id" }, function (data) {
+            $("#collapseThree").html(data);
+        });
+
+    }
+
+    function ShowAddInstructionWindow() {
+
+        $.get("/Document/AddInstructionForDocument", { DocumentId: "@Model.Id", RouteStageId: "@Model.CurentStageId", RouteStageUserId: "@Model.CurrentStageUserId", RootDocumentId: "@Model.Id" }, function (data) {
+            $("#ModalInstructionResult").empty();
+            $("#ModalInstructionResult").html(data);
+            $("#ModalInstructionResult").modal("show");
+        });
+
+
+    }
+
+    function ShowPDFFile(FileId) {
+        CurrentFileIndex = parseInt($("input[value=" + FileId + "]").attr("name").split(/[\[\]]/)[1]);
+        $("#ShowPrevBtn").unbind("click").click(function () {
+            ShowPDFFile($("input[name='attachment[" + (CurrentFileIndex - 2) + "]']").attr("value"));
+        });
+        $("#ShowNextBtn").unbind("click").click(function () {
+            ShowPDFFile($("input[name='attachment[" + (CurrentFileIndex + 2) + "]']").attr("value"));
+        });
+        var variablename = new PDFObject({ url: "/File/GetPDFVersion?guid=" + FileId }).embed("PDFModal");
+        if (variablename) {
+            $("#PDFModal").show();
+            $("#bottomPanel1").hide();
+            $("#bottomPanelPDF").show();
+            //$("#PDFModal").modal("show");
+            //$("#PDFModal").css("left", 500);
+            //$("#PDFModal").css("top", 60);
+            //$("#PDFModal").width(1000);
+            //$("#PDFModal").height(600);
+        } else {
+            window.open("/File/GetPDFVersion?guid=" + FileId, "_blank");
+        }
+    }
+
+    function HidePDFFile() {
+        $("#PDFModal").hide();
+        $("#bottomPanelPDF").hide();
+        $("#bottomPanel1").show();
+    }
+
+    function ShowSignedUsers() {
+
+        $.get("/Document/GetSignResultsForControl", { docId: "@Model.Id" }, function (data) {
+            $("#ModalSignResult").empty();
+            $("#ModalSignResult").html(data);
+            $("#ModalSignResult").modal("show");
+        });
+    }
+
+    $(document).ready(function () {
+        $('#content').height($("#content").height() - 57 * 2);
+    });
+
+
+</script>
+
+<script>
+
+
+    //$(document).ready(function () {
+    //    $('textarea').ckeditor();
+    //});
+    $(".date").click(function () {
+        if (!$(this).hasClass("hasDatepicker")) {
+            $(this).datepicker({
+                format: 'dd.mm.yyyy'
+            });
+            $(this).datepicker("show");
+            $(this).addClass('hasDatepicker');
+        }
+    });
+
+</script>
+
+  @if (ViewBag.instructions != null)
+                    {
+<script>
+    $(document).ready(function () {
+        executeOnServer(viewModelInstrKO, '/InstructionKO/Refresh');
+    });
+</script>
+  }
+
+
+

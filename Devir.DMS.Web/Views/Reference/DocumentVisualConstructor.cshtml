@@ -1,0 +1,575 @@
+﻿@model Devir.DMS.DL.Models.Document.DocumentType
+
+@{
+    ViewBag.Title = "DocumentVisualConstructor";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/Scripts/jquery.ui.multidraggable-1.8.8.js"></script>
+@*<div style=" width:100%; height:100%; overflow:auto;">
+<div style="width:100%; height:5000px; background:#f0f0f0;">
+  <div style="width:auto; height:30px; border:1px dotted; margin:5px; ">
+      Контейнер для компонент
+  </div>
+</div>
+    </div>*@
+
+<link href="~/Content/themes/base/jquery.ui.all.css" rel="stylesheet" />
+
+<style>
+    /*.ui-resizable-handle {
+ height:5px;   
+ cursor:ns-resize;
+    background-color:#0F0;
+}*/
+
+    .sort_container {
+        cursor: move;
+        /*width: 40%;
+    float: left;
+    margin: 5px;*/
+        min-height: 50px;
+        border: 1px solid #000 !important;
+        margin-bottom: 5px;
+        background-color: #999999;
+    }
+
+    .selected_div {
+        border: 1px solid red !important;
+        background-color: #ffffff;
+    }
+
+    .inner_container {
+        min-height: 50px;
+        height: 100%;
+        margin-bottom: -5px;
+        width: 100%;
+    }
+
+    .inner_closeButton {
+        position: relative;
+        float: right;
+        right: -15px;
+        top: 0px;
+        cursor: pointer;
+    }
+
+    .inner_dragTool {
+        position: relative;
+        float: right;
+        right: 10px;
+        top: 0px;
+        cursor: pointer;
+    }
+
+    .inner_textBlock {
+        /*position:relative;   
+        left:0px;
+        top:0px;
+        width:200px;*/
+        position: absolute;
+    }
+
+    /*.inner_textBlockJustAdded {
+        position: absolute;
+    }*/
+
+    .selected_element {
+        border: 1px dashed red !important;
+        background-color: #ffffff;
+    }
+
+    .selectedMultiSeledTextbox {
+        background-color: #b1c7d4;
+    }
+</style>
+
+<div style="height: 100%; overflow: auto;">
+
+    <div style="width: 15%; float: left;">
+
+        <div class="panel">
+            <b>Инструменты</b>
+            <hr />
+
+            @* <button class="btn" style="width:100%" onclick="AddBlockToSortable()">Добавить блок</button>*@
+            <div class="btn-group">
+                <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">Добавить блок
+    <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a href="#" onclick="AddSimpleBlockToSortable()">Пустой блок для компонент</a></li>
+                    <li><a href="#" onclick="AddNegotiationBlockToSortable()">Согласующие</a></li>
+                     <li><a href="#" onclick="AddInstructionBlockToSortable()">Поручения</a></li>
+                    
+                   @* <li><a href="#" onclick="AddPerformersBlockToSortable()">Исполнители</a></li>*@
+                    <li><a href="#" onclick="AddBodyBlockToSortable()">Содержание</a></li>
+                </ul>
+            </div>
+
+
+
+            <div class="addComponent">
+                <hr />
+                <div class="btn-group">
+                    <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">Добавить элемент
+    <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#" onclick="AddTextBlockToSelectedDiv()">Текст</a></li>
+                        <li><a href="#" onclick="ShowFieldSelectModal()">Поле</a></li>
+                    </ul>
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+    <div style="width: 80%; float: left; padding-left: 20px;">
+
+        <div id="sortable">
+
+            @foreach (var container in Model.DocumentVisualTemplate)
+            {
+                <div onclick='selectDiv(this);' type='@container.Type' style="height:@(container.Height)px" id='@container.Id' class='sort_container'>
+                    <div class='inner_closeButton'><i class='icon-remove' onclick='DeleteBlock(this);'></i></div>
+                    @* <div class='inner_container'>*@
+
+                    @foreach (var control in container.Controls)
+                    {
+                        if (control.islabel)
+                        {
+                        <div ondblclick='SelectElement(this);' style="width:@(control.Width)px; top:@(control.Top)px; left:@(control.Left)px;" id='@control.LabelId' class='inner_textBlock'>@control.LabelText</div>
+                        }
+                        else
+                        {
+
+                            if (control.Type == "control")
+                            {
+                        <div ondblclick='SelectElement(this);' style="width:@(control.Width)px; top:@(control.Top)px; left:@(control.Left)px; padding:0px; margin:0px;" type='control' fieldId='@control.FieldId' class='inner_textBlock' >
+                            <div style='width: 100%; padding-right: 0px; padding-left: 0px; cursor: move;' class='uneditable-input'>@control.LabelText</div>
+                        </div>
+                            }
+                            else
+                            {
+                                if (control.Type == "validate")
+                                {
+                        <div ondblclick='SelectElement(this);' type='validate' fieldId='@control.FieldId' class='inner_textBlock' style='width:@(control.Width)px; top:@(control.Top)px; left:@(control.Left)px; color:red'>@control.LabelText</div>
+                                }
+                                else
+                                {
+
+                                    if (control.Type == "textblock")
+                                    {
+                        <div ondblclick='SelectElement(this);' type='textblock' fieldId='@control.FieldId' style='width:@(control.Width)px; top:@(control.Top)px; left:@(control.Left)px;' class='inner_textBlock'>@control.LabelText</div>
+                                    }
+                                    else
+                                    {
+                                        if (control.Type == "BodyEditor")
+                                        {
+                        <div type='BodyEditor' fieldId='BodyEditor' class='inner_textBlock' style='width:@(control.Width)px; top:@(control.Top)px; left:@(control.Left)px;padding:0px; margin:0px;'>
+                            <div style='width: 700px; height: 100px; padding-right: 0px; padding-left: 0px; cursor: move;' class='uneditable-input'>Большой редактор текста</div>
+                        </div>
+                                        }
+                                        else
+                                        {
+                                            if (control.Type == "NegotiatorsEditor")
+                                            {
+                        <div type='NegotiatorsEditor' fieldId='NegotiatorsEditor' class='inner_textBlock' style='width:@(control.Width)px; top:@(control.Top)px; left:@(control.Left)px;padding:0px; margin:0px;'>
+                            <div style='width: 700px; height: 100px; padding-right: 0px; padding-left: 0px; cursor: move;' class='uneditable-input'>Блок согласующих</div>
+                        </div>
+                                            } else
+                                        {
+                                            if (control.Type == "PerformersEditor")
+                                            {
+                        <div type='PerformersEditor' fieldId='@(control.FieldId)' class='inner_textBlock' style='width:@(control.Width)px; top:@(control.Top)px; left:@(control.Left)px;padding:0px; margin:0px;'>
+                            <div style='width: 700px; height: 100px; padding-right: 0px; padding-left: 0px; cursor: move;' class='uneditable-input'>Блок согласующих</div>
+                        </div>
+                                            } else{
+                                                if (control.Type == "InstructionEditor")
+                                            {
+                        <div type='InstructionEditor' fieldId='@(control.FieldId)' class='inner_textBlock' style='width:@(control.Width)px; top:@(control.Top)px; left:@(control.Left)px;padding:0px; margin:0px;'>
+                            <div style='width: 700px; height: 100px; padding-right: 0px; padding-left: 0px; cursor: move;' class='uneditable-input'>Блок поручений</div>
+                        </div>
+                                            } 
+                                            }
+                                        }
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+
+                </div>
+@*
+        </div>*@
+       
+            }
+
+            @*  <div class="sort_container"> 
+                <div class="inner_closeButton">
+                    <i class="icon-remove" onclick="DeleteBlock(this);"></i>
+                </div>
+                <div class="inner_container"></div> 
+            </div>*@
+
+
+        </div>
+
+    </div>
+
+</div>
+
+<div id="FieldSelector" class="modal hide fade in">
+
+    <div class="modal-header">
+        <h3 id="addModalLabel">Выберете поле</h3>
+    </div>
+    <div class="modal-body">
+        Поле :
+        <select id="selectdField">
+            <option value="7F7DD51F-DDC6-4C2B-A0A5-3225E79ACABD">Заголовок</option>
+            <option value="B7B6C441-F1EA-4E04-BF1E-AA04A8DCAA09">Дата исполнения</option>
+            @foreach (var item in Model.FieldTemplates)
+            {
+                if (item.FieldType.Id == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.ListUsersFieldType)
+                {
+                    <option value="ul:@(item.Id)">@item.Header</option>
+                }else{
+                <option value="@item.Id">@item.Header</option>
+            }
+            }
+        </select>
+    </div>
+
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Отмена</button>
+        <button class="btn btn-primary" data-dismiss="modal" onclick="AddComponentToSelectedDiv($('#selectdField').val(), $('#selectdField option:selected').text());">Выбрать</button>
+        @*<input type="submit" class="btn btn-primary" value="@Model.Action.Name"/>*@
+    </div>
+
+
+</div>
+
+<div class="panel onlyIcons navbar-fixed-bottom " style="left: 9px; background-color: #f0f0f0; padding: 5px; right: 9px;">
+    <button onclick="self.close();" class="btn"><i class="icon-backward"></i>Закрыть</button>
+    <div style="float: right;">
+        <span></span>
+        <div class="btn-group">
+
+            <button onclick="SaveResult()" class="btn btn-success"><i class="icon-ok-circle"></i>Сохранить</button>
+
+        </div>
+    </div>
+</div>
+
+<script>
+
+    var currentlySelectedDiv = "";
+    clearSelectedDivs();
+
+    $(document).ready(function () {
+
+        $(function () {
+            $("#sortable").sortable();
+        });
+
+        $(function () {
+            $('.sort_container').resizable({
+                resize: function (event, ui) {
+                    ui.size.width = ui.originalSize.width;
+
+                },
+                handles: "s"
+            });
+        });
+
+
+    });
+
+    function DeleteBlock(elem) {
+        $(elem).parent().parent().remove();
+        clearSelectedDivs();
+    }
+
+    function AddSimpleBlockToSortable() {
+
+        clearSelectedDivs();
+        randomnumber = Math.floor(Math.random() * 110)
+
+        $("#sortable").append("<div onclick='selectDiv(this);' type='simple' id='" + randomnumber + "' class='sort_container'><div class='inner_closeButton'><i class='icon-remove' onclick='DeleteBlock(this);'></i></div></div>"); //<div class='inner_container'></div>
+        $('.sort_container').resizable({
+            resize: function (event, ui) {
+                ui.size.width = ui.originalSize.width;
+            },
+            handles: "s"
+        });
+    }
+
+
+    function AddBodyBlockToSortable() {
+
+        clearSelectedDivs();
+        randomnumber = Math.floor(Math.random() * 110)
+
+        $("#sortable").append("<div onclick='selectDiv(this);' style='height:110px;' type='body' id='" + randomnumber + "' class='sort_container'><div class='inner_closeButton'><i class='icon-remove' onclick='DeleteBlock(this);'></i></div></div>"); //<div class='inner_container'></div>
+        $('.sort_container').resizable({
+            resize: function (event, ui) {
+                ui.size.width = ui.originalSize.width;
+            },
+            handles: "s"
+        });
+
+        selectDiv($("#" + randomnumber))
+
+        randomnumber = Math.floor(Math.random() * 110)
+        inputText = "Содержание";
+        $("#" + currentlySelectedDiv).prepend("<div  id='" + randomnumber + "' class='inner_textBlock'>" + inputText + "</div>");
+        $("#" + randomnumber).draggable({ containment: "parent", grid: [10, 10] });
+
+        $("#" + currentlySelectedDiv).prepend("<div  type='BodyEditor' fieldId='BodyEditor' class='inner_textBlock' style='padding:0px; margin:0px;'><div style='width:700px; height:100px; padding-right:0px; padding-left:0px; cursor:move;' class='uneditable-input'>Большой редактор текста</div></div>");
+
+        $("[fieldId='BodyEditor']").draggable({ containment: "parent", grid: [10, 10] });
+    }
+
+    function AddInstructionBlockToSortable() {
+
+        clearSelectedDivs();
+        randomnumber = Math.floor(Math.random() * 110)
+
+        $("#sortable").append("<div onclick='selectDiv(this);' style='height:110px;' type='body' id='" + randomnumber + "' class='sort_container'><div class='inner_closeButton'><i class='icon-remove' onclick='DeleteBlock(this);'></i></div></div>"); //<div class='inner_container'></div>
+        $('.sort_container').resizable({
+            resize: function (event, ui) {
+                ui.size.width = ui.originalSize.width;
+            },
+            handles: "s"
+        });
+
+        selectDiv($("#" + randomnumber))
+
+        randomnumber = Math.floor(Math.random() * 110)
+        inputText = "Поручения";
+        $("#" + currentlySelectedDiv).prepend("<div  id='" + randomnumber + "' class='inner_textBlock'>" + inputText + "</div>");
+        $("#" + randomnumber).draggable({ containment: "parent", grid: [10, 10] });
+
+        $("#" + currentlySelectedDiv).prepend("<div  type='InstructionEditor' fieldId='InstructionEditor' class='inner_textBlock' style='padding:0px; margin:0px;'><div style='width:700px; height:100px; padding-right:0px; padding-left:0px; cursor:move;' class='uneditable-input'>Поручения</div></div>");
+
+        $("[fieldId='InstructionEditor']").draggable({ containment: "parent", grid: [10, 10] });
+    }
+
+
+    function AddNegotiationBlockToSortable() {
+        clearSelectedDivs();
+        randomnumber = Math.floor(Math.random() * 110)
+
+        $("#sortable").append("<div onclick='selectDiv(this);' style='height:110px;' type='negotiators' id='" + randomnumber + "' class='sort_container'><div class='inner_closeButton'><i class='icon-remove' onclick='DeleteBlock(this);'></i></div></div>"); //<div class='inner_container'></div>
+        $('.sort_container').resizable({
+            resize: function (event, ui) {
+                ui.size.width = ui.originalSize.width;
+            },
+            handles: "s"
+        });
+
+        selectDiv($("#" + randomnumber))
+
+        randomnumber = Math.floor(Math.random() * 110)
+        inputText = "Согласующие";
+        $("#" + currentlySelectedDiv).prepend("<div  id='" + randomnumber + "' class='inner_textBlock'>" + inputText + "</div>");
+        $("#" + randomnumber).draggable({ containment: "parent", grid: [10, 10] });
+
+        $("#" + currentlySelectedDiv).prepend("<div  type='NegotiatorsEditor' fieldId='NegotiatorsEditor' class='inner_textBlock' style='padding:0px; margin:0px;'><div style='width:700px; height:100px; padding-right:0px; padding-left:0px; cursor:move;' class='uneditable-input'>Блок согласующих</div></div>");
+
+        $("[fieldId='NegotiatorsEditor']").draggable({ containment: "parent", grid: [10, 10] });
+    }
+
+
+    function AddPerformersBlockToSortable(fieldId, fieldName) {
+        clearSelectedDivs();
+        randomnumber = Math.floor(Math.random() * 110)
+
+        $("#sortable").append("<div onclick='selectDiv(this);' style='height:110px;' type='performers' id='" + randomnumber + "' class='sort_container'><div class='inner_closeButton'><i class='icon-remove' onclick='DeleteBlock(this);'></i></div></div>"); //<div class='inner_container'></div>
+        $('.sort_container').resizable({
+            resize: function (event, ui) {
+                ui.size.width = ui.originalSize.width;
+            },
+            handles: "s"
+        });
+
+        selectDiv($("#" + randomnumber))
+
+        randomnumber = Math.floor(Math.random() * 110)
+        inputText = fieldName;
+        $("#" + currentlySelectedDiv).prepend("<div  id='" + randomnumber + "' class='inner_textBlock'>" + inputText + "</div>");
+        $("#" + randomnumber).draggable({ containment: "parent", grid: [10, 10] });
+
+        $("#" + currentlySelectedDiv).prepend("<div  type='PerformersEditor' fieldId='"+fieldId+"' class='inner_textBlock' style='padding:0px; margin:0px;'><div style='width:700px; height:100px; padding-right:0px; padding-left:0px; cursor:move;' class='uneditable-input'>"+fieldName+"</div></div>");
+
+        $("[fieldId='" + fieldId + "']").draggable({ containment: "parent", grid: [10, 10] });
+    }
+
+    function selectDiv(elem) {
+        RemoveSelectionFromElement();
+        clearSelectedDivs();
+
+        //$(".selected_element").removeClass("selected_element").removeClass("ui-widget-content");
+
+        $(elem).addClass("selected_div");
+        currentlySelectedDiv = $(elem).attr("Id");
+        $(".addComponent").show();
+    }
+
+    function clearSelectedDivs() {
+        RemoveSelectionFromElement();
+        $(".addComponent").hide();
+        $(".selected_div").removeClass("selected_div");
+        currentlySelectedDiv = 0;
+    }
+
+    function AddTextBlockToSelectedDiv() {
+        RemoveSelectionFromElement();
+        randomnumber = Math.floor(Math.random() * 110)
+        inputText = window.prompt("Введите текст для вставки", "Любой текст для вставки");
+        $("#" + currentlySelectedDiv).prepend("<div ondblclick='SelectElement(this);' id='" + randomnumber + "' class='inner_textBlock'>" + inputText + "</div>");
+        $("#" + randomnumber).draggable({ containment: "parent", grid: [10, 10] });
+
+
+        //addMultipleSelectEvent();
+    }
+
+    function AddComponentToSelectedDiv(fieldId, fieldName) {
+      
+
+        if (fieldId.substring(0, 3) == "ul:") {
+            AddPerformersBlockToSortable(fieldId.substring(3), fieldName);
+            return false;
+        }
+
+        RemoveSelectionFromElement();
+        randomnumber = Math.floor(Math.random() * 110)
+        // inputText = window.prompt("Введите текст для вставки", "Любой текст для вставки");
+        $("#" + currentlySelectedDiv).prepend("<div ondblclick='SelectElement(this);' type='textblock' fieldId='" + fieldId + "' class='inner_textBlock'>" + fieldName + "</div>");
+        $("#" + currentlySelectedDiv).prepend("<div ondblclick='SelectElement(this);' type='control' fieldId='" + fieldId + "' class='inner_textBlock' style='padding:0px; margin:0px;'><div style='width:100%; padding-right:0px; padding-left:0px; cursor:move;' class='uneditable-input'>" + fieldName + "</div></div>"); //<input type='text'  style='width:100%;padding-right:0px; padding-left:0px;' disabled value='Наименование компонента №" + randomnumber + "'>
+        $("#" + currentlySelectedDiv).prepend("<div ondblclick='SelectElement(this);' type='validate' fieldId='" + fieldId + "' class='inner_textBlock' style='color:red'>Валидационное сообщение для " + fieldName + "</div>");
+        //$("#" + randomnumber).draggable({ containment: "parent", grid: [10, 10] });
+        //$("#" + randomnumber + 'Comp').draggable({ containment: "parent", grid: [10, 10] });
+        //$("#" + randomnumber + 'Val').draggable({ containment: "parent", grid: [10, 10] });
+
+        $("[fieldId='" + fieldId + "']").draggable({ containment: "parent", grid: [10, 10] });
+
+
+
+        //addMultipleSelectEvent();
+    }
+
+    function SelectElement(elem) {
+        clearSelectedDivs();
+        $(elem).prepend("<div class='inner_closeButton' style='right:-15px;'><i class='icon-remove' onclick='DeleteBlock(this);'></i></div>");
+
+        $(elem).addClass("selected_element ui-widget-content");
+        $(elem).resizable();
+    }
+
+    function RemoveSelectionFromElement() {
+
+        $(".selected_element").each(function () {
+            $(this).find('.inner_closeButton').remove();
+            $(this).resizable("destroy");
+        });
+        $(".selected_element").removeClass("selected_element").removeClass("ui-widget-content");
+    }
+
+
+    function ShowFieldSelectModal() {
+       @* $.get("/Document/AddSignResult", { DocumentId: "@Model.Id", ActionId: actionId }, function (data) {
+            $("#FieldSelector").empty();
+            $("#FieldSelector").html(data);*@
+        $("#FieldSelector").modal("show");
+        //});
+    }
+
+
+    function SaveResult() {
+        Blocks = [];
+        $(".sort_container").each(function () {
+            block = {};
+
+
+
+            Controls = [];
+            $(this).find(".inner_textBlock").each(function () {
+                control = {};
+                if ($(this).attr("FieldId") != undefined) {
+                    control = { Width: $(this).width(), Top: $(this).position().top, Left: $(this).position().left, Type: $(this).attr("type"), FieldId: $(this).attr("FieldId"), isLabel: false, LabelId: 0, LabelText: $(this).text() }
+                } else {
+                    control = { Width: $(this).width(), Top: $(this).position().top, Left: $(this).position().left, Type: 'label', FieldId: null, isLabel: true, LabelId: $(this).attr("Id"), LabelText: $(this).text() }
+                }
+
+                Controls.push(control);
+            });
+
+            block = { Id: $(this).attr("Id"), Type: $(this).attr("type"), Height: $(this).height(), Controls: Controls };
+            Blocks.push(block);
+        });
+
+
+
+        model = { DocumentTypeId: '@Model.Id', Blocks: Blocks }
+
+        //alert(model.toSource());
+
+        $.ajax({
+            url: "/Reference/SaveDocumentVisualStructure",
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(model),
+            dataType: 'json',
+            success: function (data) {
+                info('.top-right', 'Макет успешно сахранен.');
+            }
+        });
+
+    }
+
+    //function addMultipleSelectEvent() {
+
+    //    $('.inner_textBlock').click(function (e) {
+    //        if (e.ctrlKey) {
+    //            $(e.target).addClass("selectedMultiSeledTextbox");
+
+    //            $(".selectedMultiSeledTextbox").multiDraggable({ group: $(".selectedMultiSeledTextbox") });
+
+    //        }
+
+
+    //    });
+    //}
+
+    //function removeMultipleSelectEvent(){
+    //    $(".selectedMultiSeledTextbox").removeClass("selectedMultiSeledTextbox");
+    //    $(".selectedMultiSeledTextbox").multiDraggable({ group: $(".selectedMultiSeledTextbox") });
+    //}
+
+    //$(document).click(function (e) {
+
+    //    if (e.ctrlKey == false) {
+    //        removeMultipleSelectEvent();            
+    //    }
+    //});
+
+
+
+    $('.sort_container').resizable({
+        resize: function (event, ui) {
+            ui.size.width = ui.originalSize.width;
+        },
+        handles: "s"
+    });
+
+    $(".inner_textBlock").draggable({ containment: "parent", grid: [10, 10] });
+
+
+
+
+</script>

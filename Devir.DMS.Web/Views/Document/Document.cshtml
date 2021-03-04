@@ -1,0 +1,25 @@
+﻿@model Devir.DMS.DL.Models.Document.DocumentType
+@{
+    ViewBag.Title = "Документ";
+    Layout = null;
+}
+<script type="text/javascript">
+    var tableName = "Документ";
+    var typeTable = "Document";
+    var cn = ['Название', 'Описание'];
+    var cm = [
+        { name: 'Name', index: 'Name', width: 90 },
+        { name: 'Comment', index: 'Comment', width: 100 }
+    ];
+    //jqGridDocuments(tableName, typeTable, cn, cm);
+    jQuery('#list').trigger("reloadGrid");
+    function OnSelectRow(id) {
+        //$("#details").load("DocumentDetails?id=" + id);
+    }
+</script>
+<div>
+    <!-- jqGrid -->
+    <table id="list"></table>
+    <div id="pager"></div>
+</div>
+<div id="details"></div>

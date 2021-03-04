@@ -1,0 +1,96 @@
+﻿.borderless td {
+    border: none;
+}
+
+.gridRow {
+    background-color: white;
+    cursor: pointer;
+    border-bottom: 1px solid #b4b4b4;
+    padding-left: 10px;
+    border-left: 0px solid #f0f0f0;
+}
+
+    .gridRow:hover {
+        background-color: #f7f7f7;
+    }
+
+    .gridRow table {
+        width: 100%;
+        margin-bottom: 0px;
+    }
+
+
+.GridHeaderActive {
+    cursor: pointer;
+}
+
+    .GridHeaderActive:hover {
+        text-decoration: underline;
+    }
+
+.ascendingSorting {
+    font-weight: bold;
+}
+
+.descendingSorting {
+    font-weight: bold;
+}
+
+.rotated90 {
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+}
+
+
+#gridHeader {
+    border-bottom: 1px solid #b4b4b4;
+    padding-left: 10px;
+}
+
+    #gridHeader table {
+        width: 100%;
+        margin-bottom: 0px;
+    }
+
+
+        #gridHeader table td {
+            border-right: 1px solid #b4b4b4;
+        }
+
+
+#GridContainer ul {
+    list-style: none;
+    margin-left: 0px;
+}
+
+#GridContainer li {
+    cursor: pointer;
+}
+
+.gridGroup {
+    padding-top: 5px;
+    background-color: #f0f0f0;
+    height: 20px;
+    font-size: small;
+    font-weight: bold;
+    border: 0px solid #b4b4b4;
+    margin-bottom: 1px;
+    border-left: 0px;
+    border-right: 0px;
+}
+
+
+#gridBadInstructionsCount {
+    font-size: xx-small;
+    width: 32px;
+    text-align: center;
+}
+
+#GridLoader {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 800;
+}

@@ -1,0 +1,100 @@
+﻿@model Devir.DMS.DL.Models.DocumentTemplates.RouteType
+@{
+    ViewBag.Title = "";
+    Layout = null;
+}
+<script>
+    $(".edit").click(function () {
+        $("#addModal").empty();
+        $("#addModal").modal('show');
+        var id = $(".edit").attr("value");
+        $("#addModal").load("EditeRouteAction?id=" + id);
+    });
+</script>
+@*<div id="gridDetailsOut">
+    <label>Наименование : @Model.Name</label>
+    <label>Описание : @Model.Comment</label>
+</div>*@
+
+
+<div>
+
+    <div class="gridDetailHeader">
+            @Model.Name
+    </div>
+
+    <!-- gridDetails -->
+    <div class="tab-pane" id="gridDetails">
+        <ul class="nav nav-tabs" id="tab-detail">
+            <li class="active">
+                <a href="#collapseOne">Действие маршрута</a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane fade in active" id="collapseOne">
+                <button id='EditFieldsTemplate' class="btn edit" value="@Model.Id" type="button">
+                    <i class="icon-pencil icon-black"></i>
+                </button>
+                <table class="table table-hover table-bordered table-condensed">
+                    <tr>
+                        <th>Наименование</th>
+                        <th>Описание</th>
+                    </tr>
+                    <tbody>
+                        @if (Model.Actions != null)
+                        {
+                            foreach (var item in Model.Actions)
+                            {
+                            <tr>
+                                <td>@item.Name</td>
+                                <td>@item.Comment</td>
+                            </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@*<div class="tab-pane" id="gridDetails">
+<div class="accordion" id="accordion" style="background: white">
+    <div class="accordion-group">
+        <div class="accordion-heading">
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
+                Действие маршрута
+            </a>
+        </div>
+        <div id="collapseTwo" class="accordion-body collapse">
+            <div class="accordion-inner">
+             <table  class="table table-hover">
+                <tr>
+                    <th>Наименование</th>
+                    <th>Описание</th>
+                </tr>
+                <tbody>
+                    @if (Model.Actions!=null)
+                    {
+                    foreach (var item in Model.Actions)
+                    {
+                        <tr>
+                            <td>@item.Name</td>
+                            <td>@item.Comment</td>
+                        </tr>
+                    }
+                    }
+                </tbody>
+            </table>
+            <br/>
+            <button id='edit' class="btn btn-primary" value="@Model.Id" type="button">Редактировать</button>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<div id="edit-modal" class="modal hide fade in" style="width: 550px" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        
+</div>*@

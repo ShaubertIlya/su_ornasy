@@ -1,0 +1,113 @@
+﻿@{
+    Layout = null;
+}
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        var departmentId = "";
+
+        var tableName = "Сотрудники";
+        var list = "#ppUsers";
+        var pager = "#ppPagerUsers";
+        var getData = '';
+        var mtype = 'POST';
+        var cn = ['ИД', 'Логин', 'Имя', 'Фамилия', 'E-mail'];
+        var cm = [
+            { name: 'Id', index: 'Id', hidden: true, key: true },
+            { name: 'Name', index: 'Post', width: 90 },
+            { name: 'FirstName', index: 'FirstName', width: 90 },
+            { name: 'LastName', index: 'LastName', width: 90 },
+            { name: 'Email', index: 'Email', width: 90 }
+        ];
+
+        jQuery(list).jqGrid({
+            url: getData,
+            datatype: "json",
+            jsonReader: { id: 'Id', repeatitems: false },
+            colNames: cn,
+            colModel: cm,
+            rowNum: 10,
+            rowList: [10, 30],
+            width: 'auto',
+            height: '300',
+            hidegrid: false,
+            pager: pager,
+            sortname: 'Id',
+            viewrecords: true,
+            sortorder: "desc",
+            caption: tableName,
+            mtype: mtype,
+            singleselect: true
+        });
+    });
+
+
+
+    function SearchUsers() {
+        $.ajax({
+            url: '/Users/SearchUsers',
+            data: '{"searchStr": "' + $("#tbSearch").val() + '"}',
+            dataType: "json",
+            type: 'POST',
+            contentType: "application/json; charset=utf-8",
+            success: function (xmldata, stat) {
+                if (stat == "success") {
+                    var thegrid = jQuery("#ppUsers")[0];
+                    //var data = eval("(" + xmldata.responseText + ")");
+                    thegrid.addJSONData(xmldata);
+                    $("#load_tablelist").hide();
+                }
+            },
+            error: function (xml) {
+                //showError(xml, 'Получить модели');
+            }
+        });
+    }
+
+    function LoadUser() {
+        try
+        {
+            var myGrid = $('#ppUsers'),
+             selRowId = myGrid.jqGrid('getGridParam', 'selrow'),
+             firstName = myGrid.jqGrid('getCell', selRowId, 'FirstName'),
+             lastName = myGrid.jqGrid('getCell', selRowId, 'LastName');
+        
+            if (!firstName) {
+                firstName = "";
+            }
+            if (!lastName)
+            {
+                lastName = "";
+            }
+        
+            $("#" + ppUserName).val(firstName + " 1 " + lastName).change();
+            $("#" + ppUserId).val(selRowId).change();
+           
+            $("#ppDialog").modal("hide");
+        }
+        catch (error) {
+            alert(error);
+        }
+    }
+       
+    
+    
+</script>
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 id="addModalLabel">Выбрать сотрудника</h3>
+</div>
+<div class="modal-body" id="addModalBody">
+
+    <div style="width: 100%; display: block">
+        <input class="input-medium search-query" type="text" id="tbSearch" />
+        <input type="button" value="Поиск" onclick="SearchUsers();" />
+    </div>
+    <div>
+        <table id="ppUsers" class="table table-bordered table-hover table-striped table-condensed"></table>
+    </div>
+    <div>
+        <input type="button" id="butSave" value="OK" onclick="LoadUser()" />
+        <input type="button" id="butCancel" value="Отмена" onclick="$('#ppDialog').modal('hide');" />
+    </div>
+</div>

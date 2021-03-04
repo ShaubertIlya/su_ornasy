@@ -1,0 +1,78 @@
+﻿
+@{
+    ViewBag.Title = "Handbook";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>FieldTypes</title>
+    <script>
+        $(document).ready(function () {
+            $("#btn").click(function () {
+                $("#myModal").load("ModalGrid");
+                $("#myModal").on('shown', function () {
+                    
+                    var cn = ['Название', 'Описание', 'Создан', 'SystemName'];
+                    var cm = [
+                        { name: 'Name', index: 'Name', width: 90 },
+                        { name: 'Comment', index: 'Comment', width: 100 },
+                        { name: 'CreateDate', index: 'CreateDate', width: 80, align: "center", formatter: 'date', formatoptions: { srcformat: 'd/m/Y', newformat: 'd/m/Y' } },
+                        { name: 'SystemName', index: 'SystemName', width: 100 }
+                    ];
+                    jqGridTable("FieldTypes", "#modalList", "#modalPager", 'GetDataForFieldTypes', 'DeleteFieldType', 'UpdateFieldType', 'AddFieldType', cn, cm);
+               });
+            });
+           
+            
+            var tableName = "FieldTypes";
+            var list = "#list";
+            var pager = "#pager";
+            var getData = 'GetDataForFieldTypes';
+            var deleteData = 'DeleteFieldType';
+            var updateData = 'UpdateFieldType';
+            var addData = '/Reference/AddFieldType';
+            var cn = ['Название', 'Описание', 'Создан', 'SystemName'];
+            var cm = [
+                { name: 'Name', index: 'Name'},
+                { name: 'Comment', index: 'Comment'},
+                { name: 'CreateDate', index: 'CreateDate', align: "center", formatter: 'date', formatoptions: { srcformat: 'd/m/Y', newformat: 'd/m/Y' } },
+                { name: 'SystemName', index: 'SystemName' }
+            ];
+            
+            jqGridTable(tableName, list, pager, getData, deleteData, updateData, addData, cn, cm, "Get", false, "#buttons");
+            
+        });
+  </script>
+</head>
+<body>
+    <div>
+        <!-- Input handbook -->
+        <div class="input-append">
+            <input class="span2" id="appendedInputButton" type="text">
+            <!--<button class="btn" id="btn" type="button">...</button>-->
+            <a href="#myModal" id="btn" role="button" class="btn" data-toggle="modal">...</a>
+        </div>
+	    <div class='notifications top-right'></div>
+        <!-- Modal -->
+        <div id="myModal" class="modal hide fade in" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">            
+        </div>
+        
+        <!-- Add modal -->
+        <div class="decoration">
+        <div id="addModal" class="modal hide fade in" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        </div>
+        
+        <!-- buttons from local.js -->
+        <div class="panel" id="buttons"></div>
+
+        <!-- jqGrid -->
+        
+        <table id="list" class="table table-bordered table-condensed"></table>
+     
+            </div>
+    </div>
+</body>
+</html>

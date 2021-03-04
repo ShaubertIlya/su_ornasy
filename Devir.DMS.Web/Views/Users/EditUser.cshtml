@@ -1,0 +1,155 @@
+﻿@model Devir.DMS.Web.Models.OrganiztionStructure.UserViewModel
+@{
+    Layout = null;
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        InitPeopleByDepartmentPicker();
+        //$('.date').addClass('hasDatepicker');
+        $(".date").click(function () {
+            if (!$(this).hasClass("hasDatepicker")) {
+                $(this).datepicker({
+                    format: 'dd.mm.yyyy'
+                });
+                $(this).datepicker("show");
+                $(this).addClass('hasDatepicker');
+            }
+        });
+
+        fixFormTarget();
+    });
+
+    
+
+</script>
+
+@using (Ajax.BeginForm(new AjaxOptions() { HttpMethod = "POST" }))
+{
+
+    <div class="dbldHeader panel">
+        <h4>Редактировать профиль сотрудника</h4>
+    </div>
+    @Html.ValidationSummary(true)
+    <div>
+       
+
+            @Html.HiddenFor(model => model.UserId)
+            @Html.HiddenFor(model => model.Name)
+            @Html.HiddenFor(model => model.DepartmentId)
+
+            <table class="dbldTable">
+                <tr>
+                    <td >
+                        <div class="editor-label">
+                            @Html.LabelFor(model => model.FirstName)
+                        </div>
+                        <div class="editor-field">
+                            @Html.EditorFor(model => model.FirstName)
+                            @Html.ValidationMessageFor(model => model.FirstName)
+                        </div>
+
+                        <div class="editor-label">
+                            @Html.LabelFor(model => model.LastName)
+                        </div>
+                        <div class="editor-field">
+                            @Html.EditorFor(model => model.LastName)
+                            @Html.ValidationMessageFor(model => model.LastName)
+                        </div>
+
+                        <div class="editor-label">
+                            @Html.LabelFor(model => model.FatherName)
+                        </div>
+                        <div class="editor-field">
+                            @Html.EditorFor(model => model.FatherName)
+                            @Html.ValidationMessageFor(model => model.FatherName)
+                        </div>
+
+                        <div class="editor-label">
+                            @Html.LabelFor(model => model.Email)
+                        </div>
+                        <div class="editor-field">
+                            @Html.EditorFor(model => model.Email)
+                            @Html.ValidationMessageFor(model => model.Email)
+                        </div>
+
+                        <div class="editor-label">
+                            @Html.LabelFor(model => model.Phone)
+                        </div>
+                        <div class="editor-field">
+                            @Html.EditorFor(model => model.Phone)
+                            @Html.ValidationMessageFor(model => model.Phone)
+                        </div>
+                        <div class="editor-label">
+                            @Html.LabelFor(model => model.IsMale)
+                        </div>
+                        <div class="editor-field">
+                            @Html.DropDownList("IsMale", new List<SelectListItem> { 
+                           new SelectListItem() { Text = "Не указан", Value="", Selected = Model.IsMale == null },
+                           new SelectListItem() { Text = "Мужской", Value="true", Selected = Model.IsMale ?? false },
+                           new SelectListItem() { Text = "Женский", Value="false", Selected = !(Model.IsMale ?? true)  }
+                       })
+                            @Html.ValidationMessageFor(model => model.IsMale)
+                        </div>
+                    </td>
+                    <td class="dbldRightContainer">
+                        
+
+                        <div class="editor-label">
+                            @Html.LabelFor(model => model.BirthDate)
+                        </div>
+
+                        <div class="editor-field">
+                            <div class="input-append date" id="dp3" data-date="" data-date-format="dd.mm.yyyy">
+                                @Html.TextBox("BirthDate", Model.BirthDate.ToString("dd.MM.yyyy"), new { @class = "span2" })
+                                <span class="add-on"><i class="icon-th"></i></span>
+                            </div>
+                            @Html.ValidationMessageFor(model => model.BirthDate)
+                        </div>
+
+                        <div class="editor-label">
+                            @Html.LabelFor(model => model.Nationality)
+                        </div>
+                        <div class="editor-field">
+                            @Html.EditorFor(model => model.Nationality)
+                            @Html.ValidationMessageFor(model => model.Nationality)
+                        </div>
+
+                        <div class="editor-label">
+                            @Html.LabelFor(model => model.Citizenship)
+                        </div>
+                        <div class="editor-field">
+                            @Html.EditorFor(model => model.Citizenship)
+                            @Html.ValidationMessageFor(model => model.Citizenship)
+                        </div>
+
+                        <div class="editor-label">
+                            Замещающий сотрудник
+                        </div>
+                        <div class="editor-field">
+                            <div class="pdPicker">
+                                <input type="hidden" value="@Model.AlterUserId" id="pdpUserId" name="AlterUserId" />
+                                <input type="text" value="@Model.AlterUserName" id="pdpUserName" name="AlterUserName" />
+                            </div>
+                            @Html.ValidationMessageFor(model => model.AlterUserId)
+                        </div>
+
+                        <div class="editor-label">
+                            @Html.LabelFor(model => model.Nomenclature)
+                        </div>
+                        <div class="editor-field">
+                            @Html.EditorFor(model => model.Nomenclature)
+                            @Html.ValidationMessageFor(model => model.Nomenclature)
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            
+
+    </div>
+    <div class="panel dbldFooter">
+                <input type="submit" class="btn" value="Сохранить" />
+                <input value="Отмена" type="button" class="btn" onclick="CloseCurrentModal(); $('#dblDialog').html('');" />
+    </div>
+}
+

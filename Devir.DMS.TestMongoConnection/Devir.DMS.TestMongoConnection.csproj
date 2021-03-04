@@ -1,0 +1,152 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{533F7A86-EEA4-459A-9438-B3007A1DF577}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Devir.DMS.TestMongoConnection</RootNamespace>
+    <AssemblyName>Devir.DMS.TestMongoConnection</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Eloquera.Client, Version=6.3.3.13, Culture=neutral, PublicKeyToken=170cadcdba67be6c, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\EloqueraDB.6.3.3\lib\net40\Eloquera.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="Eloquera.Common, Version=6.3.3.13, Culture=neutral, PublicKeyToken=170cadcdba67be6c, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\EloqueraDB.6.3.3\lib\net40\Eloquera.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Eloquera.Server, Version=6.3.3.13, Culture=neutral, PublicKeyToken=170cadcdba67be6c, processorArchitecture=MSIL">
+      <HintPath>..\packages\EloqueraDB.6.3.3\lib\net40\Eloquera.Server.exe</HintPath>
+    </Reference>
+    <Reference Include="MongoDB.Bson">
+      <HintPath>..\packages\mongocsharpdriver.1.9.2\lib\net35\MongoDB.Bson.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MongoDB.Driver">
+      <HintPath>..\packages\mongocsharpdriver.1.9.2\lib\net35\MongoDB.Driver.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MongoRepository.Net45">
+      <HintPath>..\packages\MongoRepository.1.6.6\lib\net45\MongoRepository.Net45.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Model\DateCheck.cs" />
+    <Compile Include="Model\Doc.cs" />
+    <Compile Include="Model\DynamicData.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service References\ServiceReference1\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="Eloquera.config" />
+    <None Include="packages.config" />
+    <None Include="Properties\DataSources\Devir.DMS.Web.FullTextSearch.ServiceFTSFoundDocuments.datasource" />
+    <None Include="Service References\ServiceReference1\item.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReference1\item1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReference1\item2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ServiceReference1\ServiceFTS.wsdl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Devir.DMS.DL\Devir.DMS.DL.csproj">
+      <Project>{ca890185-cdc8-465d-b583-955034df15a6}</Project>
+      <Name>Devir.DMS.DL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Devir.DMS.Web\Devir.DMS.Web.csproj">
+      <Project>{cb665a3b-bb34-4ebe-a1c0-1b97a57fe963}</Project>
+      <Name>Devir.DMS.Web</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EPocalipse.IFilter\EPocalipse.IFilter.csproj">
+      <Project>{400462ce-40b3-498f-b95a-b1d2ae679359}</Project>
+      <Name>EPocalipse.IFilter</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Scripts\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\ServiceReference1\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ServiceReference1\item.disco" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ServiceReference1\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ServiceReference1\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ServiceReference1\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

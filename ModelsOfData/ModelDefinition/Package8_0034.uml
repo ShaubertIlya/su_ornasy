@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm4="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm5="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/LogicalClassDesigner"
+  dslVersion="1.0.0.0"
+  Id="cef7d4fc-656c-4154-8a6c-d51ae19a0987"
+  name="References"
+  visibility="Private" xmlns="http://schemas.microsoft.com/dsltools/ModelStore">
+  <referencesInternal>
+    <reference
+      Id="069c4c52-b934-4944-958a-3939a41035fe"
+      handle="viewcode://./CodeSchema_Namespace?Namespace%3DDevir.DMS.DL.Models.References"
+      tag="ViewCode" />
+  </referencesInternal>
+  <packagedElements>
+    <packageHasNamedElement>
+      <packageMoniker
+        Id="0104200e-e5fb-4995-adf2-2dfb21fcdba7"
+        LastKnownName="StorageDataTypes"
+        LastKnownLocation="Package9_0034.uml" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <class
+        Id="c93a8cbe-7a8a-417b-a553-cbd65a874c27"
+        name="FieldType"
+        isAbstract="false"
+        isLeaf="false"
+        isActiveClass="false">
+        <referencesInternal>
+          <reference
+            Id="9a2a7513-4104-472b-81c1-8f8928255904"
+            handle="viewcode://./CodeSchema_Class?Assembly%3D&quot;file:%2F%2F%2FC:%2FUsers%2Fa.zorya%2FDocuments%2FVisual Studio 2012%2FProjects%2FDevir.DMS%2FDevir.DMS.DL%2Fbin%2FDebug%2FDevir.DMS.DL.dll&quot; Namespace%3DDevir.DMS.DL.Models.References Type%3DFieldType"
+            tag="ViewCode" />
+        </referencesInternal>
+        <appliedStereotypesInternal>
+          <stereotypeInstance
+            Id="eb58f2bb-1f74-426f-a834-3228ebb89665"
+            name="class"
+            profile="CSharpProfile">
+            <propertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="cb177dfc-b886-40f2-8da1-8e0c6d46e31d">
+                <propertyInstance
+                  Id="fce1b90d-5409-4949-a0f0-b067d4ee975d"
+                  name="ClrAttributes" />
+              </stereotypeInstanceHasPropertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="0ae52115-e75b-4643-ba70-a422661c1d63">
+                <propertyInstance
+                  Id="d76a5a3d-43c7-47d1-91f8-885f4c5ff049"
+                  name="IsPartial"
+                  value="false" />
+              </stereotypeInstanceHasPropertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="02db29c0-20b7-47d9-b2b2-2698f1ad8793">
+                <propertyInstance
+                  Id="196c993f-694c-450e-bf40-5eb200539112"
+                  name="IsStatic"
+                  value="False" />
+              </stereotypeInstanceHasPropertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="b3b6c46e-fd7d-4066-bfac-c5f720791d69">
+                <propertyInstance
+                  Id="9c3c086a-0e61-4cb1-879f-0472434017e0"
+                  name="IsUnsafe"
+                  value="false" />
+              </stereotypeInstanceHasPropertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="7904b57a-a45f-434a-8413-ce760c74c48e">
+                <propertyInstance
+                  Id="1a76848a-f54e-404b-b496-dee75c2fdb35"
+                  name="PackageVisibility"
+                  value="internal" />
+              </stereotypeInstanceHasPropertyInstances>
+            </propertyInstances>
+          </stereotypeInstance>
+        </appliedStereotypesInternal>
+        <generalsInternal>
+          <generalization
+            Id="9fb78cc8-d3b5-4c0d-a423-6e439a293499"
+            isSubstitutable="false">
+            <classMoniker
+              Id="e3340122-6a66-4095-8684-a822bfcb9b11"
+              LastKnownName="ModelBase"
+              LastKnownLocation="Package3_0034.uml" />
+          </generalization>
+        </generalsInternal>
+      </class>
+    </packageHasNamedElement>
+  </packagedElements>
+</package>

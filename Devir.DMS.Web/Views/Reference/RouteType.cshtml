@@ -1,0 +1,56 @@
+﻿@model Devir.DMS.DL.Models.DocumentTemplates.RouteType
+@{
+    ViewBag.Title = "Тип маршрута";
+    Layout = null;
+}
+
+
+<style type="text/css">
+    /*html, body {
+        height: 100%;
+        min-height: 100%;
+        margin: 0;
+        padding: 0;
+    }*/
+</style>
+
+<script type="text/javascript">
+    var tableName = "Тип маршрута";
+    var typeTable = "RouteType";
+    var cn = ['Название', 'Описание'];
+    var cm = [
+        { name: 'Name', index: 'Name', width: 90 },
+        { name: 'Comment', index: 'Comment', width: 100 }];
+
+    // $("#gridArea").prepend("<table id='list'></table><div id='pager'></div>");
+    var func = function OnSelectRow(id) {
+        $("#details").load("RouteTypeActions?id=" + id);
+    };
+    jqGridTemplates(tableName, typeTable, cn, cm, func);
+    jQuery(list).trigger("reloadGrid");
+
+    $(function () {
+        $('div.split-pane').splitPane();
+    });
+</script>
+
+<div class="split-pane fixed-top">
+    <div class="split-pane-component" id="top-component">
+
+        <div class="decoration">
+
+            <!-- buttons from local.js -->
+            <div class="panel onlyIcons" id="buttons"></div>
+            <!-- jqGrid -->
+            <table id="list" class="table table-condensed table-bordered table-hover"></table>
+
+        </div>
+
+    </div>
+    <div class="split-pane-divider" id="my-divider"></div>
+    <div class="split-pane-component" id="bottom-component">
+        <div class="decoration">
+            <div id="details" style="background-color: white"></div>
+        </div>
+    </div>
+</div>
