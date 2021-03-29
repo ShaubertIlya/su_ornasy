@@ -117,7 +117,7 @@ namespace Devir.DMS.Web.Controllers
             List<FullTextSearch.ServiceFTSFoundDocuments> searchResults = new List<FullTextSearch.ServiceFTSFoundDocuments>();
             List<Guid> searchResultGuids = null;
 
-            if (!String.IsNullOrEmpty(searchPhrase))
+            if (!String.IsNullOrEmpty(searchPhrase) && false)
                 using (FullTextSearch.ServiceFTSClient clnt = new FullTextSearch.ServiceFTSClient())
                 {
                     searchResultGuids = new List<Guid>();
@@ -135,18 +135,32 @@ namespace Devir.DMS.Web.Controllers
                 }
 
             var total = RepositoryFactory.GetDocumentRepository().GetListForAllDocumentsGridCount(RepositoryFactory.GetCurrentUser(), owner, period, searchResultGuids, Guid.Empty, Guid.Empty,
-                                                               documentFilterVM);
-            var list = RepositoryFactory.GetDocumentRepository().GetListForAllDocumentsGrid((page * recordsOnPage), recordsOnPage, RepositoryFactory.GetCurrentUser(),
-                                                                sortColumn, sortDirection, groupColumn, owner, period, searchResultGuids, Guid.Empty, Guid.Empty,
-                                                               documentFilterVM).ToList();
 
-            
+                documentFilterVM);
+            documentFilterVM = documentFilterVM ?? new DocumentFilterVM();
+            documentFilterVM.Header = "по открытию л/счета";
+
+            List<DocumentsViewM> list = RepositoryFactory.GetDocumentRepository().GetListForAllDocumentsGrid((page * recordsOnPage), recordsOnPage, RepositoryFactory.GetCurrentUser(),
+                                                                sortColumn, sortDirection, groupColumn, owner, period, searchResultGuids, Guid.Empty, Guid.Empty,
+                                                               documentFilterVM, false, searchPhrase).ToList();
+            var query = MongoDB.Driver.Builders.Query.EQ("Header", MongoDB.Bson.BsonValue.Create("по открытию л/счета"));
+            var test = RepositoryFactory.GetRepository<Document>().GetCollection().Find(query).ToList();
+            //var list = RepositoryFactory.GetDocumentRepository().GetListForAllDocumentsGrid((page * recordsOnPage), recordsOnPage, RepositoryFactory.GetCurrentUser(),
+            //                                                 sortColumn, sortDirection, groupColumn, owner, period, searchResultGuids, Guid.Empty, Guid.Empty,
+            //                                                documentFilterVM).ToList();
+
 
             //var asd = RepositoryFactory.GetRepository<Document>().Single(s=>s.Id == Guid.Empty).DocumentViewers.Select(dw=>dw.Key == RepositoryFactory.GetCurrentUser().ToString()).;
+            var cnt = 0;
+            list.ForEach(item =>
+            {
+                cnt += item.DataCount;
+            });
 
             return Json(new
             {
                 Data = list,
+                DataCount = cnt,
                 More = total >= (page * recordsOnPage) + recordsOnPage,
                 isCancelyaria = RepositoryFactory.GetAnonymousRepository<User>().Single(m => m.UserId == RepositoryFactory.GetCurrentUser()).InRole("Канцелярия")
             }, JsonRequestBehavior.AllowGet);
@@ -267,7 +281,7 @@ namespace Devir.DMS.Web.Controllers
                                                                                             docType, idToDynamicFieldFilter,
                                                                                             documentFilterVM, isExcel
                                                                                             ).ToList();
-            
+
 
 
             return Json(new
@@ -281,7 +295,7 @@ namespace Devir.DMS.Web.Controllers
 
 
 
-        public bool CanViewNumber(Guid docType) 
+        public bool CanViewNumber(Guid docType)
         {
             bool canViewNumber = false;
             if (docType != new Guid("9655a0c3-a516-41cb-a2df-cbd2a096cf2a"))
@@ -733,7 +747,7 @@ namespace Devir.DMS.Web.Controllers
             if (Id == new Guid("9655a0c3-a516-41cb-a2df-cbd2a096cf2a"))
             {
 
-               
+
                 //var res =
                 //RepositoryFactory.GetDocumentRepository()
                 //    .List(
@@ -768,7 +782,7 @@ namespace Devir.DMS.Web.Controllers
                 ViewBag.isForRoot = false;
             }
 
-         
+
 
 
             return View(doc);
@@ -780,15 +794,17 @@ namespace Devir.DMS.Web.Controllers
         [HttpGet]
         public JsonResult GetInboxDocNumbersForSelect2(string term, int page, int pageLimit)
         {
-           var res = RepositoryFactory.GetDocumentRepository().GetInboxDocNumbersForSelect2(term, page, pageLimit).Select( x => new  {
-               id = x.Id,
-               text = "№ " + x.DocumentNumber + " " + x.Header
-           }).ToList();            
+            var res = RepositoryFactory.GetDocumentRepository().GetInboxDocNumbersForSelect2(term, page, pageLimit).Select(x => new
+            {
+                id = x.Id,
+                text = "№ " + x.DocumentNumber + " " + x.Header
+            }).ToList();
 
-           return Json(new {
-               rows = res,
-               total = RepositoryFactory.GetDocumentRepository().CountOfDocuments(term)
-           }, JsonRequestBehavior.AllowGet);
+            return Json(new
+            {
+                rows = res,
+                total = RepositoryFactory.GetDocumentRepository().CountOfDocuments(term)
+            }, JsonRequestBehavior.AllowGet);
         }
 
 
@@ -978,12 +994,12 @@ namespace Devir.DMS.Web.Controllers
                     doc.ForRootDocumentId = model.ForRootDocumentId;
                     doc.ForRootInstructionId = model.ForRootInstructionId;
 
-                 
+
                 }
 
-               
 
-                
+
+
 
                 //Сохраняем модель в БД :)
                 RepositoryFactory.GetRepository<Document>().Insert(doc);
@@ -1026,7 +1042,7 @@ namespace Devir.DMS.Web.Controllers
                 }
 
 
-               
+
 
 
                 var tmpField = model.Fields.Where(m => m.TypeOfTheFieldId.ToString() == "e3224442-d53a-47e9-b1bb-495c034b10d8").FirstOrDefault();
@@ -1154,7 +1170,7 @@ namespace Devir.DMS.Web.Controllers
 
         public ActionResult GetDocument(Guid DocumentId, int Tab = 1, Guid? InstructionRedirectedId = null, bool isModal = false)
         {
-           
+
             ViewBag.ActiveTabPane = Tab;
             ViewBag.isCancelyaria = RepositoryFactory.GetAnonymousRepository<User>().Single(m => m.UserId == RepositoryFactory.GetCurrentUser()).InRole("Канцелярия");
 
@@ -1354,11 +1370,11 @@ namespace Devir.DMS.Web.Controllers
 
                 if (isForInstruction && ActionId == new Guid("b25f05fc-c36b-4663-b2d1-3ab7b42ce04b"))// && Action)
                 {
-                    var nowIshod = RepositoryFactory.GetDocumentRepository().Single(m => m.ForRootInstructionId == doc.Id && m.docState==DocumentState.InWork);
+                    var nowIshod = RepositoryFactory.GetDocumentRepository().Single(m => m.ForRootInstructionId == doc.Id && m.docState == DocumentState.InWork);
                     if (nowIshod != null)
                     {
                         ViewBag.nowIshod = true;
-                        ViewBag.nowIshodNumber = "Исполняется Исходящий документ №" + (String.IsNullOrEmpty(nowIshod.DocumentNumber)? " Нет номера": nowIshod.DocumentNumber);
+                        ViewBag.nowIshodNumber = "Исполняется Исходящий документ №" + (String.IsNullOrEmpty(nowIshod.DocumentNumber) ? " Нет номера" : nowIshod.DocumentNumber);
                         ViewBag.nowIshodNumberLink = String.Format(
                             "/Document/GetDocument?DocumentId={0}&isModal=False",
                             nowIshod.Id);
@@ -1372,7 +1388,7 @@ namespace Devir.DMS.Web.Controllers
                     var someDocType =
                         RepositoryFactory.GetDocumentRepository()
                             .Single(m => m.Id == (doc as Instruction).RootDocumentId);
-                            
+
 
                     if (
                         someDocType.DocumentType.Id == new Guid("e993583d-2ef8-4368-9ed5-5f4439374174") || someDocType.DocumentType.Id == new Guid("E994583D-2EF8-4368-9ED5-5F4439374197"))
@@ -1391,7 +1407,7 @@ namespace Devir.DMS.Web.Controllers
                     ViewBag.nowIshod = false;
                     ViewBag.isIshod = false;
                 }
-             
+
 
                 return View(new UserSignResult() { ActionId = ActionId, Action = RepositoryFactory.GetRepository<RouteAction>().Single(m => m.Id == ActionId), Date = DateTime.Now });
             }
@@ -1459,7 +1475,7 @@ namespace Devir.DMS.Web.Controllers
                                 .Single(m => m.Id == doc.ForRootInstructionId.Value);
 
 
-                        if (doc.DocumentSignStages.All(m=>m.FinishDate.HasValue))
+                        if (doc.DocumentSignStages.All(m => m.FinishDate.HasValue))
                         {
                             AddSignResult(doc.ForRootInstructionId.Value, new UserSignResult()
                             {
@@ -1467,7 +1483,7 @@ namespace Devir.DMS.Web.Controllers
                                     Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.OkPerformAction,
                                 Action = RepositoryFactory.GetRepository<RouteAction>().Single(m => m.Id == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.OkPerformAction),
                                 Date = DateTime.Now,
-                                Comment = "Закрыто исходящим документом №"+doc.DocumentNumber
+                                Comment = "Закрыто исходящим документом №" + doc.DocumentNumber
                             }, doc.ForUserForRouteId, false, true, tmpInstruction.UserFor.UserId);
                         }
                     }
@@ -1529,7 +1545,7 @@ namespace Devir.DMS.Web.Controllers
             model.RouteStageId = RouteStageId;
             model.RouteStageUserId = RouteStageUserId;
             model.RootDocumentId = RootDocumentId;
-            
+
             ViewBag.isForInstruction = isForInstruction;
 
             return View(model);
@@ -1553,7 +1569,7 @@ namespace Devir.DMS.Web.Controllers
             }
 
 
-            
+
             if (ModelState.IsValid)
             {
 

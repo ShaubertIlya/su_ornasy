@@ -109,6 +109,8 @@ var filterClear = function () {
 
 $(document).on('click', '.navbar #filterRemove', function () {
     filterClear();
+
+    $("#filterCount").text("");
 });
 
 $('#allDocsActive #All').click(function () {

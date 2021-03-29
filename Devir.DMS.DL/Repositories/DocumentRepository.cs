@@ -176,11 +176,11 @@ namespace Devir.DMS.DL.Repositories
 
 
             var resultList = data.AsQueryable().OrderBy(sortColumn + (sortDirection == 0 ? " DESC" : "")).GroupByMany(groupColumn).Select(m => new
-              {
-                  Group = m.Key,
-                  Visible = true,
-                  Values = m.Items,
-              }).ToList();
+            {
+                Group = m.Key,
+                Visible = true,
+                Values = m.Items,
+            }).ToList();
 
             return resultList;
         }
@@ -195,10 +195,10 @@ namespace Devir.DMS.DL.Repositories
         }
 
         //Получением собственно сами данные
-        public IEnumerable<dynamic> GetListForAllDocumentsGrid(int startRecord, int recordsOnPage, Guid AuthorId, string sortColumn, int sortDirection,
+        public IEnumerable<DocumentsViewM> GetListForAllDocumentsGrid(int startRecord, int recordsOnPage, Guid AuthorId, string sortColumn, int sortDirection,
                                                                 string groupColumn, string Owner, string Period, List<Guid> foundResults,
                                                                 Guid docType = default(Guid), Guid idToDynamicFieldFilter = default(Guid),
-                                                                DocumentFilterVM documentFilterVM = default(DocumentFilterVM), bool isExcel = false)
+                                                                DocumentFilterVM documentFilterVM = default(DocumentFilterVM), bool isExcel = false, string searchPhrase = "")
         {
 
             //GetCollection().EnsureIndex(new IndexKeysBuilder().Ascending("DocumentViewers." + AuthorId.ToString() + ".Date"));
@@ -240,7 +240,7 @@ namespace Devir.DMS.DL.Repositories
                 });
             }
 
-            var preparedList = result.Select(m => new
+            var preparedList = result.Where(m => m.Header.Contains(searchPhrase)).Select(m => new DocumentViewModelItem
             {
                 Id = m.Id,
                 Number = m.DocumentNumber,
@@ -258,11 +258,12 @@ namespace Devir.DMS.DL.Repositories
                 isUrgent = m.isUrgent,
                 AddColumnId = m.DynamicFiltrationFieldGuid,
                 AddColumn = m.DynamicFiltrationFieldValue,
-            }).GroupByMany(groupColumn).Select(m => new
+            }).GroupByMany(groupColumn).Select(m => new DocumentsViewM
             {
                 Group = m.Key, //.ToString("dd.MM.yyyy")
                 Visible = true,
                 Values = m.Items,
+                DataCount = m.Count
             }).ToList();
 
 
@@ -948,13 +949,13 @@ namespace Devir.DMS.DL.Repositories
         }
 
         //Кол-во тасков
-        public long getAllTasksCount(Guid? userId = null, bool isForReport=false)
+        public long getAllTasksCount(Guid? userId = null, bool isForReport = false)
         {
             var user = userId ?? RepositoryFactory.GetCurrentUser();
 
 
 
-            var query = 
+            var query =
                 Query.ElemMatch(
                     "DocumentSignStages",
                     Query.And(
@@ -980,7 +981,7 @@ namespace Devir.DMS.DL.Repositories
                     , query);
             }
 
-             return this.GetCollection().Find(query).Count();
+            return this.GetCollection().Find(query).Count();
         }
 
         public long getAllNewTasksCount(Guid? userId = null, bool isForReport = false)
@@ -1017,7 +1018,7 @@ namespace Devir.DMS.DL.Repositories
             }
 
 
-                   return this.GetCollection().Find(query).Count();
+            return this.GetCollection().Find(query).Count();
         }
 
         public long getAllTasksForConfirmingPerformCount(Guid? userId = null, bool isForReport = false)
@@ -1025,34 +1026,34 @@ namespace Devir.DMS.DL.Repositories
             var user = userId ?? RepositoryFactory.GetCurrentUser();
 
 
-            
-                 var query = Query.ElemMatch("DocumentSignStages",
-                     Query.And(
-                     Query.And(
-                         Query<RouteStage>.EQ(rt => rt.isCurrent, true),
-                         Query<RouteStage>.NE(rt => rt.ControlPerformForRouteStageUserId, null)
-                         ),
-                         Query.ElemMatch("RouteUsers",
-                             Query.And(
-                                 Query<RouteStageUser>.EQ(u => u.SignUser.UserId, user),
-                                 Query<RouteStageUser>.EQ(u => u.IsCurent, true)
-                             ))
-                     )
-                  );
+
+            var query = Query.ElemMatch("DocumentSignStages",
+                Query.And(
+                Query.And(
+                    Query<RouteStage>.EQ(rt => rt.isCurrent, true),
+                    Query<RouteStage>.NE(rt => rt.ControlPerformForRouteStageUserId, null)
+                    ),
+                    Query.ElemMatch("RouteUsers",
+                        Query.And(
+                            Query<RouteStageUser>.EQ(u => u.SignUser.UserId, user),
+                            Query<RouteStageUser>.EQ(u => u.IsCurent, true)
+                        ))
+                )
+             );
 
 
-                 if (isForReport)
-                 {
-                     query = Query.And(
-                         Query.Or(
-                         Query<Document>.EQ(m => m.DocumentType.Id, new Guid("e993583d-2ef8-4368-9ed5-5f4439374174")),
-                         Query<Document>.EQ(m => m.DocumentType.Id, new Guid("8ad9bf84-cf30-4f3b-848b-e566311f03fc")),
-                         Query<Document>.EQ(m => m.DocumentType.Id, new Guid("9655a0c3-a516-41cb-a2df-cbd2a096cf2a")),
-                         Query<Document>.EQ(m => m.DocumentType.Id, new Guid("43f81f3e-1539-419e-8463-19b14495f575"))
-                         )
-                         , query);
-                 }
-                 return this.GetCollection().Find(query).Count();
+            if (isForReport)
+            {
+                query = Query.And(
+                    Query.Or(
+                    Query<Document>.EQ(m => m.DocumentType.Id, new Guid("e993583d-2ef8-4368-9ed5-5f4439374174")),
+                    Query<Document>.EQ(m => m.DocumentType.Id, new Guid("8ad9bf84-cf30-4f3b-848b-e566311f03fc")),
+                    Query<Document>.EQ(m => m.DocumentType.Id, new Guid("9655a0c3-a516-41cb-a2df-cbd2a096cf2a")),
+                    Query<Document>.EQ(m => m.DocumentType.Id, new Guid("43f81f3e-1539-419e-8463-19b14495f575"))
+                    )
+                    , query);
+            }
+            return this.GetCollection().Find(query).Count();
 
         }
 
@@ -1091,7 +1092,7 @@ namespace Devir.DMS.DL.Repositories
                     , query);
             }
 
-                     return this.GetCollection().Find(query).Count();
+            return this.GetCollection().Find(query).Count();
 
         }
 
@@ -1101,34 +1102,34 @@ namespace Devir.DMS.DL.Repositories
 
 
 
-           var query =  Query.And(
-                Query.ElemMatch(
-                    "DocumentSignStages",
-                    Query.And(
-                        Query.And(
-                            Query<RouteStage>.EQ(rt => rt.isCurrent, true),
-                            Query<RouteStage>.EQ(rt => rt.ControlPerformForRouteStageUserId, null),
-                            Query<RouteStage>.NE(rt => rt.RouteTypeId, new Guid("ace11fae-204e-40af-bdd0-a686395390e6"))),
-                        Query.ElemMatch(
-                            "RouteUsers",
-                            Query.And(
-                                Query<RouteStageUser>.EQ(u => u.SignUser.UserId, user),
-                                Query<RouteStageUser>.EQ(u => u.IsCurent, true))))),
-                Query.LT("FinishDate", DateTime.Now.Date));
+            var query = Query.And(
+                 Query.ElemMatch(
+                     "DocumentSignStages",
+                     Query.And(
+                         Query.And(
+                             Query<RouteStage>.EQ(rt => rt.isCurrent, true),
+                             Query<RouteStage>.EQ(rt => rt.ControlPerformForRouteStageUserId, null),
+                             Query<RouteStage>.NE(rt => rt.RouteTypeId, new Guid("ace11fae-204e-40af-bdd0-a686395390e6"))),
+                         Query.ElemMatch(
+                             "RouteUsers",
+                             Query.And(
+                                 Query<RouteStageUser>.EQ(u => u.SignUser.UserId, user),
+                                 Query<RouteStageUser>.EQ(u => u.IsCurent, true))))),
+                 Query.LT("FinishDate", DateTime.Now.Date));
 
-           if (isForReport)
-           {
-               query = Query.And(
-                   Query.Or(
-                   Query<Document>.EQ(m => m.DocumentType.Id, new Guid("e993583d-2ef8-4368-9ed5-5f4439374174")),
-                   Query<Document>.EQ(m => m.DocumentType.Id, new Guid("8ad9bf84-cf30-4f3b-848b-e566311f03fc")),
-                   Query<Document>.EQ(m => m.DocumentType.Id, new Guid("9655a0c3-a516-41cb-a2df-cbd2a096cf2a")),
-                   Query<Document>.EQ(m => m.DocumentType.Id, new Guid("43f81f3e-1539-419e-8463-19b14495f575"))
-                   )
-                   , query);
-           }
+            if (isForReport)
+            {
+                query = Query.And(
+                    Query.Or(
+                    Query<Document>.EQ(m => m.DocumentType.Id, new Guid("e993583d-2ef8-4368-9ed5-5f4439374174")),
+                    Query<Document>.EQ(m => m.DocumentType.Id, new Guid("8ad9bf84-cf30-4f3b-848b-e566311f03fc")),
+                    Query<Document>.EQ(m => m.DocumentType.Id, new Guid("9655a0c3-a516-41cb-a2df-cbd2a096cf2a")),
+                    Query<Document>.EQ(m => m.DocumentType.Id, new Guid("43f81f3e-1539-419e-8463-19b14495f575"))
+                    )
+                    , query);
+            }
 
-                  return this.GetCollection().Find(query).Count();
+            return this.GetCollection().Find(query).Count();
         }
 
         public long getAllBadTasksForConfirmingPerformCount(Guid? userId = null, bool isForReport = false)
@@ -1164,7 +1165,7 @@ namespace Devir.DMS.DL.Repositories
             }
 
 
-                  return this.GetCollection().Find(query).Count();
+            return this.GetCollection().Find(query).Count();
 
         }
 
@@ -1177,7 +1178,7 @@ namespace Devir.DMS.DL.Repositories
 
             return this.GetCollection().Find(Query.And(
                 Query.ElemMatch("NewDocumentViewers", Query.EQ("UserId", user)),
-                //   Query.Exists("DocumentViewers." + user.ToString()),
+                            //   Query.Exists("DocumentViewers." + user.ToString()),
                             Query.EQ("docState", DocumentState.InWork))
                         ).Count();
         }
@@ -1188,8 +1189,8 @@ namespace Devir.DMS.DL.Repositories
 
             return this.GetCollection().Find(Query.And(
                  Query.ElemMatch("NewDocumentViewers", Query.EQ("UserId", user)),
-                //  Query.Exists("DocumentViewers." + user.ToString()),
-                //Query.EQ("DocumentViewers." + user.ToString() + ".ViewDateTime", BsonNull.Value))
+                            //  Query.Exists("DocumentViewers." + user.ToString()),
+                            //Query.EQ("DocumentViewers." + user.ToString() + ".ViewDateTime", BsonNull.Value))
                             Query.ElemMatch("NewDocumentViewers", Query.And(Query.EQ("UserId", user), Query.EQ("ViewDateTime", BsonNull.Value)))
                         )).Count();
         }
