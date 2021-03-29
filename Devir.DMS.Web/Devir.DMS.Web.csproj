@@ -26,6 +26,8 @@
     <SccProvider>SAK</SccProvider>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
+    <Use64BitIISExpress />
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -202,6 +204,7 @@
     <Compile Include="Models\Document\DocumentDynamicFieldFiltration.cs" />
     <Compile Include="Models\Document\DocumentTemplate.cs" />
     <Compile Include="Models\Document\DocumentViewModel.cs" />
+    <Compile Include="Models\Document\DocumentViewModelItem.cs" />
     <Compile Include="Models\Document\InstructionForDocumentViewModel.cs" />
     <Compile Include="Models\Document\InstructionViewModel.cs" />
     <Compile Include="Models\Document\RouteUserSignResultViewModel.cs" />

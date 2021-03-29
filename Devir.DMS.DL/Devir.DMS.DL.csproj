@@ -105,6 +105,7 @@
     <Compile Include="Models\Document\DocumentFieldValues.cs" />
     <Compile Include="Models\Document\DocumentNotifications\Notifications.cs" />
     <Compile Include="Models\Document\DocumentState.cs" />
+    <Compile Include="Models\Document\DocumentsViewM.cs" />
     <Compile Include="Models\Document\DocumentTaskViewModel.cs" />
     <Compile Include="Models\Document\DocumentType.cs" />
     <Compile Include="Models\Document\DocumentTypeCount.cs" />
@@ -150,6 +151,7 @@
     </Compile>
     <Compile Include="Repositories\DocumentRepository.cs" />
     <Compile Include="Repositories\DocumentTypeCountRepository.cs" />
+    <Compile Include="Models\Document\DocumentViewModelItem.cs" />
     <Compile Include="Repositories\DynamicRecordRepository.cs" />
     <Compile Include="Repositories\InstructionsRepository.cs" />
     <Compile Include="Repositories\JqGridHelper.cs" />

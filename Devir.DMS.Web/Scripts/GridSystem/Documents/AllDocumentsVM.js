@@ -1,5 +1,5 @@
-﻿function resizeGrid() {  
-    $("#GridContainer").height($(".rightSide").height() - $("#gridHeader").height() - $(".rightSide .navbar").height()-20);
+﻿function resizeGrid() {
+    $("#GridContainer").height($(".rightSide").height() - $("#gridHeader").height() - $(".rightSide .navbar").height() - 20);
 }
 
 $(window).resize(resizeGrid);
@@ -8,9 +8,9 @@ $(window).resize(resizeGrid);
 var AllDocumentGridViewModel = {
     RawData: ko.observableArray([]),
     GroupedData: ko.observableArray([]),
-    Header: ko.observable("Заголовок"),   
+    Header: ko.observable("Заголовок"),
     isCancelyaria: ko.observable(false),
-    
+
     Page: 0,
     working: ko.observable(false),
     _recordsOnPage: 20,
@@ -19,11 +19,11 @@ var AllDocumentGridViewModel = {
     _groupColumn: "gDate",
     _gotAllData: false,
     _scrollingNow: false,
-    
+
     Owner: "All",
     Period: "oneMonth",
     SearchPhrase: "",
-   
+
     //фильтрация
     //DepartmentId: null,
     //StartDate: null,
@@ -32,8 +32,8 @@ var AllDocumentGridViewModel = {
     //IsSearchInHeader: false,
 
     //Метод для получения данных
-    getData: function () {       
-        
+    getData: function () {
+
         if (!this._gotAllData) {
             var that = this;
             $.ajax({
@@ -59,20 +59,22 @@ var AllDocumentGridViewModel = {
                     //searchHeader: null,
                     //isSearchInHeader: false
                 }),
-                beforeSend: function () {                    
+                beforeSend: function () {
                     that.working(true);
                     that._scrollingNow = true;
                 },
-                complete: function () {                   
-                                     
+                complete: function () {
+
                 },
                 success: function (data) {
-                    
+
                     //Больше данных нет
                     if (!data.More) {
                         that._gotAllData = true;
                     }
-
+                    setTimeout(() => {
+                        $("#filterCount").text(Math.max($("#GridContainer li").length - 2, 0));
+                    }, 100);
                     //Обработка данных
                     for (var dataIndex in data.Data) {
                         //Проверка существует группа или нет
@@ -90,7 +92,7 @@ var AllDocumentGridViewModel = {
                             that.RawData.push(ko.mapping.fromJS(data.Data[dataIndex]));
                         }
                     }
-                   
+
                     that.isCancelyaria(data.isCancelyaria);
 
                     that.Page++;
@@ -99,13 +101,13 @@ var AllDocumentGridViewModel = {
                     scrollReaction();
                 }
             });
-            
+
         }
-   
+
     },
 
     //Метод очистки грида
-    clearData: function(){
+    clearData: function () {
         this.RawData.removeAll();
         this.Page = 0;
         this._gotAllData = false;
@@ -121,17 +123,17 @@ var AllDocumentGridViewModel = {
     },
 
     //Показываем/скрываем группировку
-    showHideGroup: function (groupItem) {    
+    showHideGroup: function (groupItem) {
         groupItem.Visible(!groupItem.Visible());
         scrollReaction();
     },
-    
-   
+
+
 };
 //!-Viewmodel для грида
 
 function setFiltrationForGrid() {
-    AllDocumentGridViewModel.Owner = $("#navOwner li.active").attr("id");    
+    AllDocumentGridViewModel.Owner = $("#navOwner li.active").attr("id");
     AllDocumentGridViewModel.Period = $("#periodSelect li.selected").attr("id");
     AllDocumentGridViewModel.SearchPhrase = $("#pdpSearch").val();
     AllDocumentGridViewModel.clearData();
@@ -146,11 +148,10 @@ function sortAndGroup(elem, sortColumn, groupColumn) {
 
     var sortDirection = 0;
 
-    if ($(elem).hasClass("ascendingSorting"))
-    {
+    if ($(elem).hasClass("ascendingSorting")) {
         sortDirection = 0;
         $(elem).removeClass("ascendingSorting").addClass("descendingSorting").find("i").removeClass().addClass("icon-arrow-down");
-        
+
     } else if ($(elem).hasClass("descendingSorting")) {
         sortDirection = 1;
         $(elem).removeClass("descendingSorting").addClass("ascendingSorting").find("i").removeClass().addClass("icon-arrow-up");
@@ -158,7 +159,7 @@ function sortAndGroup(elem, sortColumn, groupColumn) {
         sortDirection = 0;
         $(elem).addClass("descendingSorting").find("i").removeClass().addClass("icon-arrow-down");
     }
-    
+
 
 
 
@@ -171,9 +172,9 @@ function sortAndGroup(elem, sortColumn, groupColumn) {
 //!-сортировка
 
 //Обработка скролла
-function scrollReaction() {  
-    if ($("#GridContainer").prop('scrollHeight') - $("#GridContainer").scrollTop()-2 <= $("#GridContainer").height() && !AllDocumentGridViewModel._scrollingNow) {
-        AllDocumentGridViewModel.getData();       
+function scrollReaction() {
+    if ($("#GridContainer").prop('scrollHeight') - $("#GridContainer").scrollTop() - 2 <= $("#GridContainer").height() && !AllDocumentGridViewModel._scrollingNow) {
+        AllDocumentGridViewModel.getData();
     } else {
         return;
     }
@@ -184,21 +185,21 @@ $("#GridContainer").scroll(function () {
 //!-Обработка скролла
 resizeGrid();
 
-    
+
 //$(document).on('click', '#applyFilter', function () {
 
 //    AllDocumentGridViewModel.DepartmentId = $('#dpDepartmentId').val();
 
 //    var sDate = $('#filterStartDate').data("datepicker");
 //    var eDate = $('#filterEndDate').data("datepicker");
-   
+
 //    if (sDate !== undefined) {       
 //        AllDocumentGridViewModel.StartDate = sDate.date;
 //    }
 //    if (eDate !== undefined) {        
 //        AllDocumentGridViewModel.EndDate = eDate.date;
 //    }      
-    
+
 //    AllDocumentGridViewModel.SearchHeader = $('#searchHeader').val();
 //    AllDocumentGridViewModel.IsSearchInHeader = $('#IsSearchInHeader').is(':checked');
 
