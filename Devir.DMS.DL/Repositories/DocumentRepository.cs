@@ -22,6 +22,7 @@ using System.Text.RegularExpressions;
 using MongoDB.Bson.Serialization;
 using Devir.DMS.DL.Models.Filter;
 using System.Globalization;
+using System.Web.Script.Serialization;
 
 namespace Devir.DMS.DL.Repositories
 {
@@ -32,7 +33,16 @@ namespace Devir.DMS.DL.Repositories
         {
         }
 
-
+        public List<Document> GetDocsByIncomingNumber(string incomingNumber)
+        {
+            var collection = this.GetCollection();
+            var query = from c in collection.AsQueryable<Document>()
+                        where c.DocumentType.Id == Guid.Parse("e993583d-2ef8-4368-9ed5-5f4439374174")
+                        where c.FieldValues
+                            .Any(x => x.FieldTemplateId == Guid.Parse("587033ff-6574-4241-9c94-775a9cadb029") && x.StringValue == incomingNumber)
+                        select c;
+            return query.ToList();
+        }
 
         //Для нового грида
 
@@ -195,10 +205,10 @@ namespace Devir.DMS.DL.Repositories
         }
 
         //Получением собственно сами данные
-        public IEnumerable<DocumentsViewM> GetListForAllDocumentsGrid(int startRecord, int recordsOnPage, Guid AuthorId, string sortColumn, int sortDirection,
-                                                                string groupColumn, string Owner, string Period, List<Guid> foundResults,
-                                                                Guid docType = default(Guid), Guid idToDynamicFieldFilter = default(Guid),
-                                                                DocumentFilterVM documentFilterVM = default(DocumentFilterVM), bool isExcel = false, string searchPhrase = "")
+        public IEnumerable<DocumentsViewM> GetListForAllDocumentsGrid(
+            int startRecord, int recordsOnPage, Guid AuthorId, string sortColumn, int sortDirection, string groupColumn,
+            string Owner, string Period, List<Guid> foundResults, Guid docType = default(Guid), Guid idToDynamicFieldFilter = default(Guid),
+            DocumentFilterVM documentFilterVM = default(DocumentFilterVM), bool isExcel = false, string searchPhrase = "")
         {
 
             //GetCollection().EnsureIndex(new IndexKeysBuilder().Ascending("DocumentViewers." + AuthorId.ToString() + ".Date"));
@@ -216,8 +226,10 @@ namespace Devir.DMS.DL.Repositories
                     idToDynamicFieldFilter, documentFilterVM);
 
             query.SetFields(Fields.Include("Id", "Author.UserId", "Author.Name", "Author.FirstName", "Author.LastName", "docState", "FinishDate", "CreateDate",
-                "Author.Fathername", "Header", "DocumentNumber", "DynamicFiltrationFieldValue", "DocumentViewers", "DocumentType.Name", "DocumentType.Id", "isUrgent", "DocumentSignStages"));
+                "Author.Fathername", "Header", "DocumentNumber", "DynamicFiltrationFieldValue", "DocumentViewers", "DocumentType.Name", "DocumentType.Id", "isUrgent", "DocumentSignStages", "FieldValues"));
 
+            // При ошибке MongoDB.Driver.MongoQueryException: "QueryFailure flag was Sort operation used more than the maximum 33554432 bytes of RAM. 
+            // db.adminCommand({setParameter: 1, internalQueryExecMaxBlockingSortBytes: 335544320})
             var result = query.ToList();// .ToList();
 
             //var documentType = RepositoryFactory.GetRepository<DocumentType>().Single(m => m.Id == docType);
@@ -240,7 +252,7 @@ namespace Devir.DMS.DL.Repositories
                 });
             }
 
-            var preparedList = result.Where(m => m.Header.Contains(searchPhrase)).Select(m => new DocumentViewModelItem
+            var preparedList = result.Select(m => new DocumentViewModelItem
             {
                 Id = m.Id,
                 Number = m.DocumentNumber,
@@ -258,6 +270,8 @@ namespace Devir.DMS.DL.Repositories
                 isUrgent = m.isUrgent,
                 AddColumnId = m.DynamicFiltrationFieldGuid,
                 AddColumn = m.DynamicFiltrationFieldValue,
+                TypeOfSender = m.FieldValues.FirstOrDefault(x => x.FieldTypeId.ToString() == "763e4adc-a7c0-46ee-bc20-2f8328eff85c")?.ValueToDisplay ?? "",
+                TypeOfDelivery = m.FieldValues.FirstOrDefault(x => x.FieldTypeId.ToString() == "f7fe3320-8d7f-4a01-b9b9-058c926feaa6")?.ValueToDisplay ?? ""
             }).GroupByMany(groupColumn).Select(m => new DocumentsViewM
             {
                 Group = m.Key, //.ToString("dd.MM.yyyy")
@@ -265,8 +279,6 @@ namespace Devir.DMS.DL.Repositories
                 Values = m.Items,
                 DataCount = m.Count
             }).ToList();
-
-
 
             return preparedList;
         }

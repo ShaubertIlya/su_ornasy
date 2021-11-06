@@ -110,10 +110,11 @@ namespace Devir.DMS.Web.Controllers
                 string mimeTypeName;
                 MimeType mimeType = null;
 
-                var fileStorage = new FileStorage();
+                var filesIdsList = new List<string>();
 
                 for (var i = 0; i < Request.Files.Count; i++)
                 {
+                    var fileStorage = new FileStorage();
                     var postedFileBase = Request.Files[i];
 
                     if (postedFileBase != null)
@@ -147,25 +148,21 @@ namespace Devir.DMS.Web.Controllers
                     //var gridFs = new MongoGridFS(database);
 
                     MongoGridFsHelper mongoGridFsHelper = new MongoGridFsHelper(database);
-
                     var id = ObjectId.Empty;
-
                     id = mongoGridFsHelper.AddFile(fileStream, fileName);
-
-
                     fileStorage.OId = id;
-
                     RepositoryFactory.GetRepository<FileStorage>().Insert(fileStorage);
 
+                    filesIdsList.Add(fileStorage.Id.ToString());
                 }
 
-                return Json(fileStorage.Id.ToString());
+                return Json(filesIdsList);
 
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                var message = ex.Message;
                 throw;
             }
         }
@@ -188,10 +185,16 @@ namespace Devir.DMS.Web.Controllers
         }
 
         //[HttpGet]
-        public ActionResult ShowUploadedFile(Guid guid, bool isAdd = true)
+        public ActionResult ShowUploadedFile(string guid, bool isAdd = true)
         {
             ViewBag.isAdd = isAdd;
-            return View(RepositoryFactory.GetRepository<FileStorage>().Single(m => m.Id == guid));
+            var fileStoragesList = new List<FileStorage>();
+            foreach (var id in guid.Split(','))
+            {
+                var fileStorage = RepositoryFactory.GetRepository<FileStorage>().Single(m => m.Id == Guid.Parse(id));
+                fileStoragesList.Add(fileStorage);
+            }
+            return View(fileStoragesList);
         }
 
         public FileResult GetScanedImage(Guid guid)

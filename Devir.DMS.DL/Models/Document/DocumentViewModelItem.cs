@@ -20,5 +20,9 @@ namespace Devir.DMS.DL.Models.Document
         public bool isUrgent { get; set; }
         public Guid AddColumnId { get; set; }
         public string AddColumn { get; set; }
+
+
+        public string TypeOfDelivery { get; set; }
+        public string TypeOfSender { get; set; }
     }
 }

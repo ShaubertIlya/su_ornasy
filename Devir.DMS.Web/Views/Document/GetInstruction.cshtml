@@ -1,7 +1,7 @@
 ﻿@*@{
-    ViewBag.Title = "GetDocument";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}*@
+        ViewBag.Title = "GetDocument";
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }*@
 
 @model Devir.DMS.DL.Models.Document.Instruction
 
@@ -19,55 +19,43 @@
 <script src="/Scripts/PDF/pdfobject.js"></script>
 
 <div id="scrolledDocumentAdd" style="overflow: auto;" class="decoration">
-
     <div style="position:relative; text-align:right; height:0px; background:none; top:20px; right: 30px;">
-      @if (Model.docState == Devir.DMS.DL.Models.Document.DocumentState.FinishedOk)
-      {
+        @if (Model.docState == Devir.DMS.DL.Models.Document.DocumentState.FinishedOk)
+        {
             <img src="~/Content/DocumentStates/Выполнено.png" />
-      }
-      else
-      {
+        }
+        else
+        {
+            if (Model.docState == Devir.DMS.DL.Models.Document.DocumentState.FinishedWithError)
+            {
+                <img src="~/Content/DocumentStates/Отклонено.png" />
+            }
+            else
+            {
+                if (Model.CurentStageTypeId == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.NegotiationStage)
+                {
+                    <img src="~/Content/DocumentStates/На%20согласовании.png" />
+                }
 
-          if (Model.docState == Devir.DMS.DL.Models.Document.DocumentState.FinishedWithError)
-          {
-            <img src="~/Content/DocumentStates/Отклонено.png" />
-          }
-          else
-          {
+                if (Model.CurentStageTypeId == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.PerformStage)
+                {
+                    <img src="~/Content/DocumentStates/На исполнении.png" />
+                }
 
-              if (Model.CurentStageTypeId == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.NegotiationStage)
-              {
-            <img src="~/Content/DocumentStates/На%20согласовании.png" />
-              }
+                if (Model.CurentStageTypeId == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.SignStage)
+                {
+                    <img src="~/Content/DocumentStates/На подписи.png" />
+                }
 
-              if (Model.CurentStageTypeId == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.PerformStage)
-              {
-            <img src="~/Content/DocumentStates/На исполнении.png" />
-              }
-
-              if (Model.CurentStageTypeId == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.SignStage)
-              {
-            <img src="~/Content/DocumentStates/На подписи.png" />
-              }
-
-
-
-
-
-              if (Model.docState == Devir.DMS.DL.Models.Document.DocumentState.Draft)
-              {
-            <img src="~/Content/DocumentStates/Черновик.png" />
-              }
-          }
-      }
-
-        </div>
-
-
-
+                if (Model.docState == Devir.DMS.DL.Models.Document.DocumentState.Draft)
+                {
+                    <img src="~/Content/DocumentStates/Черновик.png" />
+                }
+            }
+        }
+    </div>
 
     <div class="gridDetailHeader">@Model.DocumentType.Name @Model.DocumentNumber</div>
-    
 
     <div>
         <ul class="nav nav-tabs" id="tab-detail">
@@ -77,18 +65,10 @@
             <li>
                 <a href="#collapseTwo">История исполнения поручения</a>
             </li>
-           @* <li>
-                <a href="#collapseThree">Задания и поручения</a>
-            </li>*@
-           @* <li>
-                <a href="#collapseFour">История работы с документом</a>
-            </li>*@
         </ul>
     </div>
 
     <div id='content' class="tab-content" style="overflow: hidden;margin-left: 10px;">
-
-
         <div id="collapseOne" class="tab-pane fade in active">
             <div class="controls controls-row content">
                 <div class="span2">
@@ -100,80 +80,58 @@
             </div>
             <div class="controls controls-row content">
                 <div class="span2">
-                   Содержание
+                    Содержание
                 </div>
-                <div  style="width: 70%">
+                <div style="width: 70%">
                     @Html.Raw(Model.Body)
                 </div>
             </div>
-
-          @*  @foreach (var item in Model.FieldValues)
-            {
-                <div class="controls controls-row content">
-                    <div class="span2">
-                        @item.Header
-                    </div>
-                    <div class="span2" style="width: 70%">
-
-                        @item.ValueToDisplay
-                    </div>
-                </div>
-            }*@
-
-            @* Вложения *@
-            <br />
-            <br />
-            <br />
+            <br /><br /><br />
             <label style="font-weight: bold">Вложения:</label>
             <div id="attachments" style="height: auto">
-              
                 @if (Model.Attachments != null)
                 {
                     foreach (var fileId in Model.Attachments)
                     {
-                    <div style="border-bottom: 1px solid #EEEEEE;" class="row-fluid uploadedFile">
-                        @{
-                        Html.RenderAction("ShowUploadedFile", "File", new { guid = fileId });
-                        }
-
-                    </div>
+                        <div style="border-bottom: 1px solid #EEEEEE;" class="row-fluid uploadedFile">
+                            @{
+                                Html.RenderAction("ShowUploadedFile", "File", new { guid = fileId });
+                            }
+                        </div>
                     }
                 }
             </div>
             <div id="scanResults" style="height: auto"></div>
-                <div>
-
-                    <div style="">
-                       <label style="font-weight: bold">Результаты подписей:</label>
-                    </div>
-                    
-                     @foreach (var item in Model.DocumentSignStages.Where(x => x.RouteTypeId != Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.ControlPerformStage).ToList())
-                     {
-                         foreach (var subItem in item.RouteUsers.Where(b=>b.SignResult!=null))
-                         {
-                            <div class="panel">
-                               <div ><b>Пользователь</b>: @subItem.SignUser.GetFIO()</div>
-                                <div ><b>Результат:</b> @subItem.SignResult.Action.Name</div>
-                                <div >
-                                    <b>Содержание:</b> @Html.Raw(subItem.SignResult.Comment)
-                                    <div>
-                                     @foreach (var fileId in subItem.SignResult.attachment)
-                                                    {
-                                                        <div style="border-bottom: 1px solid #EEEEEE;" class="row-fluid uploadedFile">
-                                                            @{
-                                                        Html.RenderAction("ShowUploadedFile", "File", new { guid = fileId });
-                                                            }
-
-                                                        </div>
-                                                    }
-                                    </div>
-                                </div>
-                            </div>   
-                         }
-                         <br />
-                     }
-
+            <div>
+                <div style="">
+                    <label style="font-weight: bold">Результаты подписей:</label>
                 </div>
+                @foreach (var item in Model.DocumentSignStages.Where(x => x.RouteTypeId != Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.ControlPerformStage).ToList())
+                {
+                    foreach (var subItem in item.RouteUsers.Where(b => b.SignResult != null))
+                    {
+                        <div class="panel">
+                            <div><b>Пользователь</b>: @subItem.SignUser.GetFIO()</div>
+                            <div><b>Результат:</b> @subItem.SignResult.Action.Name</div>
+                            <div>
+                                <b>Содержание:</b> @Html.Raw(subItem.SignResult.Comment)
+                                <div>
+                                    @foreach (var fileId in subItem.SignResult.attachment)
+                                    {
+                                        <div style="border-bottom: 1px solid #EEEEEE;" class="row-fluid uploadedFile">
+                                            @{
+                                                Html.RenderAction("ShowUploadedFile", "File", new { guid = fileId });
+                                            }
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    <br />
+                }
+
+            </div>
         </div>
 
         <div class="tab-pane fade in" id="collapseTwo">
@@ -185,47 +143,48 @@
                         <div style="padding-top: 10px; padding-left: 5px; padding-right: 5px;">
                             <table style="width: 100%;">
                                 <tr style="width: 100%">
-                                    <td style="width: 5%; padding-top: 10px; vertical-align: top;" rowspan="2"><span style="font-weight: bold; font-size: 4em;">@(item.Order + 1)</span>
+                                    <td style="width: 5%; padding-top: 10px; vertical-align: top;" rowspan="2">
+                                        <span style="font-weight: bold; font-size: 4em;">@(item.Order + 1)</span>
                                     </td>
-                                    <td style="width: 50%; vertical-align: top;">Тип стадии: @(Devir.DMS.DL.Repositories.RepositoryFactory.GetRepository<Devir.DMS.DL.Models.DocumentTemplates.RouteType>().Single(m => m.Id == item.RouteTypeId).Name) 
-
+                                    <td style="width: 50%; vertical-align: top;">
+                                        Тип стадии: @(Devir.DMS.DL.Repositories.RepositoryFactory.GetRepository<Devir.DMS.DL.Models.DocumentTemplates.RouteType>().Single(m => m.Id == item.RouteTypeId).Name)
                                     </td>
-                                    <td style="width: 40%; vertical-align: top;"> Статус:
-
-                                        @(item.RouteUsers.Exists(n => n.SignResult != null && (n.SignResult.Action.Id == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.NotOkNegotiationAction || n.SignResult.Action.Id == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.NotOkSigntAction || n.SignResult.Action.Id == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.NotOkPerformAction)) ? "Отклонена" : item.isCurrent ? "Текущая" : item.RouteUsers.Count(m => m.isSigned) > 0 ? "Завершена" : "В ожидании")
-
-                                        
-
+                                    <td style="width: 40%; vertical-align: top;">
+                                        Статус: @(item.RouteUsers.Exists(n => n.SignResult != null && (n.SignResult.Action.Id == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.NotOkNegotiationAction || n.SignResult.Action.Id == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.NotOkSigntAction || n.SignResult.Action.Id == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.NotOkPerformAction)) ? "Отклонена" : item.isCurrent ? "Текущая" : item.RouteUsers.Count(m => m.isSigned) > 0 ? "Завершена" : "В ожидании")
                                     </td>
                                 </tr>
                                 <tr>
                                     <td colspan="2">
-                                        <br/>
+                                        <br />
                                         <table style="width: 100%;">
                                             <tr>
-                                                  <td></td>
-                                                <td style="width:300px;"><b>Пользователь</b>
+                                                <td></td>
+                                                <td style="width:300px;">
+                                                    <b>Пользователь</b>
                                                 </td>
-                                                <td style="text-align:left;"><b>Результат подписи</b>
-                                                </td>                                              
+                                                <td style="text-align:left;">
+                                                    <b>Результат подписи</b>
+                                                </td>
                                             </tr>
-                                            
+
                                             @foreach (var userItem in item.RouteUsers)
                                             {
-                                            
-                                            <tr>
-                                                  <td style="width:20px;">@if (userItem.IsCurent)
-                                                                          { <span><i class="icon-hand-right"></i></span> }</td>
-                                                <td>@userItem.SignUser.GetFIO()</td>
-                                                <td style="text-align:left;"> @Html.Raw(userItem.IsCurent ? "Ожидание решения" : userItem.SignResult == null ? "-" : userItem.SignResult.Action.Name + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + userItem.SignResult.Date.ToString("dd.MM.yyyy HH:ss"))</td>                                                
-                                              @if (Model.DocumentSignStages.Exists(m => m.ControlPerformForRouteStageUserId == userItem.Id))
-                                              {
-                                                  var routesigner = Model.DocumentSignStages.FirstOrDefault(m => m.ControlPerformForRouteStageUserId == userItem.Id).RouteUsers.FirstOrDefault();
-                                                  <td>
-                                                  @Html.Raw(routesigner.SignResult == null ? "<span class='label' style='background-color:#999999;'> Ожидает контроля исполнения</span>" : routesigner.SignResult.Action.Id == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.OkControlPerformStage ? "<span class='label' style='background-color:#66CC66;'>" + routesigner.SignResult.Action.Name + "</span>" : "<span class='label' style='background-color:#DA4F49;'>" + routesigner.SignResult.Action.Name + "</span>")
-                                                      </td>
-                                              }
-                                            </tr>
+
+                                                <tr>
+                                                    <td style="width:20px;">
+                                                        @if (userItem.IsCurent)
+                                                        {<span><i class="icon-hand-right"></i></span>}
+                                                    </td>
+                                                    <td>@userItem.SignUser.GetFIO()</td>
+                                                    <td style="text-align:left;"> @Html.Raw(userItem.IsCurent ? "Ожидание решения" : userItem.SignResult == null ? "-" : userItem.SignResult.Action.Name + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + userItem.SignResult.Date.ToString("dd.MM.yyyy HH:ss"))</td>
+                                                    @if (Model.DocumentSignStages.Exists(m => m.ControlPerformForRouteStageUserId == userItem.Id))
+                                                    {
+                                                        var routesigner = Model.DocumentSignStages.FirstOrDefault(m => m.ControlPerformForRouteStageUserId == userItem.Id).RouteUsers.FirstOrDefault();
+                                                        <td>
+                                                            @Html.Raw(routesigner.SignResult == null ? "<span class='label' style='background-color:#999999;'> Ожидает контроля исполнения</span>" : routesigner.SignResult.Action.Id == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.OkControlPerformStage ? "<span class='label' style='background-color:#66CC66;'>" + routesigner.SignResult.Action.Name + "</span>" : "<span class='label' style='background-color:#DA4F49;'>" + routesigner.SignResult.Action.Name + "</span>")
+                                                        </td>
+                                                    }
+                                                </tr>
                                             }
                                         </table>
                                     </td>
@@ -234,14 +193,14 @@
                         </div>
                     </div>
                 </div>
-                
-                                            if (item.RouteUsers.Exists(n => n.SignResult != null && (n.SignResult.Action.Id == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.NotOkNegotiationAction || n.SignResult.Action.Id == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.NotOkSigntAction || n.SignResult.Action.Id == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.NotOkPerformAction)))
-                                            { break; }
 
-                                            if (item.Order != Model.DocumentSignStages.Max(m => m.Order))
-                                            {
-                <div style="width:100%; text-align:center;"><i class="icon-arrow-down"></i>                   </div>
-                                            }
+                if (item.RouteUsers.Exists(n => n.SignResult != null && (n.SignResult.Action.Id == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.NotOkNegotiationAction || n.SignResult.Action.Id == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.NotOkSigntAction || n.SignResult.Action.Id == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.NotOkPerformAction)))
+                { break; }
+
+                if (item.Order != Model.DocumentSignStages.Max(m => m.Order))
+                {
+                    <div style="width:100%; text-align:center;"><i class="icon-arrow-down"></i>                   </div>
+                }
 
 
             }
@@ -250,14 +209,9 @@
     </div>
 </div>
 
-
-
-
-
 <div class="panel onlyIcons navbar-fixed-bottom " style="left: 9px; background-color: #f0f0f0; padding: 5px; right: 9px;">
-    <a  
-        href="/Document/@Html.Raw(!Model.isForInstruction ? "GetDocument?DocumentId=" : "GetInstruction?InstructionId=")@Model.ParentDocumentId" 
-        class="btn"><i class="icon-backward"></i> Вернуться документу</a>
+    <a href="/Document/@Html.Raw(!Model.isForInstruction ? "GetDocument?DocumentId=" : "GetInstruction?InstructionId=")@Model.ParentDocumentId"
+       class="btn"><i class="icon-backward"></i> Вернуться документу</a>
 
     <div style="float: right;">
         <span></span>
@@ -268,66 +222,48 @@
 
                 if (item.Id == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.OkControlPerformStage)
                 {
-                        <button onclick="ShowSignedUsers();" class="btn btn-success"><i class="icon-ok-circle"></i> Просмотреть исполненые задания</button>        
+                    <button onclick="ShowSignedUsers();" class="btn btn-success"><i class="icon-ok-circle"></i> Просмотреть исполненые задания</button>
                 }
 
                 if (item.Id == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.OkNegotiationAction)
                 {
-                        <button onclick="ShowSignResultWindow('@item.Id');" class="btn btn-success"><i class="icon-ok-circle"></i> Согласовать</button>        
+                    <button onclick="ShowSignResultWindow('@item.Id');" class="btn btn-success"><i class="icon-ok-circle"></i> Согласовать</button>
                 }
 
                 if (item.Id == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.OkSignAction)
                 {
-                        <button onclick="ShowSignResultWindow('@item.Id');" class="btn btn-success"><i class="icon-ok-circle"></i> Подписать</button>        
+                    <button onclick="ShowSignResultWindow('@item.Id');" class="btn btn-success"><i class="icon-ok-circle"></i> Подписать</button>
                 }
 
                 if (item.Id == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.AdditionalPerformRequired)
                 {
-                        <button onclick="ShowAddInstructionWindow();" class="btn"><i class="icon-share-alt"></i> Поручить</button>        
+                    <button onclick="ShowAddInstructionWindow();" class="btn"><i class="icon-share-alt"></i> Поручить</button>
                 }
 
 
                 if (item.Id == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.OkPerformAction)
                 {
-                        <button onclick="ShowSignResultWindow('@item.Id');" class="btn btn-success"><i class="icon-ok-circle"></i> Исполнить</button>        
+                    <button onclick="ShowSignResultWindow('@item.Id');" class="btn btn-success"><i class="icon-ok-circle"></i> Исполнить</button>
                 }
 
                 if (item.Id == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.NotOkNegotiationAction || item.Id == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.NotOkPerformAction || item.Id == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.NotOkSigntAction)
                 {
-                       <button onclick="ShowSignResultWindow('@item.Id');" class="btn btn-danger"><i class="icon-remove-circle"></i> Отклонить</button>
+                    <button onclick="ShowSignResultWindow('@item.Id');" class="btn btn-danger"><i class="icon-remove-circle"></i> Отклонить</button>
                 }
 
                 if (item.Id == Devir.DMS.BL.DocumentRouting.DocumentRouting.settings.AdditionalNegotiationRequired)
                 {
-                        <button onclick="ShowSignResultWindow('@item.Id');" class="btn"><i class="icon-time"></i>Дополнительное согласование</button>
+                    <button onclick="ShowSignResultWindow('@item.Id');" class="btn"><i class="icon-time"></i>Дополнительное согласование</button>
                 }
             }
 
-            </div>
-
-        @*     @if (Devir.DMS.DL.Repositories.RepositoryFactory.GetCurrentUser() == Model.Author.UserId)
-             {
-                  <button onclick="getImageFromScaner()" class="btn btn-info"><i class="icon-eye-open"></i> Отправить на ознакомление</button>
-             }
-            *@ 
-            
-             
-              
-                      
-               
-            
-            
-          @*  <button onclick="getImageFromScaner()" class="btn "><i class="icon-share"></i> Поручить</button>*@
-            
-
-
-        
+        </div>
     </div>
 </div>
 
-<div id="bottomPanelPDF" class="panel onlyIcons navbar-fixed-bottom" style="left: 9px; background-color: #f0f0f0; padding: 5px; right: 9px; display:none;">    
-     <a onclick="HidePDFFile();" class="btn"><i class="icon-backward"></i>Закрыть просмотр</a>
-    </div>
+<div id="bottomPanelPDF" class="panel onlyIcons navbar-fixed-bottom" style="left: 9px; background-color: #f0f0f0; padding: 5px; right: 9px; display:none;">
+    <a onclick="HidePDFFile();" class="btn"><i class="icon-backward"></i>Закрыть просмотр</a>
+</div>
 
 <div id="PDFModal" style="display:none; position:fixed; left:0; top:0px; width:100%; height:100%;">
 </div>

@@ -34,7 +34,7 @@ namespace Devir.DMS.Web.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("127.0.0.1")]
+        [global::System.Configuration.DefaultSettingValueAttribute("192.168.66.27")]
         public string Server {
             get {
                 return ((string)(this["Server"]));

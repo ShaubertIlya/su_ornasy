@@ -2,6 +2,7 @@
 using Devir.DMS.DL.Repositories;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Web;
 
@@ -15,11 +16,50 @@ namespace Devir.DMS.Web.Models.Stats
         public static List<DocumentInViewStat> getDocumentsFromDB(Guid UserId, int documentTypeId)
         {
 
-            var result = RepositoryFactory.GetDocumentRepository().getAllBadTasksForStatsReport(UserId, true);
-            return result.Select(m =>
-                new DocumentInViewStat() { DocumentNumber = m.DocumentNumber, DocumentTypeName = m.DocumentType.Name, DateEnd = m.FinishDate, DaysCount = (DateTime.Now - m.FinishDate).Days, FieldForFiltration = m.DynamicFiltrationFieldValue, Header = m.Header }
+            var allBadTasks = RepositoryFactory.GetDocumentRepository().getAllBadTasksForStatsReport(UserId, true);
+
+
+            var depListObjs = RepositoryFactory.GetRepository<Department>().List(m => !m.isDeleted && m.Users != null).ToList();
+            var departmentName = "";
+            var userName = "";
+
+            // TODO Переделать на LINQ
+            //-----------------------------------------------
+            foreach (var dep in depListObjs)
+            {
+                foreach (var user in dep.Users)
+                {
+                    Debug.WriteLine(user.Key.UserId);
+                    if (user.Key.UserId == UserId)
+                    {
+                        departmentName = dep.Name;
+                        userName = $"{user.Key.FirstName} {user.Key.LastName}";
+                    }
+                }
+            }
+            //-----------------------------------------------
+
+            var result = allBadTasks.Select(m =>
+                 new DocumentInViewStat()
+                 {
+                     DocumentNumber = m.DocumentNumber, // Deprecated
+                     DocumentTypeName = m.DocumentType.Name,
+                     DateEnd = m.FinishDate, // Deprecated
+                     DaysCount = (DateTime.Now - m.FinishDate).Days, // Deprecated
+                     FieldForFiltration = m.DynamicFiltrationFieldValue, // Deprecated
+                     Header = m.Header, // Deprecated
+                     DocNumber = m.DocumentNumber,
+                     DocInputDate = m.CreateDate,
+                     DocFrom = m.DynamicFiltrationFieldValue,
+                     DocDescription = m.Header,
+                     DocDeadLine = m.FinishDate,
+                     DocOverdueDays = (DateTime.Now - m.FinishDate).Days,
+                     DocDepartment = departmentName,
+                     DocExecutor = userName,
+                     DocExportDate = DateTime.Now
+                 }
                 ).ToList();
-            //return null;
+            return result;
         }
 
         public static StatsByPeopleViewModel getFromDb()
@@ -28,9 +68,13 @@ namespace Devir.DMS.Web.Models.Stats
             result.Departments = new List<ByPeopleDepartment>();
 
             RepositoryFactory.GetRepository<Department>().List(m => !m.isDeleted).ToList().ForEach(m =>
-            {                
+            {
                 result.Departments.Add(getDepartmentStatictic(m));
             });
+            //RepositoryFactory.GetRepository<Department>().List(m => !m.isDeleted && m.Name == "Отдел технического развития").ToList().ForEach(m =>
+            // {
+            //     result.Departments.Add(getDepartmentStatictic(m));
+            // });
 
             result.Totals = new ByPeopleTotals();
             result.Totals.TotalInWork = result.Departments.Sum(m => m.Totals.TotalInWork);
@@ -46,11 +90,16 @@ namespace Devir.DMS.Web.Models.Stats
 
             result.DepartmentName = dep.Name;
             result.DepartmentId = dep.Id;
-            result.People = new List<ByPeopleDepartmentUsers>();            
-            dep.Users.Where(m=> m.Value !=null && !m.Key.isDeleted && !m.Value.isDeleted).ToList().ForEach(m =>
-            {                
-                result.People.Add(getPeopleStatistic(m.Key, m.Value));
-            });
+            result.People = new List<ByPeopleDepartmentUsers>();
+
+            //foreach (var item in dep.Users.Where(m => m.Value != null && !m.Key.isDeleted && !m.Value.isDeleted && m.Key.Name == "Astanasu\\e.sharipov").ToList())
+            //{
+            //    result.People.Add(getPeopleStatistic(item.Key, item.Value));
+            //}
+            dep.Users.Where(m => m.Value != null && !m.Key.isDeleted && !m.Value.isDeleted).ToList().ForEach(m =>
+              {
+                  result.People.Add(getPeopleStatistic(m.Key, m.Value));
+              });
 
             result.Totals = new ByPeopleTotals();
             result.Totals.TotalInWork = result.People.Sum(m => m.Totals.TotalInWork);
@@ -120,13 +169,24 @@ namespace Devir.DMS.Web.Models.Stats
         public ByPeopleTotals Totals { get; set; }
     }
 
-    public class DocumentInViewStat{
-        public string DocumentNumber{get;set;}
-        public string FieldForFiltration {get;set;}
-        public string Header {get;set;}
-        public DateTime DateEnd {get;set;}
-        public int DaysCount{get;set;}
+    public class DocumentInViewStat
+    {
+        public string DocumentNumber { get; set; } // Deprecated
+        public string FieldForFiltration { get; set; } // Deprecated
+        public string Header { get; set; } // Deprecated
+        public DateTime DateEnd { get; set; } // Deprecated
+        public int DaysCount { get; set; } // Deprecated
         public string DocumentTypeName { get; set; }
+
+        public string DocNumber { get; set; }
+        public DateTime DocInputDate { get; set; }
+        public string DocFrom { get; set; }
+        public string DocDescription { get; set; }
+        public DateTime DocDeadLine { get; set; }
+        public int DocOverdueDays { get; set; }
+        public string DocDepartment { get; set; }
+        public string DocExecutor { get; set; }
+        public DateTime DocExportDate { get; set; }
     }
 
 

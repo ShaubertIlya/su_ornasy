@@ -116,100 +116,100 @@
 
                                     if (control.Type == "control")
                                     {
-                                        <div ondblclick='SelectElement(this);' style="width:@(control.Width)px; top:@(control.Top)px; left:@(control.Left)px; padding:0px; margin:0px;" type='control' fieldid='@control.FieldId' class='inner_textBlock'>
-                                            @* <div style='width: 100%; padding-right: 0px; padding-left: 0px; cursor: move;' class='uneditable-input'>@control.LabelText</div>*@
+                        <div ondblclick='SelectElement(this);' style="width:@(control.Width)px; top:@(control.Top)px; left:@(control.Left)px; padding:0px; margin:0px;" type='control' fieldid='@control.FieldId' class='inner_textBlock'>
+                            @* <div style='width: 100%; padding-right: 0px; padding-left: 0px; cursor: move;' class='uneditable-input'>@control.LabelText</div>*@
 
-                                            @if (control.FieldId.ToString().ToUpper() == "7F7DD51F-DDC6-4C2B-A0A5-3225E79ACABD")
-                                            {
+                            @if (control.FieldId.ToString().ToUpper() == "7F7DD51F-DDC6-4C2B-A0A5-3225E79ACABD")
+                            {
 
-                                                @Html.TextBox("Header", Model.Header, new { style = "width:" + control.Width + "px;" });
+                                @Html.TextBox("Header", Model.Header, new { style = "width:" + control.Width + "px;" });
 
-                                            }
+                            }
 
-                                            @if (control.FieldId.ToString().ToUpper() == "B7B6C441-F1EA-4E04-BF1E-AA04A8DCAA09")
-                                            {
-                                                <div class="input-append date dp span2" id="dp" data-date=" @((Model.FinishDate < DateTime.Now.Date) ? DateTime.Now.ToString("dd.MM.yyyy") : Model.FinishDate.ToString("dd.MM.yyyy")) " data-date-format=" dd.mm.yyyy">
-                                                    @Html.TextBox("FinishDate", (Model.FinishDate < DateTime.Now.Date) ? DateTime.Now.ToString("dd.MM.yyyy") : Model.FinishDate.ToString("dd.MM.yyyy"), new { @class = "span2", style = "width:" + control.Width + "px;" })
-                                                    <span class="add-on"><i class="icon-calendar"></i></span>
-                                                </div>
-                                            }
-
-
-
-                                            @if (fieldTypeId.ToString() == "a427dbfb-9cb7-4f52-9d5e-c7d0677e8103"
-                                          || fieldTypeId.ToString() == "8a37142c-0e29-4b40-b4a3-0a3a7d4f21d9"
-                                          || fieldTypeId.ToString() == "944388a1-b1e3-4a4d-910d-7ad9df107e20"
-                                          || fieldTypeId.ToString() == "f23165db-7c3d-49d5-bbc0-127eef90de36")
-                                            {                                                
-                                                @Html.TextBox("Fields[" + fieldIndex + "].Value", Model.Fields[fieldIndex].Value, new { style = "width:" + control.Width + "px;" });
-
-                                            }
-
-                                            @if (fieldTypeId.ToString() == "398877ee-49f3-46b6-bc2e-f567ecd75410")
-                                            {
-                                                @Html.Hidden("Fields[" + fieldIndex + "].Value", Model.Fields[fieldIndex].Value, new { @id = "select2InputDocNumber", style = "width:" + control.Width + "px;" }  );
-
-                                                @*@Html.DropDownList("Fields[" + fieldIndex + "].Value", new SelectList((System.Collections.IEnumerable)ViewData["inputDocNumbers"], "Value", "Text"), new { @id = "select2InputDocNumber", style = "width:" + 630 + "px;" });*@
-                                            }
+                            @if (control.FieldId.ToString().ToUpper() == "B7B6C441-F1EA-4E04-BF1E-AA04A8DCAA09")
+                            {
+                                <div class="input-append date dp span2" id="dp" data-date=" @((Model.FinishDate < DateTime.Now.Date) ? DateTime.Now.ToString("dd.MM.yyyy") : Model.FinishDate.ToString("dd.MM.yyyy")) " data-date-format=" dd.mm.yyyy">
+                                    @Html.TextBox("FinishDate", (Model.FinishDate < DateTime.Now.Date) ? DateTime.Now.ToString("dd.MM.yyyy") : Model.FinishDate.ToString("dd.MM.yyyy"), new { @class = "span2", style = "width:" + control.Width + "px;" })
+                                    <span class="add-on"><i class="icon-calendar"></i></span>
+                                </div>
+                            }
 
 
-                                            @if (fieldTypeId.ToString() == "d88f464a-ca95-4c41-ad7d-7df5adfd90d8")
-                                            {
-                                                <div class="input-append date dp span2" id="dp" data-date="@DateTime.Now.ToString("dd.MM.yyyy")" data-date-format="dd.mm.yyyy">
-                                                    @Html.TextBox("Fields[" + fieldIndex + "].Value", String.IsNullOrEmpty(Model.Fields[fieldIndex].Value) ? DateTime.Now.ToString("dd.MM.yyyy") : Model.Fields[fieldIndex].Value, new { @class = "span2", style = "width:" + control.Width + "px;" })
-                                                    <span class="add-on"><i class="icon-calendar"></i></span>
-                                                </div>
-                                            }
 
-                                            @if (fieldIndex != -1)
-                                            {
-                                                if (Model.Fields[fieldIndex].DynamicReferenceId != Guid.Empty)
-                                                {
-                                                    Guid SpravochnikRes;
-                                                    Guid.TryParse(Model.Fields[fieldIndex].Value, out SpravochnikRes);
-                                                    if ((bool)ViewBag.isForUpdate == false)
-                                                    {
-                                                        Html.RenderPartial("EditorTemplates/DynamicReferenceEditorTemplate", new Devir.DMS.Web.Models.Reference.DynamicReferenceEditorTemplateViewModel() { ReferenceId = Model.Fields[fieldIndex].DynamicReferenceId, SelectedItemGuid = SpravochnikRes, FieldName = "Fields[" + fieldIndex + "]", FieldStringValue = Model.Fields[fieldIndex].DynamicReferenceResult, FieldStringHeader = Guid.NewGuid().ToString(), Width = control.Width });
-                                                    }
-                                                    else
-                                                    {
-                                                        Html.RenderPartial("EditorTemplates/DynamicReferenceEditorTemplate", new Devir.DMS.Web.Models.Reference.DynamicReferenceEditorTemplateViewModel() { ReferenceId = Model.Fields[fieldIndex].DynamicReferenceId, SelectedItemGuid = Model.Fields[fieldIndex].ValueId, FieldName = "Fields[" + fieldIndex + "]", FieldStringValue = Model.Fields[fieldIndex].Value, FieldStringHeader = Guid.NewGuid().ToString(), Width = control.Width });
-                                                    }
-                                                }
-                                            }
+                            @if (fieldTypeId.ToString() == "a427dbfb-9cb7-4f52-9d5e-c7d0677e8103"
+                          || fieldTypeId.ToString() == "8a37142c-0e29-4b40-b4a3-0a3a7d4f21d9"
+                          || fieldTypeId.ToString() == "944388a1-b1e3-4a4d-910d-7ad9df107e20"
+                          || fieldTypeId.ToString() == "f23165db-7c3d-49d5-bbc0-127eef90de36")
+                            {
+                                @Html.TextBox("Fields[" + fieldIndex + "].Value", Model.Fields[fieldIndex].Value, new { style = "width:" + control.Width + "px;" });
+
+                            }
+
+                            @if (fieldTypeId.ToString() == "398877ee-49f3-46b6-bc2e-f567ecd75410")
+                            {
+                                @Html.Hidden("Fields[" + fieldIndex + "].Value", Model.Fields[fieldIndex].Value, new { @id = "select2InputDocNumber", style = "width:" + control.Width + "px;" });
+
+                                @*@Html.DropDownList("Fields[" + fieldIndex + "].Value", new SelectList((System.Collections.IEnumerable)ViewData["inputDocNumbers"], "Value", "Text"), new { @id = "select2InputDocNumber", style = "width:" + 630 + "px;" });*@
+                            }
 
 
-                                            @if (fieldTypeId.ToString() == "9b7be5b0-3e69-466a-a876-eae0402ebbe7")
-                                            {
-                                                Html.RenderPartial("EditorTemplates/UserSelectorEditorTemplate", new Devir.DMS.Web.Models.Reference.DynamicReferenceEditorTemplateViewModel() { ReferenceId = Guid.Empty, SelectedItemGuid = Model.Fields[fieldIndex].ValueId, FieldName = "Fields[" + fieldIndex + "]", FieldStringValue = Model.Fields[fieldIndex].Value, FieldStringHeader = Guid.NewGuid().ToString(), Width = control.Width });
-                                            }
+                            @if (fieldTypeId.ToString() == "d88f464a-ca95-4c41-ad7d-7df5adfd90d8")
+                            {
+                                <div class="input-append date dp span2" id="dp" data-date="@DateTime.Now.ToString("dd.MM.yyyy")" data-date-format="dd.mm.yyyy">
+                                    @Html.TextBox("Fields[" + fieldIndex + "].Value", String.IsNullOrEmpty(Model.Fields[fieldIndex].Value) ? DateTime.Now.ToString("dd.MM.yyyy") : Model.Fields[fieldIndex].Value, new { @class = "span2", style = "width:" + control.Width + "px;" })
+                                    <span class="add-on"><i class="icon-calendar"></i></span>
+                                </div>
+                            }
+
+                            @if (fieldIndex != -1)
+                            {
+                                if (Model.Fields[fieldIndex].DynamicReferenceId != Guid.Empty)
+                                {
+                                    Guid SpravochnikRes;
+                                    Guid.TryParse(Model.Fields[fieldIndex].Value, out SpravochnikRes);
+                                    if ((bool)ViewBag.isForUpdate == false)
+                                    {
+                                        Html.RenderPartial("EditorTemplates/DynamicReferenceEditorTemplate", new Devir.DMS.Web.Models.Reference.DynamicReferenceEditorTemplateViewModel() { ReferenceId = Model.Fields[fieldIndex].DynamicReferenceId, SelectedItemGuid = SpravochnikRes, FieldName = "Fields[" + fieldIndex + "]", FieldStringValue = Model.Fields[fieldIndex].DynamicReferenceResult, FieldStringHeader = Guid.NewGuid().ToString(), Width = control.Width });
+                                    }
+                                    else
+                                    {
+                                        Html.RenderPartial("EditorTemplates/DynamicReferenceEditorTemplate", new Devir.DMS.Web.Models.Reference.DynamicReferenceEditorTemplateViewModel() { ReferenceId = Model.Fields[fieldIndex].DynamicReferenceId, SelectedItemGuid = Model.Fields[fieldIndex].ValueId, FieldName = "Fields[" + fieldIndex + "]", FieldStringValue = Model.Fields[fieldIndex].Value, FieldStringHeader = Guid.NewGuid().ToString(), Width = control.Width });
+                                    }
+                                }
+                            }
 
 
-                                            @if (fieldTypeId.ToString() == "2490becb-3476-43ab-8717-0f0b138a6ab2")
-                                            {
-                                                bool res = false;
-                                                Boolean.TryParse(Model.Fields[fieldIndex].Value, out res);
-                                                <span>
-                                                    @Html.CheckBox("Fields[" + fieldIndex + "].Value", res)
-                                                </span>
-                                                //html.RenderPartial("EditorTemplates/BoolEditorTemplate", new Tuple<Boolean,string>(res, "Value"));
-                                            }
+                            @if (fieldTypeId.ToString() == "9b7be5b0-3e69-466a-a876-eae0402ebbe7")
+                            {
+                                Html.RenderPartial("EditorTemplates/UserSelectorEditorTemplate", new Devir.DMS.Web.Models.Reference.DynamicReferenceEditorTemplateViewModel() { ReferenceId = Guid.Empty, SelectedItemGuid = Model.Fields[fieldIndex].ValueId, FieldName = "Fields[" + fieldIndex + "]", FieldStringValue = Model.Fields[fieldIndex].Value, FieldStringHeader = Guid.NewGuid().ToString(), Width = control.Width });
+                            }
 
 
+                            @if (fieldTypeId.ToString() == "2490becb-3476-43ab-8717-0f0b138a6ab2")
+                            {
+                                bool res = false;
+                                Boolean.TryParse(Model.Fields[fieldIndex].Value, out res);
+                                <span>
+                                    @Html.CheckBox("Fields[" + fieldIndex + "].Value", res)
+                                </span>
+                                //html.RenderPartial("EditorTemplates/BoolEditorTemplate", new Tuple<Boolean,string>(res, "Value"));
+                            }
 
 
 
 
 
-                                            @if (fieldIndex != -1)
-                                            {
-                                                @Html.Hidden("Fields[" + fieldIndex + "].DynamicFieldTemplateId", control.FieldId)
-                                                @Html.Hidden("Fields[" + fieldIndex + "].TypeOfTheFieldId", fieldTypeId)
-                                                @Html.Hidden("Fields[" + fieldIndex + "].isRequired", tmpField.isRequired)
-                                                @Html.Hidden("Fields[" + fieldIndex + "].DynamicReferenceId", tmpField.DynamicReferenceId)
-                                            }
 
-                                        </div>
+
+                            @if (fieldIndex != -1)
+                            {
+                                @Html.Hidden("Fields[" + fieldIndex + "].DynamicFieldTemplateId", control.FieldId)
+                                @Html.Hidden("Fields[" + fieldIndex + "].TypeOfTheFieldId", fieldTypeId)
+                                @Html.Hidden("Fields[" + fieldIndex + "].isRequired", tmpField.isRequired)
+                                @Html.Hidden("Fields[" + fieldIndex + "].DynamicReferenceId", tmpField.DynamicReferenceId)
+                            }
+
+                        </div>
                                     }
                                     else
                                     {

@@ -117,7 +117,7 @@ namespace Devir.DMS.Web.Controllers
             List<FullTextSearch.ServiceFTSFoundDocuments> searchResults = new List<FullTextSearch.ServiceFTSFoundDocuments>();
             List<Guid> searchResultGuids = null;
 
-            if (!String.IsNullOrEmpty(searchPhrase) && false)
+            if (!String.IsNullOrEmpty(searchPhrase))
                 using (FullTextSearch.ServiceFTSClient clnt = new FullTextSearch.ServiceFTSClient())
                 {
                     searchResultGuids = new List<Guid>();
@@ -272,10 +272,22 @@ namespace Devir.DMS.Web.Controllers
                     searchResultGuids = searchResults.Select(m => new Guid(m.DocId)).ToList();
                 }
 
-            var documentType = RepositoryFactory.GetRepository<DocumentType>().Single(m => m.Id == docType);
+            //var documentType = RepositoryFactory.GetRepository<DocumentType>().Single(m => m.Id == docType);
 
-            var total = RepositoryFactory.GetDocumentRepository().GetListForAllDocumentsGridCount(RepositoryFactory.GetCurrentUser(), owner, period, searchResultGuids, docType, idToDynamicFieldFilter,
-                                                                                            documentFilterVM);
+            // вычисление тотал работает не правильно. Нужно чинить. пока испоьзуем костыль ниже:
+            //var total = RepositoryFactory.GetDocumentRepository().GetListForAllDocumentsGridCount(RepositoryFactory.GetCurrentUser(), owner, period, searchResultGuids, docType, idToDynamicFieldFilter, documentFilterVM);
+
+            var totalDocsList = RepositoryFactory.GetDocumentRepository().GetListForAllDocumentsGrid(0, 1000, RepositoryFactory.GetCurrentUser(),
+                                                                                            sortColumn, sortDirection, groupColumn, owner, period, searchResultGuids,
+                                                                                            docType, idToDynamicFieldFilter,
+                                                                                            documentFilterVM, isExcel
+                                                                                            );
+            var total = 0;
+            foreach (var item in totalDocsList)
+            {
+                total = total + item.Values.Count;
+            }
+
             var list = RepositoryFactory.GetDocumentRepository().GetListForAllDocumentsGrid((page * recordsOnPage), recordsOnPage, RepositoryFactory.GetCurrentUser(),
                                                                                             sortColumn, sortDirection, groupColumn, owner, period, searchResultGuids,
                                                                                             docType, idToDynamicFieldFilter,
@@ -288,7 +300,8 @@ namespace Devir.DMS.Web.Controllers
             {
                 Data = list,
                 More = total >= (page * recordsOnPage) + recordsOnPage,
-                canViewNumber = CanViewNumber(docType)
+                canViewNumber = CanViewNumber(docType),
+                Total = total
             }, JsonRequestBehavior.AllowGet);
 
         }
@@ -811,6 +824,38 @@ namespace Devir.DMS.Web.Controllers
         [HttpPost]
         public ActionResult AddDocument(DocumentViewModel model, int isForTemplate = 0, string templateName = "")
         {
+            #region Проверка на дублирование входящего номера
+
+            var incomingNumber = model.Fields
+                .FirstOrDefault(x => x.DynamicFieldTemplateId == Guid.Parse("587033ff-6574-4241-9c94-775a9cadb029"))
+                ?.Value;
+            if (!string.IsNullOrWhiteSpace(incomingNumber) && incomingNumber!="б/н")
+            {
+                var foundDocs = RepositoryFactory.GetDocumentRepository().GetDocsByIncomingNumber(incomingNumber);
+                if (foundDocs.Count > 0)
+                {
+                    var lastDoc = foundDocs.OrderByDescending(x => x.CreateDate).FirstOrDefault();
+                    var errorMessage = "";
+                    if (foundDocs.Count > 1)
+                    {
+                        errorMessage = $"Входящий документ по номеру исходящего документа №{incomingNumber} уже зарегистрирован в системе {foundDocs.Count} раз(а). Последний раз был зарегистрирован пользователем {lastDoc?.Author.FirstName} {lastDoc?.Author.LastName} {lastDoc?.CreateDate:dd.MM.yyyy}";
+                    }
+                    else
+                    {
+                        errorMessage = $"Входящий документ по номеру исходящего документа №{incomingNumber} уже зарегистрирован в системе пользователем {lastDoc?.Author.FirstName} {lastDoc?.Author.LastName} {lastDoc?.CreateDate:dd.MM.yyyy} ";
+                    }
+                    for (var i = 0; i < model.Fields.Count; i++)
+                    {
+                        if (model.Fields[i].DynamicFieldTemplateId == Guid.Parse("587033ff-6574-4241-9c94-775a9cadb029"))
+                        {
+                            ModelState.AddModelError($"Fields[{i}].Value", errorMessage);
+                        }
+                    }
+                }
+            }
+
+            #endregion
+
             ViewBag.isForUpdate = false;
 
             model.DocumenType = RepositoryFactory.GetRepository<DocumentType>().Single(m => m.Id == model.DocumentTypeId);
@@ -1716,96 +1761,85 @@ namespace Devir.DMS.Web.Controllers
         {
             var result = new List<InstructionForDocumentViewModel>();
 
-
-
-            Document.DocumentSignStages.ForEach(m =>
+            foreach (var docSignStage in Document.DocumentSignStages)
             {
-                m.RouteUsers.ForEach(n =>
+                foreach (var routeStageUser in docSignStage.RouteUsers)
                 {
-                    if (n.Instructions != null)
-                        if (n.Instructions.Any())
+                    if (routeStageUser.Instructions != null)
+                        if (routeStageUser.Instructions.Any())
                         {
-
-                            n.Instructions.ForEach(x =>
+                            foreach (var instructionId in routeStageUser.Instructions)
                             {
-
-                                var tmpIstruction = RepositoryFactory.GetRepository<Instruction>().Single(i => i.Id == x);
-                                if (tmpIstruction != null)
+                                var instruction = RepositoryFactory.GetRepository<Instruction>().Single(i => i.Id == instructionId);
+                                if (instruction != null)
                                 {
-                                    string tmpComment = string.Empty;
-                                    List<Guid> tmpAtt = new List<Guid>();
+                                    var comment = string.Empty;
+                                    var att = new List<Guid>();
 
-                                    var tmpStage = tmpIstruction.DocumentSignStages.LastOrDefault(h => h.RouteTypeId != BL.DocumentRouting.DocumentRouting.settings.ControlPerformStage);
-                                    if (tmpStage != null)
+                                    var stage = instruction.DocumentSignStages.LastOrDefault(h => h.RouteTypeId != BL.DocumentRouting.DocumentRouting.settings.ControlPerformStage);
+                                    if (stage != null)
                                     {
-                                        var tmpUser = tmpStage.RouteUsers.Where(mn => mn.SignResult != null).OrderByDescending(mn => mn.SignResult.Date).FirstOrDefault();
-                                        if (tmpUser != null)
+                                        var user = stage.RouteUsers.Where(mn => mn.SignResult != null).OrderByDescending(mn => mn.SignResult.Date).FirstOrDefault();
+                                        if (user != null)
                                         {
-                                            var tmpSignResult = tmpUser.SignResult;
-                                            if (tmpSignResult != null)
+                                            var signResult = user.SignResult;
+                                            if (signResult != null)
                                             {
-                                                tmpComment = tmpSignResult.Comment;
-                                                tmpAtt = tmpSignResult.attachment;
+                                                comment = signResult.Comment;
+                                                att = signResult.attachment;
                                             }
                                         }
                                     }
 
-                                    //if (tmpIstruction.DocumentSignStages.Count() > 1)
-                                    //    Console.WriteLine("sss");
-
-                                    bool isPerformActionStage = false;
-                                    if (tmpIstruction.IsCurrentPerformationStageId)
-                                        isPerformActionStage = true;
-
-                                    bool isFinishedOk = false;
-                                    if (tmpIstruction.docState == Devir.DMS.DL.Models.Document.DocumentState.FinishedOk)
-                                        isFinishedOk = true;
-
+                                    var isPerformActionStage = instruction.IsCurrentPerformationStageId;
+                                    var isFinishedOk = instruction.docState == DocumentState.FinishedOk;
+                                    var finishedRouteUserId =
+                                        instruction.DocumentSignStages[0].RouteUsers
+                                            .FirstOrDefault(mn => mn.SignResult != null) != null
+                                            ? instruction.DocumentSignStages[0].RouteUsers
+                                                .Where(mn => mn.SignResult != null)
+                                                .OrderByDescending(mn => mn.SignResult.Date).FirstOrDefault().Id
+                                            : Guid.Empty;
                                     result.Add(new InstructionForDocumentViewModel()
                                     {
-                                        Id = tmpIstruction.Id,
-                                        FinishedRouteUserId = tmpIstruction.DocumentSignStages[0].RouteUsers.Where(mn => mn.SignResult != null).FirstOrDefault() != null ? tmpIstruction.DocumentSignStages[0].RouteUsers.Where(mn => mn.SignResult != null).OrderByDescending(mn => mn.SignResult.Date).FirstOrDefault().Id : Guid.Empty,
-                                        ParentId = tmpIstruction.ParentDocumentId,
+                                        Id = instruction.Id,
+                                        FinishedRouteUserId = finishedRouteUserId,
+                                        ParentId = instruction.ParentDocumentId,
                                         isPerformControlAction = isPerformActionStage,
-                                        Body = tmpIstruction.Body,
-                                        RouteStageId = isPerformActionStage ? Guid.Empty : tmpIstruction.CurentStageId,
-                                        RouteStageUserId = isPerformActionStage ? tmpIstruction.StageUserIdForCurentPerformationStage : tmpIstruction.CurrentStageUserId,
-                                        CurrentSigner = isPerformActionStage ? tmpIstruction.CurrentUserIdForPerformation : tmpIstruction.UserFor.UserId,
-                                        CurrentSignerFIO = RepositoryFactory.GetRepository<User>().Single(x1 => x1.UserId == (isPerformActionStage ? tmpIstruction.CurrentStagePerformRealUserId : tmpIstruction.UserFor.UserId)).GetFIO(),
-                                        UserNameFor = tmpIstruction.UserFor.GetFIO(),
-                                        UserNameFrom = tmpIstruction.Author.GetFIO(),
-                                        DateBefore = tmpIstruction.FinishDate,
-                                        Header = tmpIstruction.Header,
-                                        DocState = tmpIstruction.docState,
+                                        Body = instruction.Body,
+                                        RouteStageId = isPerformActionStage ? Guid.Empty : instruction.CurentStageId,
+                                        RouteStageUserId = isPerformActionStage ? instruction.StageUserIdForCurentPerformationStage : instruction.CurrentStageUserId,
+                                        CurrentSigner = isPerformActionStage ? instruction.CurrentUserIdForPerformation : instruction.UserFor.UserId,
+                                        CurrentSignerFIO = RepositoryFactory.GetRepository<User>().Single(x1 => x1.UserId == (isPerformActionStage ? instruction.CurrentStagePerformRealUserId : instruction.UserFor.UserId)).GetFIO(),
+                                        UserNameFor = instruction.UserFor.GetFIO(),
+                                        UserNameFrom = instruction.Author.GetFIO(),
+                                        DateBefore = instruction.FinishDate,
+                                        Header = instruction.Header,
+                                        DocState = instruction.docState,
                                         level = level,
-                                        SignResult = tmpComment,
-                                        FinishDate = tmpIstruction.FinishDate,
-                                        Attachments = tmpAtt
+                                        SignResult = comment,
+                                        FinishDate = stage?.FinishDate,
+                                        Attachments = att,
+                                        CreateDate = instruction.CreateDate
                                     });
 
-                                    result.AddRange(GetInstructions(tmpIstruction, level + 1));
+                                    result.AddRange(GetInstructions(instruction, level + 1));
                                 }
-
-
-
-                            });
-
+                            }
                         }
-                });
-            });
+                }
+            }
 
-            result.ForEach(m =>
+            foreach (var m in result)
             {
-
                 RepositoryFactory.GetNotificationRepository().List(m1 => m1.DocumentId == m.Id && m1.ForWho.UserId == RepositoryFactory.GetCurrentUser()).ToList().ForEach(x =>
                     {
                         x.ViewDateTime = DateTime.Now;
                         RepositoryFactory.GetNotificationRepository().update(x);
                         SignalRWebNotifierHelper.UpdateNotifyAtClient(x.ForWho.Name, x.Id);
                     }
-                        );
-
-            });
+                );
+            }
 
             return result;
         }

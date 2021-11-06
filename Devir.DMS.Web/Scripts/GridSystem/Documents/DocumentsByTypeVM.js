@@ -10,7 +10,6 @@ var DocumentsByTypeViewModel = {
     GroupedData: ko.observableArray([]),
     Header: ko.observable("Заголовка"),
     canViewNumber: ko.observable(false),
-
     Page: 0,
     working: ko.observable(false),
     _recordsOnPage: 20,
@@ -32,7 +31,7 @@ var DocumentsByTypeViewModel = {
     //EndDate: null,
     //SearchHeader: "",
     //IsSearchInHeader: false,
-    getDataForExport: function() {
+    getDataForExport: function () {
         this.RawDataExport([]);
         var that = this;
         $.ajax({
@@ -76,7 +75,7 @@ var DocumentsByTypeViewModel = {
                 //if (!data.More) {
                 //    that._gotAllData = true;
                 //}
-               
+
                 //Обработка данных
                 for (var dataIndex in data.Data) {
                     //Проверка существует группа или нет
@@ -95,7 +94,7 @@ var DocumentsByTypeViewModel = {
                     }
                 }
 
-              
+
 
                 //that.canViewNumber(data.canViewNumber);
 
@@ -108,21 +107,20 @@ var DocumentsByTypeViewModel = {
                     url: '/Document/SaveReportToSession',
                     type: 'Post',
                     data: { str: $("#exportExcell").html() }
-                }).success(function(data) {
+                }).success(function (data) {
                     location.href = "/Document/FormReport";
                 });
-                
 
-                 //'data:application/vnd.ms-excel,' + ;
-              
-               // scrollReaction();
+
+                //'data:application/vnd.ms-excel,' + ;
+
+                // scrollReaction();
             }
         });
 
     },
     //Метод для получения данных
     getData: function () {
-        
         if (!this._gotAllData) {
             var that = this;
             $.ajax({
@@ -130,7 +128,7 @@ var DocumentsByTypeViewModel = {
                 type: 'Post',
                 contentType: "application/json",
                 dataType: "json",
-                data: ko.mapping.toJSON( {
+                data: ko.mapping.toJSON({
                     docType: that.DocType,
                     idToDynamicFieldFilter: that.IdToDynamicFieldFilter,
                     page: that.Page,
@@ -167,6 +165,7 @@ var DocumentsByTypeViewModel = {
                         that._gotAllData = true;
                     }
 
+
                     //Обработка данных
                     for (var dataIndex in data.Data) {
                         //Проверка существует группа или нет
@@ -177,8 +176,9 @@ var DocumentsByTypeViewModel = {
                         }
                         //Если существует то вставляем в группу
                         if (index != -1) {
-                            for (var valueIndex in data.Data[dataIndex].Values)
+                            for (var valueIndex in data.Data[dataIndex].Values) {
                                 that.RawData()[groupIndex].Values.push(ko.mapping.fromJS(data.Data[dataIndex].Values[valueIndex]))
+                            }
                         } else {
                             //Иначе создаем новую
                             that.RawData.push(ko.mapping.fromJS(data.Data[dataIndex]));
@@ -191,6 +191,12 @@ var DocumentsByTypeViewModel = {
                     that._scrollingNow = false;
                     that.working(false);
                     scrollReaction();
+
+                    setTimeout(() => {
+                        var totalDocsCount = data.Total;
+                        $("#filterCount").text(totalDocsCount);
+                    }, 300);
+
                 }
             });
 
@@ -202,7 +208,7 @@ var DocumentsByTypeViewModel = {
     clearData: function () {
         this.RawData.removeAll();
         this.Page = 0;
-        this._gotAllData = false;       
+        this._gotAllData = false;
     },
 
     clickRow: function (item) {
@@ -229,7 +235,7 @@ var DocumentsByTypeViewModel = {
 function setFiltrationForGrid() {
     DocumentsByTypeViewModel.Owner = $("#navOwner li.active").attr("id");
     DocumentsByTypeViewModel.Period = $("#periodSelect li.selected").attr("id");
-    DocumentsByTypeViewModel.SearchPhrase = $("#pdpSearch").val();   
+    DocumentsByTypeViewModel.SearchPhrase = $("#pdpSearch").val();
     DocumentsByTypeViewModel.clearData();
     DocumentsByTypeViewModel.getData();
 }
@@ -277,7 +283,7 @@ $("#GridContainer").scroll(function () {
     scrollReaction();
 });
 
-$('#DynamicFIlterField').change(function () {   
+$('#DynamicFIlterField').change(function () {
     DocumentsByTypeViewModel.clearData();
     DocumentsByTypeViewModel.IdToDynamicFieldFilter = $('#DynamicFIlterField').val();
     DocumentsByTypeViewModel.getData();

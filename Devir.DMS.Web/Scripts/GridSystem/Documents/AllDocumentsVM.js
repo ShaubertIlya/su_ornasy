@@ -74,7 +74,7 @@ var AllDocumentGridViewModel = {
                     }
                     setTimeout(() => {
                         $("#filterCount").text(Math.max($("#GridContainer li").length - 2, 0));
-                    }, 100);
+                    }, 300);
                     //Обработка данных
                     for (var dataIndex in data.Data) {
                         //Проверка существует группа или нет

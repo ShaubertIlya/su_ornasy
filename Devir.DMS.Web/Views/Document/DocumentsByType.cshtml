@@ -35,11 +35,11 @@
                     <span class="GridHeaderActive" onclick="sortAndGroup(this, 'CurrentStageCalcualted', 'CurrentStage')">ТЕКУЩАЯ СТАДИЯ <i></i></span>
                 </td>
                 @if (ViewBag.documentDynamicFieldFiltration != null)
-            {
-                <td style="width: 250px; ">
-                    <span id="span_dynamicField" class="GridHeaderActive"></span>
-                </td>
-            }
+                {
+                    <td style="width: 250px; ">
+                        <span id="span_dynamicField" class="GridHeaderActive"></span>
+                    </td>
+                }
                 <td style="vertical-align: middle;">
                     <span class="GridHeaderActive" onclick="sortAndGroup(this, '', 'gDate')">ДАТА ПОСТУПЛЕНИЯ <i></i></span>
                 </td>
@@ -99,9 +99,9 @@
 
                             @if (ViewBag.documentDynamicFieldFiltration != null)
                             {
-                            <td style="width: 250px; text-align: left;">
-                                <span data-bind="text: AddColumn"></span>
-                            </td>
+                                <td style="width: 250px; text-align: left;">
+                                    <span data-bind="text: AddColumn"></span>
+                                </td>
                             }
 
 
@@ -153,25 +153,36 @@
                         Автор
                     </th>
                     <th>
-                        Стадия
+                        Стадия исполнения
                     </th>
                     <th>
-                        Доп. инфо.
-                    </th>
-                    <th>
-                        Дата
+                        Дата исполнения
                     </th>
                     <th>
                         Краткое содержание
+                    </th>
+                    <th>
+                        Доставлено (эл.почта, нарочно, по почте)
+                    </th>
+                    <th>
+                        Вид отправителя (акиматы, юр.лицо, физ.лицо)
                     </th>
                 </tr>
             </thead>
             <tbody>
                 <!-- ko foreach: RawDataExport -->
                 <!-- ko foreach: Values-->
-                <tr><td><span data-bind="text: Number"></span></td><td><span data-bind="text: AuthorName"></span></td><td><span data-bind="text: CurrentStage"></span></td><td><span data-bind="text: AddColumn"></span></td><td><span data-bind="text: sDate"></span></td><td><span data-bind="text: Header"></span></td></tr>
-                <!-- /ko -->
-                <!-- /ko -->
+                <tr>
+                    <td><span data-bind="text: Number"></span></td>
+                    <td><span data-bind="text: AuthorName"></span></td>
+                    <td><span data-bind="text: CurrentStage"></span></td>
+                    <td><span data-bind="text: sDate"></span></td>
+                    <td><span data-bind="text: Header"></span></td>
+                    <td><span data-bind="text: TypeOfDelivery"></span></td>
+                    <td><span data-bind="text: TypeOfSender"></span></td>
+                </tr>          
+            <!-- /ko -->
+            <!-- /ko -->
             </tbody>
         </table>
     </div>

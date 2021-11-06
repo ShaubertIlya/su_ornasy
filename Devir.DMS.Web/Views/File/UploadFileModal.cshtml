@@ -8,51 +8,69 @@
 <script src="~/Scripts/bootstrap/bootstrap-fileupload.min.js"></script>
 
 <script type="text/javascript">
-    
+
     $('#uploadForm').ajaxForm({
         beforeSubmit: function () {
             myApp.showPleaseWait();
         },
         success: function (data) {
-            
-            //AttachmentsDivCount = $('#attachments .uploadedFile').size();
-
-           // FieldsForAttachments =
-           //'<input type="hidden" name="attachment[' + AttachmentsDivCount + ']" value="' + data + '"/>' +
-           //'<a style="margin: 5px 15px; float:left;" class="btn" href="#" id="btnRemoveFile"><i class="icon-trash"></i></a>';
-
             $("#dlgFileUpload").modal('hide');
-
             $.get("/File/ShowUploadedFile?guid=" + $.trim(data), function (s) {
                 $('#attachments').append(s);
             });
-
             myApp.hidePleaseWait();
         }
     });
 
+    $(function () {
+        $(document).on('change.bs.fileinput', '.fileinput', function (e) {
+            var $this = $(this),
+                $input = $this.find('input[type=file]'),
+                $span = $this.find('.fileinput-filename');
+            if ($input[0].files !== undefined && $input[0].files.length > 0) {
+                $span.text($.map($input[0].files, function (val) { return val.name; }).join(', '));
+            }
+            $span.attr('title', $span.text());
+        });
+    });
 </script>
-
-
-
 
 <div>
     <form id="uploadForm" action="/File/UploadDocument" method="post" enctype="multipart/form-data">
-       <b>Комметарий к файлу:</b> 
+        <b>Комметарий к файлу:</b>
         <br />
         <textarea style="width: 510px; height: 80px; " name="description"></textarea>
         <br />
-        <b>Выберите файл:</b> 
+        <b>Выберите файл:</b>
         <br />
 
-        <div class="fileupload fileupload-new" data-provides="fileupload">
-            <span class="btn btn-file"><span class="fileupload-new">Обзор</span><span class="fileupload-exists">Изменить</span>
-                <input type="file" name="file" title="Обзор" /></span>
-            <span class="fileupload-preview"></span>
-            <a href="#" class="close fileupload-exists" data-dismiss="fileupload" style="float: none">×</a>
-        </div>
+        @*<div class="fileupload fileupload-new" data-provides="fileupload">
+                <span class="btn btn-file">
+                    <span class="fileupload-new">Обзор</span>
+                    <span class="fileupload-exists">Изменить</span>
+                    <input type="file" name="file" title="Обзор" multiple />
+                </span>
+                <span class="fileupload-preview"></span>
+                <a href="#" class="close fileupload-exists" data-dismiss="fileupload" style="float: none">×</a>
+            </div>*@
 
-      
+
+        <div class="fileinput fileinput-new" data-provides="fileinput">
+            <div class="input-group">
+                <div style="width:510px" class="form-control uneditable-input" data-trigger="fileinput">
+                    <i class="glyphicon glyphicon-file fileinput-exists"></i> <span class="fileinput-filename"></span>
+                </div>
+                <div class="input-group-btn">
+                    <div class="btn btn-default btn-file">
+                        <span class="fileinput-new">Обзор</span>
+                        <input type="file" multiple name="..." />
+                    </div>
+                    @*<button type="button" class="btn btn-default fileinput-exists" data-dismiss="fileinput" title="Удалить">
+                        Удалить
+                    </button>*@
+                </div>
+            </div>
+        </div>
     </form>
 </div>
 

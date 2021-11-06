@@ -100,9 +100,7 @@ namespace Devir.DMS.BL.DynamicRecords
 
             if (TypeOfTheField.ToString() == "944388a1-b1e3-4a4d-910d-7ad9df107e20")
             {
-                decimal tmpRes = 0;
-                decimal.TryParse(Value, out tmpRes);
-                DynamicValue.DecimalValue = tmpRes;
+                DynamicValue.DecimalValue = Value;
                 return;
             }
 

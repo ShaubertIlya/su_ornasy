@@ -39,38 +39,10 @@ namespace Devir.DMS.FulltextSearchEngine
                     using (Lucene.Net.Store.Directory directory = FSDirectory.Open(@"C:\LuceneDataStorage"))
                     {
 
-                        var an = new Lucene.Net.Analysis.Snowball.SnowballAnalyzer(Lucene.Net.Util.Version.LUCENE_30, "Russian");//new Lucene.Net.Analysis.Ru.RussianAnalyzer(Lucene.Net.Util.Version.LUCENE_30);
+                        var an = new Lucene.Net.Analysis.Snowball.SnowballAnalyzer(Lucene.Net.Util.Version.LUCENE_30, "Russian");
                         using (var indexer = new IndexWriter(directory, an, IndexWriter.MaxFieldLength.UNLIMITED))
                         {
                             Document foundDoc = null;
-                            //using (var searcher = new IndexSearcher(directory, true))
-                            //{                       
-                            //    var res = searcher.Search(new TermQuery(new Term("Id", docId.ToString())), 1);
-                            //    if (res.ScoreDocs.Any())
-                            //        foundDoc = searcher.Doc(res.ScoreDocs.FirstOrDefault().Doc);                        
-                            //}
-
-                            //if (foundDoc != null)
-                            //{
-                            //    //Реализация функционала по обновлению документа
-                            //    //foundDoc.GetField("Id").SetValue(LuceneDoc.Id.ToString());
-                            //    foundDoc.GetField("Body").SetValue(LuceneDoc.Body);
-                            //    foundDoc.GetField("Number").SetValue(LuceneDoc.Number);
-                            //    foundDoc.GetField("Type").SetValue(LuceneDoc.Type);
-                            //    foundDoc.GetField("Viewers").SetValue(LuceneDoc.Viewers);
-                            //    foundDoc.GetField("Attachments").SetValue(LuceneDoc.Attachmments);
-                            //    foundDoc.GetField("SubBodies").SetValue(LuceneDoc.SubBodies);
-                            //    foundDoc.GetField("Header").SetValue(LuceneDoc.Header);
-                            //    //indexer.DeleteDocuments(new TermQuery(new Term("Id", docId.ToString())));
-                            //    //indexer.Commit();              
-
-                            //    indexer.UpdateDocument(, foundDoc);
-                            //    //indexer.UpdateDocument(new Term("Id", docId.ToString()), foundDoc);
-                            //}
-                            //else
-                            //{
-                            //Вставка нового документа
-
                             //Попытка удалить
                             indexer.DeleteDocuments(new Term("Id", docId.ToString()));
 
@@ -114,45 +86,24 @@ namespace Devir.DMS.FulltextSearchEngine
         public List<FoundDocuments> SearchDocuments(string Text, string userId, string typeId)
         {
             Text = Text.Trim();
-
             while (Text.Contains("  "))
             {
                 Text = Text.Replace("  ", " ");
             }
-            
-            Console.WriteLine("Ищем документы по фразе: {0} , Пользователь: {1}", Text, userId);
+
+            Output($"Ищем документы по фразе: {Text} , Пользователь: {userId}", ConsoleColor.Green);
             try
             {
                 using (Lucene.Net.Store.Directory directory = FSDirectory.Open(@"C:\LuceneDataStorage"))
                 {
 
-                    if(!String.IsNullOrEmpty(userId))
-                    userId = userId.Replace("-", "");
+                    if (!String.IsNullOrEmpty(userId))
+                        userId = userId.Replace("-", "");
 
-                    //var realText = new StringBuilder();
-                    //Text.Split(' ').ToList().ForEach(m =>
-                    //{
-
-
-                    //    if (Regex.IsMatch(m, "\\d"))
-                    //        realText.AppendFormat("{0} AND", m);
-                    //    else  
-                    //        realText.AppendFormat("{0}~ AND", m);                        
-                    //});
-                    //Text = realText.ToString();
-                    //Text = Text.Trim('D');
-                    //Text = Text.Trim('N');
-                    //Text = Text.Trim('A');
-                    //Console.WriteLine("Запрос: {0}", Text);
                     using (var searcher = new IndexSearcher(directory, true))
                     {
-
-                        var i = searcher.MaxDoc;
-
                         var searchTerms = new Dictionary<FieldWithBoost, string>();
-
                         var mainQuery = new BooleanQuery();
-
                         var mainSubQuery = new BooleanQuery();
 
                         if (!String.IsNullOrEmpty(userId))
@@ -165,8 +116,6 @@ namespace Devir.DMS.FulltextSearchEngine
                             mainQuery.Add(query, Occur.MUST);
                         }
 
-
-
                         var parserTypeId = new QueryParser(
                                Lucene.Net.Util.Version.LUCENE_30, "TypeId",
                                new Lucene.Net.Analysis.Snowball.SnowballAnalyzer(Lucene.Net.Util.Version.LUCENE_30, "Russian")
@@ -174,61 +123,65 @@ namespace Devir.DMS.FulltextSearchEngine
                         var queryTypeId = parserTypeId.Parse(String.IsNullOrEmpty(typeId) ? "ANY" : typeId.Replace("-", ""));
                         mainQuery.Add(queryTypeId, Occur.MUST);
 
-
-                        //var parser1 = new QueryParser(
-                        //          Lucene.Net.Util.Version.LUCENE_30, "Header", new Lucene.Net.Analysis.Snowball.SnowballAnalyzer(Lucene.Net.Util.Version.LUCENE_30, "Russian")
-                        //    //new Lucene.Net.Analysis.Ru.RussianAnalyzer(Lucene.Net.Util.Version.LUCENE_30)
-                        //          );
-                        //var query1 = parser1.Parse(Text);
-                        //mainSubQuery.Add(query1, Occur.SHOULD);
-
-                        
-                      
                         searchTerms.Add(new FieldWithBoost() { Name = "Number", Boost = 10000 }, Text);
                         searchTerms.Add(new FieldWithBoost() { Name = "Type", Boost = 10000 }, Text);
                         searchTerms.Add(new FieldWithBoost() { Name = "Header", Boost = 100 }, Text);
                         searchTerms.Add(new FieldWithBoost() { Name = "Body", Boost = 10 }, Text);
                         searchTerms.Add(new FieldWithBoost() { Name = "Attachments", Boost = 2 }, Text);
                         searchTerms.Add(new FieldWithBoost() { Name = "SubBodies", Boost = 1 }, Text);
-                       
 
-                      Text.Split(' ').ToList().ForEach(m =>
+                        foreach (var word in Text.Split(' '))
                         {
                             var secSubQuery = new BooleanQuery();
-                        foreach (var pair in searchTerms)
-                        {                            
-                            var parser1 =
-                               new QueryParser(
-                                   Lucene.Net.Util.Version.LUCENE_30, pair.Key.Name, new Lucene.Net.Analysis.Snowball.SnowballAnalyzer(Lucene.Net.Util.Version.LUCENE_30, "Russian")
-                                   );
+                            foreach (var pair in searchTerms)
+                            {
+                                var queryParser =
+                                 new QueryParser(
+                                     Lucene.Net.Util.Version.LUCENE_30, pair.Key.Name, new Lucene.Net.Analysis.Snowball.SnowballAnalyzer(Lucene.Net.Util.Version.LUCENE_30, "Russian")
+                                     );
+                                queryParser.AllowLeadingWildcard = true;
 
-                            var query1 = parser1.Parse(Regex.IsMatch(m, "\\d") ? String.Format("N*{0}", Text) : String.Format("{0}~", Text));
-                            query1.Boost = pair.Key.Boost;
-                            secSubQuery.Add(query1, Occur.SHOULD);
-                        }
+                                Query query;
+                                if (Regex.IsMatch(word, "^[0-9]+$"))
+                                {
+                                    query = queryParser.Parse($"N*{word}");
+                                }
+                                else
+                                {
+
+                                    query = queryParser.Parse($"*{word}*");
+                                }
+                                query.Boost = pair.Key.Boost;
+                                secSubQuery.Add(query, Occur.SHOULD);
+                            }
                             mainSubQuery.Add(secSubQuery, Occur.MUST);
-                        });
+                        }
 
                         mainQuery.Add(mainSubQuery, Occur.MUST);
-
                         var foundDocs = searcher.Search(mainQuery, 1000).ScoreDocs;
+                        var result = foundDocs.Select(m => new FoundDocuments() { DocId = searcher.Doc(m.Doc).GetField("Id").StringValue, Score = m.Score }).ToList();
 
-                        return foundDocs.Select(m => new FoundDocuments() { DocId = searcher.Doc(m.Doc).GetField("Id").StringValue, Score = m.Score }).ToList();
+                        Output($"Найдено: {result.Count}", ConsoleColor.DarkGreen);
 
-                        //return .Count();                        
-                        //if (res.ScoreDocs.Any())
-                        //    return null;
+                        return result;
                     }
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                Output(ex.ToString(), ConsoleColor.Red);
                 return null;
             }
-            //return null;
         }
 
+
+        private void Output(string message, ConsoleColor color = ConsoleColor.White)
+        {
+            var oldColor = Console.ForegroundColor;
+            Console.ForegroundColor = color;
+            Console.WriteLine($"{DateTime.Now.ToString()}: {message}");
+            Console.ForegroundColor = oldColor;
+        }
 
         public string GetDataFromDocument(string Path)
         {
@@ -241,7 +194,7 @@ namespace Devir.DMS.FulltextSearchEngine
         public class FieldWithBoost
         {
             public string Name { get; set; }
-            public float Boost { get; set; }            
+            public float Boost { get; set; }
         }
 
         [DataContract]
@@ -252,8 +205,6 @@ namespace Devir.DMS.FulltextSearchEngine
             [DataMember]
             public float Score { get; set; }
         }
-
-
 
         public class DocumentForLucene
         {
@@ -270,128 +221,127 @@ namespace Devir.DMS.FulltextSearchEngine
 
             public static DocumentForLucene GetDataFromDocument(Guid docId)
             {
-                try{
-                List<Guid> attachmentsToIndex = new List<Guid>();
-
-                //Настройка делегатта для получения GUID пользователя
-                RepositoryFactory.GetCurrentUser = () =>
+                try
                 {
-                    //Сюда код для получения GUID текущего пользователя
-                    //Для примера я просто генерирую GUID
-                    return new Guid("7c432691-5359-4fcf-b7f6-43f3f7f8bbb4");
-                };
+                    List<Guid> attachmentsToIndex = new List<Guid>();
 
-                DocumentForLucene result = null;
-                   
-                Console.WriteLine("Ищем в БД документ с ID: {0}", docId);
-                var doc = RepositoryFactory.GetDocumentRepository().Single(m => m.Id == docId);
-
-                Console.WriteLine("Адрес сервера: {0}",DMS.DL.MongoHelpers.MongoHelper.client.Settings.Server.Host);
-                Console.WriteLine("БД сервера: {0}", DMS.DL.MongoHelpers.MongoHelper.Database.Name);
-
-                if (doc != null)
-                {
-                    Console.WriteLine("Нашли в БД документ с ID: {0}", docId);
-                    if (doc.Attachments != null)
-                        attachmentsToIndex.AddRange(doc.Attachments);
-
-                    result = new DocumentForLucene();
-
-                    result.Id = doc.Id;
-                    result.TypeId = String.Format("ANY {0}", doc.DocumentType.Id.ToString().Replace("-", ""));
-                    result.Type = doc.DocumentType.Name;
-                    result.Number = !String.IsNullOrEmpty(doc.DocumentNumber) ? String.Format("{0} N{0}",doc.DocumentNumber,doc.DocumentNumber) : "б/н";
-                    result.Header = doc.Header;
-
-                    StringBuilder sb = new StringBuilder();
-                    sb.AppendFormat("{0};", doc.Body);
-                    doc.FieldValues.ForEach(m => sb.AppendFormat("{0};", m.ValueToDisplay));
-                    doc.DocumentSignStages.ForEach(m => m.RouteUsers.ForEach(n =>
+                    //Настройка делегатта для получения GUID пользователя
+                    RepositoryFactory.GetCurrentUser = () =>
                     {
-                        if (n.SignResult != null)
+                        //Сюда код для получения GUID текущего пользователя
+                        //Для примера я просто генерирую GUID
+                        return new Guid("7c432691-5359-4fcf-b7f6-43f3f7f8bbb4");
+                    };
+
+                    DocumentForLucene result = null;
+
+                    Console.WriteLine("Ищем в БД документ с ID: {0}", docId);
+                    var doc = RepositoryFactory.GetDocumentRepository().Single(m => m.Id == docId);
+
+                    Console.WriteLine("Адрес сервера: {0}", DMS.DL.MongoHelpers.MongoHelper.client.Settings.Server.Host);
+                    Console.WriteLine("БД сервера: {0}", DMS.DL.MongoHelpers.MongoHelper.Database.Name);
+
+                    if (doc != null)
+                    {
+                        Console.WriteLine("Нашли в БД документ с ID: {0}", docId);
+                        if (doc.Attachments != null)
+                            attachmentsToIndex.AddRange(doc.Attachments);
+
+                        result = new DocumentForLucene();
+
+                        result.Id = doc.Id;
+                        result.TypeId = String.Format("ANY {0}", doc.DocumentType.Id.ToString().Replace("-", ""));
+                        result.Type = doc.DocumentType.Name;
+                        result.Number = !String.IsNullOrEmpty(doc.DocumentNumber) ? $"{doc.DocumentNumber} N{doc.DocumentNumber}" : "б/н";
+                        result.Header = doc.Header;
+
+                        StringBuilder sb = new StringBuilder();
+                        sb.AppendFormat("{0};", doc.Body);
+                        doc.FieldValues.ForEach(m => sb.AppendFormat("{0};", m.ValueToDisplay));
+                        doc.DocumentSignStages.ForEach(m => m.RouteUsers.ForEach(n =>
                         {
-                            sb.AppendFormat("{0};", n.SignResult.Comment);
-                            if (n.SignResult.attachment != null)
-                                attachmentsToIndex.AddRange(n.SignResult.attachment);
-                        }
-                    }));
+                            if (n.SignResult != null)
+                            {
+                                sb.AppendFormat("{0};", n.SignResult.Comment);
+                                if (n.SignResult.attachment != null)
+                                    attachmentsToIndex.AddRange(n.SignResult.attachment);
+                            }
+                        }));
 
-                    result.Body = sb.ToString();
+                        result.Body = sb.ToString();
 
-                    StringBuilder sbViewers = new StringBuilder();
-                    doc.DocumentViewers.ToList().ForEach(m => sbViewers.AppendFormat("{0}     ", m.Key.Replace("-", "")));
+                        StringBuilder sbViewers = new StringBuilder();
+                        doc.DocumentViewers.ToList().ForEach(m => sbViewers.AppendFormat("{0}     ", m.Key.Replace("-", "")));
 
-                    result.Viewers = sbViewers.ToString();
+                        result.Viewers = sbViewers.ToString();
 
-                    StringBuilder sbAttachments = new StringBuilder("");
+                        StringBuilder sbAttachments = new StringBuilder("");
 
-                    attachmentsToIndex.ForEach(m =>
-                    {
-
-                        var fsobj = RepositoryFactory.GetRepository<FileStorage>().Single(n => n.Id == m);
-                        if (fsobj != null)
+                        attachmentsToIndex.ForEach(m =>
                         {
 
-                            var _extension = Path.GetExtension(fsobj.FileName);
-                            if (fsobj.OId != ObjectId.Empty)
+                            var fsobj = RepositoryFactory.GetRepository<FileStorage>().Single(n => n.Id == m);
+                            if (fsobj != null)
                             {
 
-                                var client = DL.MongoHelpers.MongoHelper.client; //new MongoClient("mongodb://" + "192.168.1.226:27017" + "/");
-                                var server = client.GetServer();
-                                var database = server.GetDatabase("FileStorage");
-
-
-
-                                System.IO.Directory.CreateDirectory(System.IO.Path.GetTempPath() + "\\DMSPDFFTS");
-
-                                string path = System.IO.Path.GetTempPath() + "DMSPDFFTS\\" + "tmpFile" + _extension;
-                                string pathToPDF = Path.ChangeExtension(path, "pdf");
-
-                                FileStream fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write);
-
-                                MongoGridFsHelper mongoGridFsHelper = new MongoGridFsHelper(database);
-
-                                Stream stream = mongoGridFsHelper.GetFile(fsobj.OId);
-
-                                int lenght = Convert.ToInt32(stream.Length);
-                                byte[] fileContents = new byte[lenght];
-
-                                stream.Read(fileContents, 0, lenght);
-                                stream.Close();
-
-                                fs.Write(fileContents, 0, fileContents.Length);
-
-                                fs.Close();
-
-                                try
+                                var _extension = Path.GetExtension(fsobj.FileName);
+                                if (fsobj.OId != ObjectId.Empty)
                                 {
-                                    TextReader reader = new FilterReader(path);
-                                    using (reader)
-                                        sbAttachments.AppendFormat("{0}           ", reader.ReadToEnd());
-                                }
-                                catch (Exception ex)
-                                {
-                                    Console.WriteLine(ex.ToString());
-                                }
 
-                                File.Delete(path);
+                                    var client = DL.MongoHelpers.MongoHelper.client;
+                                    var server = client.GetServer();
+                                    var database = server.GetDatabase("FileStorage");
+
+                                    System.IO.Directory.CreateDirectory(System.IO.Path.GetTempPath() + "\\DMSPDFFTS");
+
+                                    string path = System.IO.Path.GetTempPath() + "DMSPDFFTS\\" + "tmpFile" + _extension;
+                                    string pathToPDF = Path.ChangeExtension(path, "pdf");
+
+                                    FileStream fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write);
+
+                                    MongoGridFsHelper mongoGridFsHelper = new MongoGridFsHelper(database);
+
+                                    Stream stream = mongoGridFsHelper.GetFile(fsobj.OId);
+
+                                    int lenght = Convert.ToInt32(stream.Length);
+                                    byte[] fileContents = new byte[lenght];
+
+                                    stream.Read(fileContents, 0, lenght);
+                                    stream.Close();
+
+                                    fs.Write(fileContents, 0, fileContents.Length);
+
+                                    fs.Close();
+
+                                    try
+                                    {
+                                        TextReader reader = new FilterReader(path);
+                                        using (reader)
+                                            sbAttachments.AppendFormat("{0}           ", reader.ReadToEnd());
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Console.WriteLine(ex.ToString());
+                                    }
+
+                                    File.Delete(path);
+                                }
                             }
-                        }
 
 
-                    });
+                        });
 
-                    result.Attachmments = sbAttachments.ToString();
+                        result.Attachmments = sbAttachments.ToString();
 
 
-                    result.SubBodies = String.Empty;
+                        result.SubBodies = String.Empty;
 
-                }
-                else
-                {
-                    Console.WriteLine("не нашли в БД документ с ID: {0}", docId);
-                }
-                return result;
+                    }
+                    else
+                    {
+                        Console.WriteLine("не нашли в БД документ с ID: {0}", docId);
+                    }
+                    return result;
                 }
                 catch (Exception ex)
                 {
@@ -399,7 +349,7 @@ namespace Devir.DMS.FulltextSearchEngine
                     return null;
                 }
             }
-           
+
 
         }
 

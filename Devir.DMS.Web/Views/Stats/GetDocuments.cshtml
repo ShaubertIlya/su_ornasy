@@ -1,59 +1,53 @@
 ﻿@model List<Devir.DMS.Web.Models.Stats.DocumentInViewStat>
-@{
-    Layout = null;
-    var result = Model.GroupBy(m => m.DocumentTypeName).ToList();
-}
-<div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h3 id="addModalLabel">Просроченные документы</h3>
-</div>
-<div class="modal-body" style="height:500px; font-size:x-small; overflow:auto;">
-    <div id="GetDocumnetWindowBody">
-        <table class="table">
-            <tr>
-                <th>Номер</th>
-                <th>Заголовок</th>
-                <th></th>
-                <th>Дата окончания</th>
-                <th>Кол-во дней</th>
-            </tr>
-
-            @foreach (var item in result)
-            {
-                <tr style="background-color: #f0f0f0;">
-                    <td colspan="5">
-                        @item.Key  -   @item.Count()
-                    </td>
-
+    @{
+        Layout = null;
+        var result = Model.GroupBy(m => m.DocumentTypeName).ToList();
+    }
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="addModalLabel">Просроченные документы</h3>
+    </div>
+    <div class="modal-body" style="height:500px; font-size:x-small; overflow:auto;">
+        <div id="GetDocumnetWindowBody">
+            <table class="table">
+                <tr>
+                    <th>№ вх.</th>
+                    <th>Дата поступления</th>
+                    <th>От кого</th>
+                    <th>Краткое содержание</th>
+                    <th>Срок исполнения</th>
+                    <th>Просрочено дней</th>
+                    <th>Отдел</th>
+                    <th>Исполнитель</th>
+                    <th>Дата выгрузки</th>
                 </tr>
-                foreach (var item1 in item)
+
+                @foreach (var item in result)
                 {
-                    <tr>
-                        <td>
-                            @item1.DocumentNumber
-                        </td>
-                        <td>
-                            @item1.Header
-                        </td>
-                        <td>
-                            @item1.FieldForFiltration
-                        </td>
-                        <td>
-                            @item1.DateEnd.ToString("dd.MM.yyyy")
-                        </td>
-                        <td>
-                            @item1.DaysCount
+                    <tr style="background-color: #f0f0f0;">
+                        <td colspan="9">
+                            @item.Key  -   @item.Count()
                         </td>
                     </tr>
+                    foreach (var item1 in item)
+                    {
+                        <tr>
+                            <td>@item1.DocNumber</td>
+                            <td>@item1.DocInputDate.ToString("dd.MM.yyyy")</td>
+                            <td>@item1.DocFrom</td>
+                            <td>@item1.DocDescription</td>
+                            <td>@item1.DocDeadLine</td>
+                            <td>@item1.DocOverdueDays</td>
+                            <td>@item1.DocDepartment</td>
+                            <td>@item1.DocExecutor</td>
+                            <td>@item1.DocExportDate.ToString("dd.MM.yyyy")</td>
+                        </tr>
+                    }
                 }
-            }
-
-        </table>
-
-
+            </table>
+        </div>
     </div>
-</div>
-<div class="panel dbldFooter">
-    <input type="submit" class="btn" value="Печать" onclick="$('#GetDocumnetWindowBody').printThis(); return false;" />
-    <input value="Отмена" type="button" class="btn" onclick="CloseCurrentModal(); $('#badDocumentsPopup').html('');" />
-</div>
+    <div class="panel dbldFooter">
+        <input type="submit" class="btn" value="Печать" onclick="$('#GetDocumnetWindowBody').printThis(); return false;" />
+        <input value="Отмена" type="button" class="btn" onclick="CloseCurrentModal(); $('#badDocumentsPopup').html('');" />
+    </div>

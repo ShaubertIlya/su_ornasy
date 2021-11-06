@@ -11,11 +11,11 @@ namespace Devir.DMS.FulltextSearchEngine
     {
         static void Main(string[] args)
         {
-             #if DEBUG
+#if DEBUG
             Uri baseAddress = new Uri("http://localhost:4784");
-            #else
+#else
             Uri baseAddress = new Uri("http://192.168.64.9:4784");
-            #endif
+#endif
             //Для Тестов
 
 
@@ -35,11 +35,17 @@ namespace Devir.DMS.FulltextSearchEngine
                 host.Open();
 
                 Console.WriteLine("Сервис полнотекстной индексации и поиска запущен на {0}", baseAddress);
-                Console.WriteLine("Ничего не трогай а то потухнет :) ....");
-                Console.ReadLine();
+                Console.WriteLine("Для выхода нажмите q и ENTER.");
+                var resultKey = "";
+                while (resultKey != "q")
+                {
+                    
+                    resultKey = Console.ReadLine();
+                }
 
                 // Close the ServiceHost.
                 host.Close();
+                Environment.Exit(0);
             }
         }
     }

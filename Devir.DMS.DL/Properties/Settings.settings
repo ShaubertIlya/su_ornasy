@@ -6,7 +6,7 @@
       <Value Profile="(Default)">DMS</Value>
     </Setting>
     <Setting Name="Server" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">192.168.66.27</Value>
+      <Value Profile="(Default)">192.168.64.9</Value>
     </Setting>
   </Settings>
 </SettingsFile>

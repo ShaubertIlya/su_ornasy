@@ -6,6 +6,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson.Serialization.Serializers;
 
 namespace Devir.DMS.DL.Models.Document
 {
@@ -25,7 +28,8 @@ namespace Devir.DMS.DL.Models.Document
         public string StringValue { get; set; }
         public bool? BooleanValue { get; set; }
         public Guid? GuidValue { get; set; }
-        public decimal? DecimalValue { get; set; }
+
+        public string DecimalValue { get; set; }
         public List<int> IntListValue { get; set; }
         public List<decimal> DecimalListValue { get; set; }
         public List<string> StringListValue { get; set; }
